@@ -1,5 +1,5 @@
 package realization;
 
 public interface Car {
-	public void run();
+	void run();
 }

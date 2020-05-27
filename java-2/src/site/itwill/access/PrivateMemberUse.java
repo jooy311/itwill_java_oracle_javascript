@@ -2,8 +2,10 @@ package site.itwill.access;
 
 public class PrivateMemberUse {
 	public void run() {
-		PrivateMember member = new PrivateMember();
-
-		// member.num = 10;
+		@SuppressWarnings("unused")
+		PrivateMember member=new PrivateMember();
+		
+		//member.num=100;
+		//member.display();
 	}
 }

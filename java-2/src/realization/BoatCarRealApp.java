@@ -2,11 +2,11 @@ package realization;
 
 public class BoatCarRealApp {
 	public static void main(String[] args) {
-		BoatCarReal bcr = new BoatCarReal();
-		BoatCar bc = new BoatCarReal();
+		//BoatCarReal boatCar=new BoatCarReal();
+		BoatCar boatCar=new BoatCarReal();
 		
-		bc.floating();
-		bc.navigate();
-		bc.run();
+		boatCar.run();
+		boatCar.navigate();
+		boatCar.floating();
 	}
 }

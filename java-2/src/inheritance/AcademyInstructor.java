@@ -1,5 +1,7 @@
 package inheritance;
 
+//강사정보(강사번호,강사이름,강의과목)를 저장하기 위한 클래스
+// => 강사번호와 강사이름 관련 속성과 기능은 AcademyPerson 클래스를 상속받아 사용
 public class AcademyInstructor extends AcademyPerson {
 	private String subject;
 	
@@ -7,9 +9,9 @@ public class AcademyInstructor extends AcademyPerson {
 		// TODO Auto-generated constructor stub
 	}
 
-	public AcademyInstructor(int num, String name, String subj) {
+	public AcademyInstructor(int num, String name, String subject) {
 		super(num, name);
-		this.subject = subj;
+		this.subject = subject;
 	}
 
 	public String getSubject() {
@@ -19,13 +21,11 @@ public class AcademyInstructor extends AcademyPerson {
 	public void setSubject(String subject) {
 		this.subject = subject;
 	}
-
+	
 	@Override
 	public void display() {
-		//super.display(); -> 여기서는 번호랑 이름을 출력하라는 거였지 학생정보가 아니므로 쓰지 않는다.
-		System.out.println("강사 번호 >> " + getNum());
-		System.out.println("강사 이름 >> " + getName());
-		System.out.println("과목 >> " + subject);
-		System.out.println();
+		System.out.println("강사번호 = "+getNum());
+		System.out.println("강사이름 = "+getName());
+		System.out.println("강의과목 = "+subject);
 	}
 }

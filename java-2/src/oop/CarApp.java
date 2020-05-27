@@ -1,54 +1,56 @@
 package oop;
 
-import java.util.Scanner;
-
-//carclass를 이용하여 프로그램을 작성할것
-//캡슐화시켜줘야지만 오류가 없는 클래스가 됨
+//Car 클래스를 이용한 프로그램 작성
 public class CarApp {
 	public static void main(String[] args) {
-		//클래스를 이용하여 인스턴스를 생성해 참조변수를 저장
-		//클래스명 참조변수 new클래스명();
-		//인스턴스를 생성한 경우 인스턴스의 필드는 기본값으로 자동초기화★
-		//문제점 : 인스턴스를 이용하여 필드에 접근 가능한 경우 비정상적인 값이 저장될 수 있음
-		// 해결 : 인스턴스를 이용하여 필드에 접근하지 못하도록 클래스를 설계(필드의 은닉화 처리)
-		//->은닉화된 필드에 접근할 경우 에러 발생
-		//->getter 메소드 또는 setter메소드를 호출하여 필드사용
-		Car carOne = new Car();
-		Car carTwo = new Car();
+		//클래스를 이용하여 인스턴스를 생성해 참조변수 저장
+		//클래스명 참조변수=new 클래스명();
+		//인스턴스를 생성한 경우 인스턴스의 필드는 기본값으로 자동 초기화
+		// => 숫자형 : 0, 논리형 : false, 참조형 : null
+		Car carOne=new Car();
+		Car carTwo=new Car();
 		
-		//Scanner sc = new Scanner(System.in);
-		//carOne.aliasName = sc.nextLine();
-		//carTwo.aliasName = sc.nextLine();
-		System.out.println("carOne = " + carOne);//메모리 주소를 보여준다
-		System.out.println("carTwo = " + carTwo);
-		System.out.println("===================================");
-		
-		//참조변수를 이용하여 인스턴스 참조가능
-		// -> 참조된 인스턴스 필드 또는 메소드 접근가능
+		System.out.println("carOne = "+carOne);
+		System.out.println("carTwo = "+carTwo);
+		System.out.println("=======================================");
+		//참조변수를 이용하여 인스턴스 참조 가능
+		// => 참조된 인스턴스로 필드 또는 메소드 접근 가능 : . 연산자 사용
+		//문제)인스턴스를 이용하여 필드에 접근 가능한 경우 비정상적인 값 저장에 의한 실행 오류 발생
+		//해결)인스턴스를 이용하여 필드에 접근하지 못하도록 필드의 은닉화 처리
+		// => 은닉화된 필드에 접근할 경우 에러 발생
+		// => Getter 메소드 또는 Setter 메소드를 호출하여 필드 사용
+		//carOne.aliasName="티코";
 		carOne.setAliasName("티코");
-		carTwo.setAliasName("소나타");
-		//carOne.aliasName ="티코";
-		//carTwo.aliasName ="소나타";
-		carOne.setEngineStates(false);
-		carTwo.setEngineStates(false);
+		//carOne.engineStatus=false;
+		carOne.setEngineStatus(false);
+		//carOne.currentSpeed=0;
 		carOne.setCurrentSpeed(0);
-		carTwo.setCurrentSpeed(0);
 		
-		System.out.println("자동차별칭 >> " + carOne.getAliasName());
-		System.out.println("자동차 현재 속도 >> " + carOne.getCurrentSpeed());
-		System.out.println("자동차별칭 >> " + carOne.isEngineStates());
-		System.out.println("===================================");
-		System.out.println("자동차별칭 >> " + carTwo.getAliasName());
-		System.out.println("자동차별칭 >> " + carTwo.getCurrentSpeed());
-		System.out.println("자동차별칭 >> " + carTwo.isEngineStates());
+		//System.out.println("자동차 별칭 = "+carOne.aliasName);
+		System.out.println("자동차 별칭 = "+carOne.getAliasName());
+		//System.out.println("엔진상태 = "+carOne.engineStatus);
+		System.out.println("엔진상태 = "+carOne.isEngineStatus());
+		System.out.println("현재 속도 = "+carOne.getCurrentSpeed());
+		System.out.println("=======================================");
+		carTwo.setAliasName("쏘나타");
 		
-		carOne.startEngine(true);
+		System.out.println("자동차 별칭 = "+carTwo.getAliasName());
+		System.out.println("엔진상태 = "+carTwo.isEngineStatus());
+		System.out.println("현재 속도 = "+carTwo.getCurrentSpeed());
+		System.out.println("=======================================");
+		carOne.startEngine();
+		carOne.speedUp(30);
 		carOne.speedUp(50);
-		carOne.speedUp(20);
-		carOne.SpeedDown(80);
-		//carOne.makeSpeedZero();
+		carOne.speedDown(40);
+		//carOne.speedZero();
 		carOne.stopEngine();
-
-		
+		//System.out.println("현재 속도 = "+carOne.currentSpeed);
+		System.out.println("=======================================");
 	}
 }
+
+
+
+
+
+

@@ -1,6 +1,7 @@
 package inheritance;
 
-//직원정보(직원번호, 직원이름, 근무부서)를 저장하기 위한 클래스
+//직원정보(직원번호,직원이름,근무부서)를 저장하기 위한 클래스
+// => 직원번호와 직원이름 관련 속성과 기능은 AcademyPerson 클래스를 상속받아 사용
 public class AcademyStaff extends AcademyPerson {
 	private String depart;
 	
@@ -23,10 +24,8 @@ public class AcademyStaff extends AcademyPerson {
 	
 	@Override
 	public void display() {
-		//super.display(); -> 여기서는 번호랑 이름을 출력하라는 거였지 학생정보가 아니므로 쓰지 않는다.
-		System.out.println("직원 번호 >> " + getNum());
-		System.out.println("직원 이름 >> " + getName());
-		System.out.println("직원 과목 >> " + depart);
-		System.out.println();
+		System.out.println("직원번호 = "+getNum());
+		System.out.println("직원이름 = "+getName());
+		System.out.println("근무부서 = "+depart);
 	}
 }

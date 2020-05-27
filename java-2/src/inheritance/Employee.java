@@ -1,17 +1,16 @@
 package inheritance;
 
 //사원정보(사원번호, 사원이름)를 저장하기 위한 클래스
-//=> 인스턴스 생성이 목적이 아닌 상속을 목적으로 작성된 클래스
-//=> 상속을 목적으로 작성된 클래스는 추상클래스(Abstract Class)로 선언하는 것을 권장
-//=> 인스턴스가 생성이 되지 않는다.
+// => 인스턴스 생성이 목적이 아닌 상속을 목적으로 작성된 클래스
+// => 상속을 목적으로 작성된 클래스는 추상클래스(Abstract Class)로 선언하는 것을 권장
 public abstract class Employee {
 	private int empNo;
 	private String empName;
 	
-	//상수필드Constant field : 값 대신 사용하기 위한 필드
-	//값대신 의미있는 단어를 이용하여 표현하기 위해 사용 ->유지보수에 좋다
-	//대문자로만 표현하여 단어의 구분에는 언더바를 사용
-	public static final double INCENTIVE_RATE = 1.5;
+	//상수필드(Constant Field) : 값 대신 사용하기 위한 필드 - 필드값 변경 불가능
+	// => 값 대신 의미있는 단어를 이용하여 표현하기 위해 사용
+	// => 대문자로만 표현하며 단어의 구분자는 _ 사용
+	public static final double INCENTIVE_RATE=1.5;
 	
 	public Employee() {
 		// TODO Auto-generated constructor stub
@@ -23,7 +22,7 @@ public abstract class Employee {
 		this.empName = empName;
 	}
 
-	public int getEmpNo() {	
+	public int getEmpNo() {
 		return empNo;
 	}
 
@@ -39,19 +38,22 @@ public abstract class Employee {
 		this.empName = empName;
 	}
 	
-	//자식클래스에서 반드시 오버라이드 선언하도록 추상메소드로 설정해준다.
-	//=> 강제성 부여
-	public abstract int computePay(); 
+	//급여를 계산하여 반환하는 메소드 - 메소드 작성 규칙 제공(작업지시서)
+	// => 자식클래스에서 반드시 오버라이드 선언하도록 추상메소드로 선언
+	// => 추상메소드(Abstract Method) : 명령을 작성하지 않는 메소드 - 명령부 생략
+	//추상메소드가 하나라도 선언된 클래스는 반드시 추상클래스로 선언
+	public abstract int computePay();
 	
 	//인센티브를 계산하여 반환하는 메소드
-	//=>모든 사원에게 급여의 150%를 인센티브를 계산하여 지급
-	//=>자식클래스에서 오버라이드 선언할 경우 반환되는 인센티브가 변경가능하다 
-	//=>자식클래스에서 오버라이드 선언하지 못하도록 final메소드로 작성한다.
-	//=>오버라이드가 불가능해 진다.
-	public final int computeincentive() {
-		
-		int incentive = (int)(computePay() * INCENTIVE_RATE);
-
+	// => 모든 사원에게 급여의 150%를 인센티브로 계산하여 지급
+	//자식클래스에 오버라이드 선언할 경우 반환되는 인센티브 변경 가능
+	// => 자식클래스에서 오버라이드 선언하지 못하도록 final 메소드로 작성
+	public final int computeIncetive() {
+		//추상메소드를 호출할 경우 묵시적 객체 형변환에 의해 자식 인스턴스의 메소드 호출
+		// => 부모클래스의 메소드에서 자식클래스의 메소드 호출
+		//int incentive=(int)(computePay()*1.5);
+		//값(리터럴) 대신 상수필드를 이용하여 작성하는 것을 권장
+		int incentive=(int)(computePay()*INCENTIVE_RATE);
 		return incentive;
 	}
 }

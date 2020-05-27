@@ -1,15 +1,10 @@
 package realization;
 
-//클래스가 반드시 상속받아야 하는 기능
-//->상속받은 자식클래스의 메소드 작성규칙을 제공
+//DBMS를 이용하여 학생관리 기능을 제공하는 클래스가 반드시 상속받아야 되는 인터페이스
+// => 상속받은 자식클래스에 메소드 작성 규칙 제공 
 public interface Jdbc {
-
 	void insert();
-
 	void update();
-
-	void select();
-
 	void delete();
-
+	void select();
 }
