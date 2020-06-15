@@ -83,11 +83,11 @@ public class ManagerFrame extends JFrame implements ActionListener {
 	private JMenuItem initItem;
 	private JMenuItem changeInfo;
 	private JComboBox yearCombo;
-	private String selectedMonth, selectedYear;
-	private String addworktime;
+	private String selectedMonth, selectedYear, selectedDate;
+	private String str = "";
 	private DefaultTableModel tableModel;
 
-	// »ı¼ºÀÚ
+	// ìƒì„±ì
 	public ManagerFrame(String title) {
 		super(title);
 		init();
@@ -100,24 +100,25 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		selectedDelete.addActionListener(this);
 		yearCombo.addActionListener(this);
 		monthCombo.addActionListener(this);
+		dateCombo.addActionListener(this);
 
 	}
 
-	// È­¸é ¼ÂÆÃ ¸Ş¼Òµå
+	// í™”ë©´ ì…‹íŒ… ë©”ì†Œë“œ
 	private void init() {
 		getContentPane().setLayout(null);
 
-		// ÇöÀç ³¯Â¥ ¹Ş¾Æ¿Í¼­ »Ñ¸®±â
-		SimpleDateFormat pattern = new SimpleDateFormat("MM¿ù ddÀÏ");
+		// í˜„ì¬ ë‚ ì§œ ë°›ì•„ì™€ì„œ ë¿Œë¦¬ê¸°
+		SimpleDateFormat pattern = new SimpleDateFormat("MMì›” ddì¼");
 		String time = pattern.format(new Date());
-		SimpleDateFormat pattern_m = new SimpleDateFormat("MM¿ù");
+		SimpleDateFormat pattern_m = new SimpleDateFormat("MMì›”");
 		String mm = pattern_m.format(new Date());
 
-		// Å×ÀÌºí¿¡ µé¾î°¥ µ¥ÀÌÅÍ(ÀÓ½Ã)
-		String header[] = { "³â¿ùÀÏ","Ãâ±Ù½Ã°£", "ºĞ", "Åğ±Ù½Ã°£", "ºĞ", "±Ù¹«½Ã°£", "ÀÏ±Ş" };
-		String contents[][] = { { "20200601", "08", "30", "17", "30", "7", "7300¿ø" },
-								{"20200602", "08", "30", "17", "30", "7", "7300¿ø"},
-								{ "20200609","08", "30", "17", "30", "7", "7300¿ø"}};
+		// í…Œì´ë¸”ì— ë“¤ì–´ê°ˆ ë°ì´í„°(ì„ì‹œ)
+		String header[] = { "ë…„ì›”ì¼","ì¶œê·¼ì‹œê°„", "ë¶„", "í‡´ê·¼ì‹œê°„", "ë¶„", "ê·¼ë¬´ì‹œê°„", "ì¼ê¸‰" };
+		String contents[][] = { { "20200601", "08", "30", "17", "30", "7", "7300ì›" },
+								{"20200602", "08", "30", "17", "30", "7", "7300ì›"},
+								{ "20200609","08", "30", "17", "30", "7", "7300ì›"}};
 
 		desktopPane = new JDesktopPane();
 		desktopPane.setBackground(Color.DARK_GRAY);
@@ -127,14 +128,23 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		
 		
 		//tableModel = null;
-		tableModel = new DefaultTableModel(contents, header);
+		tableModel = new DefaultTableModel(contents, header) { @Override
+		    public boolean isCellEditable(int row, int column) {
+	        if (column >= 0) {
+	            return false;
+	        } else {
+	            return true;
+	        }
+	    }
+	};
 		table = new JTable(tableModel);
 		//tableModel.addRow(contents);
+		table.isCellEditable(table.getRowCount(), table.getColumnCount()-1);
 		
-		table.getTableHeader().setReorderingAllowed(false);//ÀÌµ¿ºÒ°¡
-		table.getTableHeader().setResizingAllowed(false);//Å©±âÁ¶Á¤ ºÒ°¡
+		table.getTableHeader().setReorderingAllowed(false);//ì´ë™ë¶ˆê°€
+		table.getTableHeader().setResizingAllowed(false);//í¬ê¸°ì¡°ì • ë¶ˆê°€
 		
-		JScrollPane scrollPane = new JScrollPane(table);// Å×ÀÌºíÀº ½ºÅ©·ÑÆÒ
+		JScrollPane scrollPane = new JScrollPane(table);// í…Œì´ë¸”ì€ ìŠ¤í¬ë¡¤íŒ¬
 		desktopPane.add(scrollPane);
 		scrollPane.setBounds(130, 52, 510, 300);
 
@@ -164,8 +174,8 @@ public class ManagerFrame extends JFrame implements ActionListener {
 
 		panel_1.add(monthCombo);
 
-		JLabel lblNewLabel_1 = new JLabel("¿ù");
-		lblNewLabel_1.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 20));
+		JLabel lblNewLabel_1 = new JLabel("ì›”");
+		lblNewLabel_1.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 20));
 		panel_1.add(lblNewLabel_1);
 
 		JPanel panel_2 = new JPanel();
@@ -175,14 +185,14 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		panel_2.add(dateCombo);
 
 		JLabel label = new JLabel("\uC77C");
-		label.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 20));
+		label.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 20));
 		panel_2.add(label);
 
 		JPanel panel_3 = new JPanel();
 		input.add(panel_3);
 
 		lblNewLabel_2 = new JLabel("\uCD9C\uADFC \uC2DC\uAC04");
-		lblNewLabel_2.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		lblNewLabel_2.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_3.add(lblNewLabel_2);
 
 		startHCombo = new JComboBox();
@@ -191,7 +201,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		panel_3.add(startHCombo);
 
 		JLabel lblNewLabel_3 = new JLabel("\uC2DC");
-		lblNewLabel_3.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		lblNewLabel_3.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_3.add(lblNewLabel_3);
 
 		startMCombo = new JComboBox();
@@ -203,14 +213,14 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		panel_3.add(startMCombo);
 
 		JLabel lblNewLabel_4 = new JLabel("\uBD84");
-		lblNewLabel_4.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		lblNewLabel_4.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_3.add(lblNewLabel_4);
 
 		JPanel panel_4 = new JPanel();
 		input.add(panel_4);
 
 		JLabel label_1 = new JLabel("\uD1F4\uADFC \uC2DC\uAC04");
-		label_1.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		label_1.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_4.add(label_1);
 
 		endHCombo = new JComboBox();
@@ -219,7 +229,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		panel_4.add(endHCombo);
 
 		JLabel label_2 = new JLabel("\uC2DC");
-		label_2.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		label_2.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_4.add(label_2);
 
 		endMCombo = new JComboBox();
@@ -231,14 +241,14 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		panel_4.add(endMCombo);
 
 		JLabel label_3 = new JLabel("\uBD84");
-		label_3.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		label_3.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_4.add(label_3);
 
 		JPanel panel_5 = new JPanel();
 		input.add(panel_5);
 
 		JLabel lblNewLabel_5 = new JLabel("\uC624\uB298 \uADFC\uBB34 \uC2DC\uAC04");
-		lblNewLabel_5.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		lblNewLabel_5.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_5.add(lblNewLabel_5);
 
 		todayWorkHourTxt = new JTextField();
@@ -246,18 +256,18 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		todayWorkHourTxt.setColumns(10);
 
 		JLabel lblNewLabel_6 = new JLabel("\uC2DC\uAC04!");
-		lblNewLabel_6.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		lblNewLabel_6.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_5.add(lblNewLabel_6);
 
 		JPanel panel_8 = new JPanel();
 		input.add(panel_8);
 
 		saveBtn = new JButton("\uC800\uC7A5");
-		saveBtn.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		saveBtn.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_8.add(saveBtn);
 
-		selectedDelete = new JButton("ÁöÁ¤ÀÏ »èÁ¦");
-		selectedDelete.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		selectedDelete = new JButton("ì§€ì •ì¼ ì‚­ì œ");
+		selectedDelete.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_8.add(selectedDelete);
 
 		JPanel panel_9 = new JPanel();
@@ -270,7 +280,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 
 		JLabel lblNewLabel_7 = new JLabel("\uD604\uC7AC \uB0A0\uC9DC\uB294");
 		lblNewLabel_7.setForeground(Color.WHITE);
-		lblNewLabel_7.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		lblNewLabel_7.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_9.add(lblNewLabel_7);
 
 		JDesktopPane desktopPane_1 = new JDesktopPane();
@@ -278,9 +288,9 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		desktopPane_1.setBounds(10, 131, 113, 50);
 		desktopPane.add(desktopPane_1);
 
-		JLabel label_6 = new JLabel("±Ù¹«½Ã°£");
+		JLabel label_6 = new JLabel("ê·¼ë¬´ì‹œê°„");
 		label_6.setHorizontalAlignment(SwingConstants.CENTER);
-		label_6.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 15));
+		label_6.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 15));
 		label_6.setBounds(29, 0, 72, 23);
 		desktopPane_1.add(label_6);
 
@@ -289,13 +299,13 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		totalWorkHour.setBounds(12, 25, 59, 21);
 		desktopPane_1.add(totalWorkHour);
 
-		JLabel label_7 = new JLabel("½Ã°£");
-		label_7.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 12));
+		JLabel label_7 = new JLabel("ì‹œê°„");
+		label_7.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 12));
 		label_7.setBounds(83, 28, 18, 16);
 		desktopPane_1.add(label_7);
 
 		JLabel lblNewLabel_10 = new JLabel(mm);
-		lblNewLabel_10.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.BOLD, 15));
+		lblNewLabel_10.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.BOLD, 15));
 		lblNewLabel_10.setBounds(12, 4, 34, 15);
 		desktopPane_1.add(lblNewLabel_10);
 
@@ -304,9 +314,9 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		desktopPane_2.setBounds(10, 188, 113, 50);
 		desktopPane.add(desktopPane_2);
 
-		JLabel label_8 = new JLabel("±Ù¹« ÀÏ");
+		JLabel label_8 = new JLabel("ê·¼ë¬´ ì¼");
 		label_8.setHorizontalAlignment(SwingConstants.CENTER);
-		label_8.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 15));
+		label_8.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 15));
 		label_8.setBounds(40, 0, 65, 23);
 		desktopPane_2.add(label_8);
 
@@ -315,12 +325,12 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		totalWorkDay.setBounds(12, 25, 59, 21);
 		desktopPane_2.add(totalWorkDay);
 
-		JLabel lblNewLabel = new JLabel("ÀÏ");
+		JLabel lblNewLabel = new JLabel("ì¼");
 		lblNewLabel.setBounds(88, 28, 20, 15);
 		desktopPane_2.add(lblNewLabel);
 
 		JLabel label_4 = new JLabel(mm);
-		label_4.setFont(new Font("±¼¸²", Font.BOLD, 13));
+		label_4.setFont(new Font("êµ´ë¦¼", Font.BOLD, 13));
 		label_4.setBounds(12, 4, 31, 15);
 		desktopPane_2.add(label_4);
 
@@ -329,8 +339,8 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		desktopPane_3.setBounds(10, 243, 113, 50);
 		desktopPane.add(desktopPane_3);
 
-		JLabel label_9 = new JLabel("³ªÀÇ ½Ã±Ş");
-		label_9.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 15));
+		JLabel label_9 = new JLabel("ë‚˜ì˜ ì‹œê¸‰");
+		label_9.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 15));
 		label_9.setBounds(30, 0, 50, 16);
 		desktopPane_3.add(label_9);
 
@@ -339,7 +349,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		currentPay.setBounds(10, 24, 60, 21);
 		desktopPane_3.add(currentPay);
 
-		JLabel lblNewLabel_8 = new JLabel("¿ø");
+		JLabel lblNewLabel_8 = new JLabel("ì›");
 		lblNewLabel_8.setBounds(82, 27, 20, 15);
 		desktopPane_3.add(lblNewLabel_8);
 
@@ -348,8 +358,8 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		desktopPane_4.setBounds(10, 300, 113, 51);
 		desktopPane.add(desktopPane_4);
 
-		JLabel label_10 = new JLabel("¿¡ ¹øµ·");
-		label_10.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 15));
+		JLabel label_10 = new JLabel("ì— ë²ˆëˆ");
+		label_10.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 15));
 		label_10.setBounds(56, 4, 59, 16);
 		desktopPane_4.add(label_10);
 
@@ -358,12 +368,12 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		currentEarned.setBounds(5, 25, 80, 21);
 		desktopPane_4.add(currentEarned);
 
-		JLabel label_11 = new JLabel("¿ø");
+		JLabel label_11 = new JLabel("ì›");
 		label_11.setBounds(90, 28, 20, 15);
 		desktopPane_4.add(label_11);
 
 		JLabel label_5 = new JLabel(mm);
-		label_5.setFont(new Font("±¼¸²", Font.BOLD, 13));
+		label_5.setFont(new Font("êµ´ë¦¼", Font.BOLD, 13));
 		label_5.setBounds(15, 4, 32, 15);
 		desktopPane_4.add(label_5);
 
@@ -372,8 +382,8 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		desktopPane_5.setBounds(10, 502, 630, 50);
 		desktopPane.add(desktopPane_5);
 
-		searchMonthBtn = new JButton("¿ùº° °Ë»ö");
-		searchMonthBtn.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		searchMonthBtn = new JButton("ì›”ë³„ ê²€ìƒ‰");
+		searchMonthBtn.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		searchMonthBtn.setBounds(311, 6, 120, 33);
 		desktopPane_5.add(searchMonthBtn);
 
@@ -385,7 +395,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		panel_11.add(comboBox_2);
 
 		JLabel label_16 = new JLabel("\uC6D4");
-		label_16.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 20));
+		label_16.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 20));
 		panel_11.add(label_16);
 
 		JPanel panel_7 = new JPanel();
@@ -396,7 +406,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 
 		label_12 = new JLabel(time);
 		label_12.setForeground(new Color(248, 248, 255));
-		label_12.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 27));
+		label_12.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 27));
 		panel_7.add(label_12);
 
 		panel = new JPanel();
@@ -405,19 +415,19 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		desktopPane.add(panel);
 
 		JLabel lb_username = new JLabel("\uC774\uC8FC\uC601");
-		lb_username.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.BOLD, 15));
+		lb_username.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.BOLD, 15));
 		panel.add(lb_username);
 
-		label_13 = new JLabel(" ´Ô ¾È³çÇÏ¼¼¿ä! ÇöÀç ±Ù¹«Áö´Â  ");
-		label_13.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 14));
+		label_13 = new JLabel(" ë‹˜ ì•ˆë…•í•˜ì„¸ìš”! í˜„ì¬ ê·¼ë¬´ì§€ëŠ”  ");
+		label_13.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 14));
 		panel.add(label_13);
 
 		JLabel lb_wortkspace = new JLabel("\uD22C\uC378\uD50C\uB808\uC774\uC2A4");
-		lb_wortkspace.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.BOLD, 15));
+		lb_wortkspace.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.BOLD, 15));
 		panel.add(lb_wortkspace);
 
 		JLabel lblNewLabel_9 = new JLabel("\uC785\uB2C8\uB2E4.");
-		lblNewLabel_9.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.BOLD, 13));
+		lblNewLabel_9.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.BOLD, 13));
 		panel.add(lblNewLabel_9);
 
 		menuBar = new JMenuBar();
@@ -430,32 +440,31 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		mnNewMenu = new JMenu("\u2261");
 		menuBar.add(mnNewMenu);
 
-		initItem = new JMenuItem("ÃÊ±âÈ­");
+		initItem = new JMenuItem("ì´ˆê¸°í™”");
 		mnNewMenu.add(initItem);
 
 		JSeparator separator = new JSeparator();
 		mnNewMenu.add(separator);
 
-		changeInfo = new JMenuItem("Á¤º¸ º¯°æÇÏ±â");
+		changeInfo = new JMenuItem("ì •ë³´ ë³€ê²½í•˜ê¸°");
 		mnNewMenu.add(changeInfo);
 	}
 
 
 	
-	// ÀÌº¥Æ® Å¬·¡½º
+	// ì´ë²¤íŠ¸ í´ë˜ìŠ¤
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object src = e.getSource();
-		String str = "";
 
 		if (src == initItem) {
-			// ÇØ´ç¾ÆÀÌµğ¿¡ ÀúÀåµÇ¾î ÀÖ´Â ³»¿ë db¿¡ ÀÖ´Â°Å ´Ù »èÁ¦
+			// í•´ë‹¹ì•„ì´ë””ì— ì €ì¥ë˜ì–´ ìˆëŠ” ë‚´ìš© dbì— ìˆëŠ”ê±° ë‹¤ ì‚­ì œ
 			//DefaultTableModel model = (DefaultTableModel) table.getModel();
 			tableModel.setNumRows(0);
 			
 		} else if (src == changeInfo) {
 			// MainFrame frame;
-			new ModifyInfoFrame("È¸¿øÁ¤º¸ ¼öÁ¤");
+			new ModifyInfoFrame("íšŒì›ì •ë³´ ìˆ˜ì •");
 
 		} else if (src == yearCombo) {
 			selectedYear = (String) yearCombo.getSelectedItem();
@@ -463,11 +472,16 @@ public class ManagerFrame extends JFrame implements ActionListener {
 			
 			System.out.println(selectedYear);
 		} else if (src == monthCombo) {
-			if (yearCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, "³âµµ¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä!");
+			
+			if (yearCombo.getSelectedIndex() == -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
+				JOptionPane.showMessageDialog(this, "ë…„ë„ë¥¼ ì„ íƒí•´ì£¼ì„¸ìš”!");
 			}
+			
 			selectedMonth = (String) monthCombo.getSelectedItem();
-			str = str + selectedMonth;
+			if((Integer.parseInt(selectedMonth) < 10))
+					str = str + "0" +selectedMonth;
+			else str = str + selectedMonth;
+			
 			Calendar cal = new GregorianCalendar(Integer.parseInt(selectedYear), Integer.parseInt(selectedMonth) - 1, 1);
 			int daysOfMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 			System.out.println(daysOfMonth);
@@ -476,33 +490,38 @@ public class ManagerFrame extends JFrame implements ActionListener {
 			}
 
 		} else if (src == dateCombo) {
-			if (monthCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, "´ŞÀ» ¼±ÅÃÇØÁÖ¼¼¿ä!");
+			
+			if (monthCombo.getSelectedIndex() == -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
+				JOptionPane.showMessageDialog(this, "ë‹¬ì„ ì„ íƒí•´ì£¼ì„¸ìš”!");
 			}
-			String selectedDate = (String) dateCombo.getSelectedItem();
+			
+			selectedDate = (String) dateCombo.getSelectedItem();
+		
+			System.out.println(selectedDate);
 			str = str + selectedDate;
 			
 		} else if (src == saveBtn) {
-			if (dateCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, "ÀÏ¼ö¸¦ °ñ¶óÁÖ¼¼¿ä!");
-			}else if(todayWorkHourTxt.getText().length() == 0) {//±Ù¹«½Ã°£ ¾ÈÀûÇôÀÖ´Ù¸é
-				JOptionPane.showMessageDialog(this, "±Ù¹«½Ã°£À» Àû¾îÁÖ¼¼¿ä!");
+			if (dateCombo.getSelectedIndex() == -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
+				JOptionPane.showMessageDialog(this, "ì¼ìˆ˜ë¥¼ ê³¨ë¼ì£¼ì„¸ìš”!");
+			}else if(todayWorkHourTxt.getText().length() == 0) {//ê·¼ë¬´ì‹œê°„ ì•ˆì í˜€ìˆë‹¤ë©´
+				JOptionPane.showMessageDialog(this, "ê·¼ë¬´ì‹œê°„ì„ ì ì–´ì£¼ì„¸ìš”!");
 			}
 			tableModel.addRow(new String[] {str, "8", "30" , "13", "00","4.5","8400"});
-			JOptionPane.showMessageDialog(this, "¼º°øÀûÀ¸·Î ÀúÀåµÇ¾ú½À´Ï´Ù!");
+			JOptionPane.showMessageDialog(this, "ì„±ê³µì ìœ¼ë¡œ ì €ì¥ë˜ì—ˆìŠµë‹ˆë‹¤!");
 		
-			todayWorkHourTxt.setText("");//ÃÊ±âÈ­
+			todayWorkHourTxt.setText("");//ì´ˆê¸°í™”
+			str = "";
 			
 		}else if(src == selectedDelete) {
 			//DefaultTableModel model = (DefaultTableModel) table.getModel();
-			int one = table.getSelectedRow(); //»ç¿ëÀÚ°¡ ¼±ÅÃÇÑ Çà°ªÀ» ¹Ş¾Æ¿ÂµÚ
+			int one = table.getSelectedRow(); //ì‚¬ìš©ìê°€ ì„ íƒí•œ í–‰ê°’ì„ ë°›ì•„ì˜¨ë’¤
 			System.out.println(one);
 			
 			
 			if(one==-1){
-				JOptionPane.showMessageDialog(this, "¼±ÅÃµÈ ÇàÀÌ ¾ø½À´Ï´Ù.","°æ°í", JOptionPane.OK_OPTION  );
+				JOptionPane.showMessageDialog(this, "ì„ íƒëœ í–‰ì´ ì—†ìŠµë‹ˆë‹¤.","ê²½ê³ ", JOptionPane.OK_OPTION  );
 			}
-			int choice = JOptionPane.showConfirmDialog(this, "Á¤¸» »èÁ¦ÇÏ½Ã°Ú½À´Ï±î?","°æ°í", JOptionPane.OK_CANCEL_OPTION);
+			int choice = JOptionPane.showConfirmDialog(this, "ì •ë§ ì‚­ì œí•˜ì‹œê² ìŠµë‹ˆê¹Œ?","ê²½ê³ ", JOptionPane.OK_CANCEL_OPTION);
 			if(choice == JOptionPane.OK_OPTION) {
 				tableModel.removeRow(one);
 			}	
