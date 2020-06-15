@@ -86,6 +86,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 	private String selectedMonth, selectedYear, selectedDate;
 	private String str = "";
 	private DefaultTableModel tableModel;
+	private JButton selectedUpdateBtn;
 
 	// 생성자
 	public ManagerFrame(String title) {
@@ -101,6 +102,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		yearCombo.addActionListener(this);
 		monthCombo.addActionListener(this);
 		dateCombo.addActionListener(this);
+		selectedUpdateBtn.addActionListener(this);
 
 	}
 
@@ -265,6 +267,10 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		saveBtn = new JButton("\uC800\uC7A5");
 		saveBtn.setFont(new Font("나눔바른펜", Font.PLAIN, 18));
 		panel_8.add(saveBtn);
+		
+		selectedUpdateBtn = new JButton("\uC9C0\uC815\uC77C \uBCC0\uACBD");
+		selectedUpdateBtn.setFont(new Font("나눔바른펜", Font.BOLD, 15));
+		panel_8.add(selectedUpdateBtn);
 
 		selectedDelete = new JButton("지정일 삭제");
 		selectedDelete.setFont(new Font("나눔바른펜", Font.PLAIN, 18));
