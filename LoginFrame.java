@@ -26,41 +26,42 @@ public class LoginFrame extends JFrame implements ActionListener {
 	private MainFrame mainframe;
 	private ManagerPanel managerpanel;
 	
-	//»ı¼ºÀÚ
+	//ìƒì„±ì
 	public LoginFrame(String title) {
 		super(title);
-		getContentPane().setBackground(new Color(102, 205, 170));
+		getContentPane().setBackground(Color.DARK_GRAY);
 		setBackground(new Color(255, 255, 255));
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		init();
 		setVisible(true);
-		setBounds(0, 0, 241, 295);
+		setBounds(0, 0, 257, 315);
 		
 		signupBtn.addActionListener(this);
 		loginBtn.addActionListener(this);
 	}
 	
-	//È­¸é ¼ÂÆÃ ¸Ş¼Òµå
+	//í™”ë©´ ì…‹íŒ… ë©”ì†Œë“œ
 	public void init() {
 		getContentPane().setLayout(null);
 		
 		JPanel panel = new JPanel();
-		panel.setBackground(new Color(102, 205, 170));
+		panel.setBackground(Color.DARK_GRAY);
 		panel.setBounds(23, 22, 194, 202);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("payManager ÇÁ·Î±×·¥");
+		JLabel lblNewLabel = new JLabel("payManager í”„ë¡œê·¸ë¨");
+		lblNewLabel.setForeground(Color.WHITE);
 		lblNewLabel.setBounds(14, 0, 180, 70);
 		panel.add(lblNewLabel);
-		lblNewLabel.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.BOLD, 20));
+		lblNewLabel.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.BOLD, 20));
 		
-		signupBtn = new JButton("°¡ÀÔÇÏ±â");
+		signupBtn = new JButton("ê°€ì…í•˜ê¸°");
 		signupBtn.setBounds(0, 179, 91, 23);
 		panel.add(signupBtn);
 		
-		loginBtn = new JButton("·Î±×ÀÎ");
+		loginBtn = new JButton("ë¡œê·¸ì¸");
 		loginBtn.setBounds(103, 179, 91, 23);
 		panel.add(loginBtn);
 		
@@ -74,40 +75,42 @@ public class LoginFrame extends JFrame implements ActionListener {
 		panel.add(passwordField);
 		
 		JLabel lblNewLabel_1 = new JLabel("\uC544\uC774\uB514");
+		lblNewLabel_1.setForeground(Color.WHITE);
 		lblNewLabel_1.setBounds(19, 83, 50, 15);
 		panel.add(lblNewLabel_1);
 		
 		JLabel lblNewLabel_2 = new JLabel("\uBE44\uBC00\uBC88\uD638");
+		lblNewLabel_2.setForeground(Color.WHITE);
 		lblNewLabel_2.setBounds(8, 114, 50, 15);
 		panel.add(lblNewLabel_2);
 	}
 	
 	public static void main(String[] args) {
-		new LoginFrame("·Î±×ÀÎ");
+		new LoginFrame("ë¡œê·¸ì¸");
 	}
 	
-	//ÀÌº¥Æ® ÇÚµé·¯
+	//ì´ë²¤íŠ¸ í•¸ë“¤ëŸ¬
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object src = e.getSource();
 		/**
-		 * ³ª¿Í¾ßÇÏ´Â À¯È¿¼º°Ë»ç
-		 * 1) ¾ÆÀÌµğ ÀÔ·Â¾øÀÌ ºñ¹Ğ¹øÈ£¸¦ ÀÔ·ÂÇÒ¶§ -> ¾ÆÀÌµğ¸¦ ¸ÕÀú ÀÔ·ÂÇØ ÁÖ°í ºñ¹Ğ¹øÈ£ ÀÔ·ÂÇØ´Ş¶ó°í ÇÏ±â
-		 * 2) Áßº¹°Ë»çÇÏÁö ¾Ê¾ÒÀ¸¸é Áßº¹°Ë»çÇÏ°Ô ´ÙÀÌ¾ó·Î±× ¶ç¿ì±â -> booleanÀÌ¿ëÇØ¼­ Áßº¹Ã¼Å© ¹öÆ° ´­·¯¼­ È®ÀÎÇÏ¸é -> »óÅÂ true·Î ¹Ù²Ù´Â ½ÄÀ¸·Î
-		 * 3) ºñ¹Ğ¹øÈ£ À¯È¿¼º °Ë»ç
-		 * 4) ÀÌ¸§ÀÌ¶û ±Ù¹«Áö´Â ±×³É ºó°ø°£À¸·Î ³²°ÜµÎ¸é ´ÙÀÌ¾ó·Î±× ¶ç¿ì±â
-		 * 5) ½Ã±ŞÀº ¼ıÀÚ·Î¸¸ Àû°Ô ¸¸µé±â 
+		 * ë‚˜ì™€ì•¼í•˜ëŠ” ìœ íš¨ì„±ê²€ì‚¬
+		 * 1) ì•„ì´ë”” ì…ë ¥ì—†ì´ ë¹„ë°€ë²ˆí˜¸ë¥¼ ì…ë ¥í• ë•Œ -> ì•„ì´ë””ë¥¼ ë¨¼ì € ì…ë ¥í•´ ì£¼ê³  ë¹„ë°€ë²ˆí˜¸ ì…ë ¥í•´ë‹¬ë¼ê³  í•˜ê¸°
+		 * 2) ì¤‘ë³µê²€ì‚¬í•˜ì§€ ì•Šì•˜ìœ¼ë©´ ì¤‘ë³µê²€ì‚¬í•˜ê²Œ ë‹¤ì´ì–¼ë¡œê·¸ ë„ìš°ê¸° -> booleanì´ìš©í•´ì„œ ì¤‘ë³µì²´í¬ ë²„íŠ¼ ëˆŒëŸ¬ì„œ í™•ì¸í•˜ë©´ -> ìƒíƒœ trueë¡œ ë°”ê¾¸ëŠ” ì‹ìœ¼ë¡œ
+		 * 3) ë¹„ë°€ë²ˆí˜¸ ìœ íš¨ì„± ê²€ì‚¬
+		 * 4) ì´ë¦„ì´ë‘ ê·¼ë¬´ì§€ëŠ” ê·¸ëƒ¥ ë¹ˆê³µê°„ìœ¼ë¡œ ë‚¨ê²¨ë‘ë©´ ë‹¤ì´ì–¼ë¡œê·¸ ë„ìš°ê¸°
+		 * 5) ì‹œê¸‰ì€ ìˆ«ìë¡œë§Œ ì ê²Œ ë§Œë“¤ê¸° 
 		 * 
 		 * */
 		
-		if(src == signupBtn) {//°¡ÀÔÇÏ±â È­¸éÀ» ¶ç¿î´Ù.
-			new SignUpFrame("È¸¿ø°¡ÀÔ");			
+		if(src == signupBtn) {//ê°€ì…í•˜ê¸° í™”ë©´ì„ ë„ìš´ë‹¤.
+			new SignUpFrame("íšŒì›ê°€ì…");			
 			
-		} else if(src == loginBtn) {//·Î±×ÀÎ À¯È¿¼º °Ë»ç ÇÏµµ·Ï -> ´ÙÀÌ¾ó·Î±× ¶ß°Ô ÇÔ
+		} else if(src == loginBtn) {//ë¡œê·¸ì¸ ìœ íš¨ì„± ê²€ì‚¬ í•˜ë„ë¡ -> ë‹¤ì´ì–¼ë¡œê·¸ ëœ¨ê²Œ í•¨
 			if(idfield.getText().equals("jooy311") && String.valueOf(passwordField.getPassword()).equals("12345")) {
 				new ManagerFrame("Manager pay program");
 				
-				//·Î±×ÀÎÀÌ ¿Ï·áµÇ¸é
+				//ë¡œê·¸ì¸ì´ ì™„ë£Œë˜ë©´
 				this.setVisible(false);//
 			
 			}
