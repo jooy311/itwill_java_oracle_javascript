@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.sql.SQLException;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -23,6 +24,9 @@ import javax.swing.JButton;
 import javax.swing.JPasswordField;
 
 public class SignUpFrame extends JFrame implements ActionListener {
+	
+	private usermemberDAO dao = new usermemberDAO();		
+	private Member member;
 	private JPasswordField passwordField;
 	private JTextField nameTxt;
 	private JTextField myworkplace;
@@ -148,7 +152,6 @@ public class SignUpFrame extends JFrame implements ActionListener {
 		myPay.setColumns(10);
 	}
 
-	
 	// 이벤트 핸들러
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -162,19 +165,28 @@ public class SignUpFrame extends JFrame implements ActionListener {
 		 */
 		if (src == cancelBtn) {
 			setVisible(false);
+			//this.dispose();
 		} else if(src == checkIdBtn) {
-			if(!checkedId) {
-				JOptionPane.showMessageDialog(this, "아이디 중복확인을 해주세요!");
-			}
-			//db에서 중복확인을 완료하면
-			checkedId = true;
-			JOptionPane.showMessageDialog(this, "사용할 수 있는 아이디입니다.!");
-			
-		} else if (src == joinBtn) {
 			if(idTxt.getText().length() == 0 || idTxt.getText().length() < 4) {
 				JOptionPane.showMessageDialog(this, "아이디는 4글자 이상으로 적어주세요!");
-			} else if(!checkedId) {
+			} else {
+				try {
+					
+					if(dao.checkId(idTxt.getText())) {
+						JOptionPane.showMessageDialog(this, "사용가능한 아이디입니다.");
+					}else {
+						JOptionPane.showMessageDialog(this, "이미 사용중인 아이디 입니다!");
+					}		
+					
+				} catch (SQLException e1) {
+					JOptionPane.showMessageDialog(this, "알수없는 오류가 발생했습니다.");
+				}
+			}
+			
+		} else if (src == joinBtn) {			
+			if(!checkedId) {
 				JOptionPane.showMessageDialog(this, "아이디 중복확인을 해주세요!");
+				idTxt.requestFocus();//아이디칸에 다시 포커스를 맞춰준다.
 			} else if (pwd.length() < 4 || pwd.length() > 10) {
 				JOptionPane.showMessageDialog(this, "비밀번호는 4자리 이상 10자리 이하로 설정해주세요!");
 			} else if (nameTxt.getText().length() == 0) {
@@ -185,17 +197,23 @@ public class SignUpFrame extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(this, "시급을 반드시 입력해주세요!");
 			}else if(myPay.getText().equals("0")) {
 				JOptionPane.showMessageDialog(this, "시급을 정확한 숫자로 입력해주세요!");
-			}else {
-				JOptionPane.showMessageDialog(this, "가입이 완료되었습니다!");
+			}else {				
+				member = new Member(idTxt.getText(), String.valueOf(passwordField.getPassword()),
+						 nameTxt.getText(), myworkplace.getText() , myPay.getText());
+				
+				try {
+					if(dao.join(member)) {
+						JOptionPane.showMessageDialog(this, "가입이 완료되었습니다!");			
+						//setVisible(false);
+						this.dispose();
+					}else {
+						JOptionPane.showMessageDialog(this, "가입에 실패하였습니다!!ㅠㅠ");		
+					}
+					
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
 			}
-//			//1.db에 push된다.
-//			String userInfo = idTxt.getText() + "," + String.valueOf(passwordField.getPassword()) + "," + nameTxt.getText() + ","
-//			+ myworkplace.getText() + "," + myPay.getText();
-//			
-//			Member userDB = new Member(idTxt.getText(), String.valueOf(passwordField.getPassword()),
-//					 nameTxt.getText(), myworkplace.getText() , myPay.getText());
-
-			// 가입완료되면 다시 로그인화면으로 돌아가서 로그인하게 해야함!!!!
 		}
 
 	}
