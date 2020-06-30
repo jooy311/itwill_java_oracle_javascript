@@ -4,8 +4,8 @@ public class Member {
 	private String id;
 	private String pwd;
 	private String name;
-	private String workplace;// ±Ù¹«Áö
-	private String salperhour; // ½Ã±Þ
+	private String workplace;// ê·¼ë¬´ì§€
+	private String salperhour; // ì‹œê¸‰
 
 	public Member(String id, String pwd, String name, String workpalce, String salperhour) {
 		super();
@@ -14,22 +14,6 @@ public class Member {
 		this.name = name;
 		this.workplace = workpalce;
 		this.salperhour = salperhour;
-	}
-
-	public Member(String[] userInfo) { //È¸¿øÁ¤º¸¸¦ ÇÑ¹ø¿¡ °¡Áö°í ´Ù´Ï±â À§ÇÑ String¹è¿­ ¸Å°³º¯¼ö»ç¿ëÇÑ »ý¼ºÀÚ
-		id = userInfo[0];
-		pwd = userInfo[1];
-		name = userInfo[2];
-		workplace = userInfo[3];
-		salperhour = userInfo[4];
-	}
-
-	public void setAll(String[] tmp) { // ³ªÁß¿¡ È¸¿øÁ¤º¸¸¦ ¼öÁ¤ÇÏ°Å³ªÇÒ´ë ÇÑ¹ø¿¡ °¡Áö°í ¿À±â À§ÇÑ ¸Þ¼Òµå
-		id = tmp[0];
-		pwd = tmp[1];
-		name = tmp[2];
-		workplace = tmp[3];
-		salperhour = tmp[4];
 	}
 
 	public String getId() {
