@@ -1,98 +1,182 @@
 package project.manager.frame;
 
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.SQLException;
+import java.util.EventObject;
 import java.util.Vector;
 
+import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
+import javax.swing.JTable;
+import javax.swing.event.CellEditorListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 
-public class TableController extends AbstractTableModel {
+public class TableController extends AbstractTableModel implements ActionListener, TableCellEditor, TableCellRenderer {
 
-	private static final long serialVersionUID = 1L;
-	private usermemberDAO dao = new usermemberDAO();
-	// private MemberPayInfo info;
-	private String id;
-	private Vector<Object[]> data = new Vector<Object[]>();
-	private final String header[] = { "³â","¿ù","ÀÏ", "Ãâ±Ù½Ã°£", "Åğ±Ù½Ã°£", "±Ù¹«½Ã°£", "ÀÏ±Ş" };
+   private static final long serialVersionUID = 1L;
+   private usermemberDAO dao = new usermemberDAO();
+   // private MemberPayInfo info;
+   private JRadioButton rBtn;
+   private String id;
+   private String year;
+   private String month;
 
-	public TableController(String id) {
-		this.id = id;
-		try {
-			data = dao.selectAllData(id);
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+   private Vector<Object[]> data = new Vector<Object[]>();
+   private final String header[] = { "ë…„", "ì›”", "ì¼", "ì¶œê·¼ì‹œê°„", "í‡´ê·¼ì‹œê°„", "ê·¼ë¬´ì‹œê°„", "ì¼ê¸‰" };
 
-	@Override
-	public String getColumnName(int column) {
-		return header[column];
-	}
+   public TableController(String id) {
+      this.id = id;
 
-	@Override
-	public int getColumnCount() {// ¿­ÀÇ ¼ö¸¦ ¹İÈ¯
-		return header.length;
-	}
+      // rBtn = new JRadioButton("");
+      // rBtn.addActionListener(e -> {
+      // System.out.println(this.getValueAt(this.getSelectedRow(), 1)); });
 
-	@Override
-	public int getRowCount() {// ÇàÀÇ ¼ö¸¦ ¹İÈ¯
-		//System.out.println(data.size());
-		return data.size();
-	}
+      try {
+         data = dao.selectAllData(id);
 
-	@Override
-	public Object getValueAt(int r, int c) {// ÁÖ¾îÁø Çà·ÄÀÇ À§Ä¡¿¡ ÀúÀåµÈ µ¥ÀÌÅÍ¸¦ ¹İÈ¯
-		return data.get(r)[c];
-	}
-	
+      } catch (SQLException e) {
+         e.printStackTrace();
+      }
+   }
 
-	@Override
-	public boolean isCellEditable(int row, int column) {// ¼öÁ¤ÇÏÁö ¸øÇÏ°Ô ¸·±âÀ§ÇÑ ÄÚµå
-		if (column >= 0) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-	
-	@Override			//º¯°æÇÒ µ¥ÀÌÅÍ °ª		º¯°æÇÒ ÇàÀÎµ¦½º		º¯°æÇÒÄÃ·³ÀÎµ¦½º
-	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {//¼öÁ¤ÇÏ±â À§ÇØ
-		super.setValueAt(aValue, rowIndex, columnIndex);
-	}
+   public TableController(String id, String year, String month) {
+      this.id = id;
+      this.year = year;
+      this.month = month;
 
-	public void addMemberPayInfo(MemberPayInfo info) {//°´Ã¼¸¦ Ãß°¡ÇÏ±âÀ§ÇØ -> table¿¡ Á÷Á¢Ãß°¡ÇÏ´Â°Ô ¾Æ´Ï¶ó ÄÁÆ®·Ñ·¯¿¡ Ãß°¡ÇÏ¿© ÄÁÆ®·ÑÇÏµµ·Ï
-		Object[] obj = new Object[] {info.getWorkdateY(), info.getWorkdateM(), info.getWorkdateD(), info.getStarttime(), info.getEndtime(), info.getWorktime(), info.getDaysal()};
-		data.addElement(obj);
-		fireTableRowsInserted(data.size() - 1, data.size() - 1);
+      try {
+         data = dao.userSelectMonth(id, year, month);
 
-	}
+      } catch (SQLException e) {
+         e.printStackTrace();
+      }
+   }
 
-	// °´Ã¼¸¦ »èÁ¦ÇÏ±â À§ÇØ
-	public void delMemberPayInfo(MemberPayInfo info) {// 1) MemberPayInfo°´Ã¼ ÀüÃ¼·Î ¹Ş¾ÒÀ»¶§ÀÇ ¸Ş¼Òµå
-		int index = data.indexOf(info);//DATA¿¡¼­ ¸î¹øÂ° ÀÎµ¦½ºÀÎÁö Ã£´Â´Ù.
-		delMemberPayInfo(index);
-	}
+   @Override
+   public String getColumnName(int column) {
+      return header[column];
+   }
 
-	public void delMemberPayInfo(int row) { // 2) ¼±ÅÃµÈ ÇàÀ» »èÁ¦ÇÒ °æ¿ìÀÇ ¸Ş¼Òµå
-		data.remove(row);
-		fireTableRowsDeleted(row, row);
-	}
+   @Override
+   public int getColumnCount() {// ì—´ì˜ ìˆ˜ë¥¼ ë°˜í™˜
+      return header.length;
+   }
 
-// private class AddAction implements ActionListener{
-//  public void actionPerformed(ActionEvent e) {
-//   // TODO Auto-generated method stub
-//   if(e.getSource() == addButton){
-//    Student student = new Student();
-//    student.setStudentNo(Integer.parseInt(studentNoTxt.getText()));
-//    student.setName(nameTxt.getText());
-//    student.setGrade(Integer.parseInt(gradeTxt.getText()));
-//    student.setAddress(addressTxt.getText());
-//    tableModel.addStudent(student);
-//   }else if(e.getSource() == deleteButton){
-//    tableModel.delStudent(selectIndex);
-//   }
-//  }
-// 
+   @Override
+   public int getRowCount() {// í–‰ì˜ ìˆ˜ë¥¼ ë°˜í™˜
+      // System.out.println(data.size());
+      return data.size();
+   }
+
+   @Override
+   public Object getValueAt(int r, int c) {// ì£¼ì–´ì§„ í–‰ë ¬ì˜ ìœ„ì¹˜ì— ì €ì¥ëœ ë°ì´í„°ë¥¼ ë°˜í™˜
+      return data.get(r)[c];
+   }
+
+   @Override
+   public boolean isCellEditable(int row, int column) {// ìˆ˜ì •í•˜ì§€ ëª»í•˜ê²Œ ë§‰ê¸°ìœ„í•œ ì½”ë“œ
+      if (column >= 0) {
+         return false;
+      } else {
+         return true;
+      }
+   }
+
+   @Override // ë³€ê²½í•  ë°ì´í„° ê°’ ë³€ê²½í•  í–‰ì¸ë±ìŠ¤ ë³€ê²½í• ì»¬ëŸ¼ì¸ë±ìŠ¤
+   public void setValueAt(Object aValue, int rowIndex, int columnIndex) {// ìˆ˜ì •í•˜ê¸° ìœ„í•´
+      super.setValueAt(aValue, rowIndex, columnIndex);
+      
+   }
+
+   public void addMemberPayInfo(MemberPayInfo info) {// ê°ì²´ë¥¼ ì¶”ê°€í•˜ê¸°ìœ„í•´ -> tableì— ì§ì ‘ì¶”ê°€í•˜ëŠ”ê²Œ ì•„ë‹ˆë¼ ì»¨íŠ¸ë¡¤ëŸ¬ì— ì¶”ê°€í•˜ì—¬ ì»¨íŠ¸ë¡¤í•˜ë„ë¡
+      Object[] obj = new Object[] { info.getWorkdateY(), info.getWorkdateM(), info.getWorkdateD(),
+            info.getStarttime(), info.getEndtime(), info.getWorktime(), info.getDaysal() };
+      data.addElement(obj);
+      fireTableRowsInserted(data.size() - 1, data.size() - 1);
+
+   }
+
+   // ê°ì²´ë¥¼ ì‚­ì œí•˜ê¸° ìœ„í•´
+   public void delMemberPayInfo(MemberPayInfo info) {// 1) MemberPayInfoê°ì²´ ì „ì²´ë¡œ ë°›ì•˜ì„ë•Œì˜ ë©”ì†Œë“œ
+      int index = data.indexOf(info);// DATAì—ì„œ ëª‡ë²ˆì§¸ ì¸ë±ìŠ¤ì¸ì§€ ì°¾ëŠ”ë‹¤.
+      delMemberPayInfo(index);
+   }
+
+   public void delMemberPayInfo(int row) { // 2) ì„ íƒëœ í–‰ì„ ì‚­ì œí•  ê²½ìš°ì˜ ë©”ì†Œë“œ
+      data.remove(row);
+      fireTableRowsDeleted(row, row);
+   }
+
+   @Override
+   public void addCellEditorListener(CellEditorListener arg0) {
+      // TODO Auto-generated method stub
+
+   }
+
+   @Override
+   public void cancelCellEditing() {
+      // TODO Auto-generated method stub
+
+   }
+
+   @Override
+   public Object getCellEditorValue() {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   @Override
+   public boolean isCellEditable(EventObject arg0) {
+      // TODO Auto-generated method stub
+      return false;
+   }
+
+   @Override
+   public void removeCellEditorListener(CellEditorListener arg0) {
+      // TODO Auto-generated method stub
+
+   }
+
+   @Override
+   public boolean shouldSelectCell(EventObject arg0) {
+      // TODO Auto-generated method stub
+      return false;
+   }
+
+   @Override
+   public boolean stopCellEditing() {
+      // TODO Auto-generated method stub
+      return false;
+   }
+
+   @Override
+   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+         int row, int column) {
+
+      return rBtn;
+   }
+
+   @Override
+   public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+      // TODO Auto-generated method stub
+      return rBtn;
+
+   }
+
+   @Override
+   public void actionPerformed(ActionEvent e) {
+      Object src = e.getSource();
+      if (src == rBtn) {
+
+      }
+
+   }
 
 }
