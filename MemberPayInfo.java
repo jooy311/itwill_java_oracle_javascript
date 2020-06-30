@@ -7,11 +7,11 @@ public class MemberPayInfo {
 	private String workdateM;
 	private String workdateD;
 	private String starttime;
-	private String endtime;// ±Ù¹«Áö
-	private String worktime; // ½Ã±Þ
-	private String daysal; 
+	private String endtime;// ê·¼ë¬´ì§€
+	private String worktime; // ì‹œê¸‰
+	private int daysal; 
 
-	public MemberPayInfo(String id, String workdate,String workdateY, String workdateM, String workdateD, String starttime, String endtime, String worktime, String daysal) {
+	public MemberPayInfo(String id, String workdate,String workdateY, String workdateM, String workdateD, String starttime, String endtime, String worktime, int daysal) {
 		super();
 		this.id = id;
 		this.workdate = workdate;
@@ -88,13 +88,12 @@ public class MemberPayInfo {
 		this.worktime = worktime;
 	}
 
-	public String getDaysal() {
+	public int getDaysal() {
 		return daysal;
 	}
 
-	public void setDaysal(String daysal) {
+	public void setDaysal(int daysal) {
 		this.daysal = daysal;
 	}
-
-		
+	
 }
