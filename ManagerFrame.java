@@ -9,6 +9,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Month;
+import java.time.Year;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -75,37 +76,55 @@ public class ManagerFrame extends JFrame implements ActionListener {
 	private JLabel label_12;
 	private JPanel panel;
 	private JLabel label_13;
-	private JButton searchMonthBtn;
+	private JButton searchBtn;
 	private JMenuBar menuBar;
 	private JMenu mnNewMenu;
 	private JMenuItem initItem;
 	private JMenuItem changeInfo;
-	private JComboBox yearCombo;
+	private JComboBox<Year> yearCombo;
 	private String selectedMonth, selectedYear, selectedDate;
 	private String selectedStartH, selectedStartM, selectedEndtH, selectedEndtM;
 	private String str = "";
 	private String worktime = "";
 	private double worktime_double;
 
-	private DefaultTableModel tableModel;
+	//private DefaultTableModel tableModel;
 	private JButton selectedUpdateBtn;
 	private JLabel lb_username;
 	private JLabel lb_workspace;
 
-	private Member member;// ÇöÀç ÇÁ·¹ÀÓ¿¡¼­ (·Î±×ÀÎÇÁ·¹ÀÓ¿¡¼­ Àü´Ş¹ŞÀº ) member°´Ã¼¸¦ °è¼Ó »ç¿ëÇÒ °ÍÀÌ±â ¶§¹®¿¡ ¼±¾ğ!!
+	private Member member;// í˜„ì¬ í”„ë ˆì„ì—ì„œ (ë¡œê·¸ì¸í”„ë ˆì„ì—ì„œ ì „ë‹¬ë°›ì€ ) memberê°ì²´ë¥¼ ê³„ì† ì‚¬ìš©í•  ê²ƒì´ê¸° ë•Œë¬¸ì— ì„ ì–¸!!
 	private usermemberDAO dao = new usermemberDAO();
 	private MemberPayInfo payInfo;
 	private TableController tc;
+	private JComboBox searchYear;
+	private JComboBox searchMonth;
 
-	// »ı¼ºÀÚ
-	public ManagerFrame(Member m, String title) throws SQLException {// »ı¼ºÀÚ¿¡¼­ Member°´Ã¼¸¦ Àü´Ş¹Ş´Â´Ù.
+	private JScrollPane scrollPane;
+	private JScrollPane scrollPane2;
+
+	private String selectedSearchMonth, selectedSearchYear;
+	private JButton undoBtn;
+	private JTable table2;
+	private String mm;// í˜„ì¬ monthê°’ ë°›ëŠ” ìŠ¤íŠ¸ë§
+	private String yy;
+	private JLabel lbMonth2;
+	private JLabel lbMonth1;
+	private JLabel lbMonth3;
+
+	private boolean isPushSearchBtn = false;
+	private JButton cancelBtn;
+
+	// ìƒì„±ì
+	public ManagerFrame(Member m, String title) throws SQLException {// ìƒì„±ìì—ì„œ Memberê°ì²´ë¥¼ ì „ë‹¬ë°›ëŠ”ë‹¤.
 		super(title);
-		this.member = m;// Àü´Ş¹ŞÀº ¸Å°³º¯¼ö¸¦ Áö±İ (³ª) ÇÁ·¹ÀÓ¿¡¼­ »ç¿ëÇÒ ¼ö ÀÖµµ·Ï Àû¿ë
+		this.member = m;// ì „ë‹¬ë°›ì€ ë§¤ê°œë³€ìˆ˜ë¥¼ ì§€ê¸ˆ (ë‚˜) í”„ë ˆì„ì—ì„œ ì‚¬ìš©í•  ìˆ˜ ìˆë„ë¡ ì ìš©
 		init();
 		start();
 		tableSetting();
+		labelSetting(yy, mm.substring(1, 2));
 
-		setBounds(100, 100, 662, 622);
+		setBounds(100, 100, 662, 618);
 		setVisible(true);
 		setResizable(false);
 
@@ -121,43 +140,174 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		startMCombo.addActionListener(this);
 		endHCombo.addActionListener(this);
 		endMCombo.addActionListener(this);
+		searchBtn.addActionListener(this);
+		searchYear.addActionListener(this);
+		searchMonth.addActionListener(this);
+		undoBtn.addActionListener(this);
+		cancelBtn.addActionListener(this);
 
 	}
 
 	public void start() {
 		lb_username.setText(member.getName());
 		lb_workspace.setText(member.getWorkpalce());
-
 	}
 
 	public void tableSetting() throws SQLException {
 		tc = new TableController(member.getId());
 		table = new JTable(tc);
 
-		table.isCellEditable(table.getRowCount(), table.getColumnCount() - 1);// ¼öÁ¤ÇÏÁö ¸øÇÏ°Ô
+		table.isCellEditable(table.getRowCount(), table.getColumnCount() - 1);// ìˆ˜ì •í•˜ì§€ ëª»í•˜ê²Œ
 
-		table.getTableHeader().setReorderingAllowed(false);// ÀÌµ¿ºÒ°¡
-		table.getTableHeader().setResizingAllowed(false);// Å©±âÁ¶Á¤ ºÒ°¡
+		table.getTableHeader().setReorderingAllowed(false);// ì´ë™ë¶ˆê°€
+		table.getTableHeader().setResizingAllowed(false);// í¬ê¸°ì¡°ì • ë¶ˆê°€
 
-		JScrollPane scrollPane = new JScrollPane(table);// Å×ÀÌºíÀº ½ºÅ©·ÑÆÒ
+		scrollPane = new JScrollPane(table);// í…Œì´ë¸”ì€ ìŠ¤í¬ë¡¤íŒ¬
 		desktopPane.add(scrollPane);
 		scrollPane.setBounds(130, 52, 510, 300);
 	}
 
-	public void labelSetting() {
-		currentPay.setText(member.getSalperhour());
-		currentEarned.setText(arg0);
-		
+	public int tableSetting2() throws SQLException {// ê²€ìƒ‰ê²°ê³¼ê°€ ìˆëŠ”ì§€ ì—†ëŠ”ì§€ ì•Œê¸°ìœ„í•´ì„œ ë°˜í™˜ê°’ì„ intí˜•ìœ¼ë¡œ ì£¼ì—ˆë‹¤
+		TableController tc2 = new TableController(member.getId(), selectedSearchYear, selectedSearchMonth);
+		table2 = new JTable(tc2);
+
+		if (tc2.getRowCount() == 0)
+			return 0;
+		table2.isCellEditable(table2.getRowCount(), table2.getColumnCount() - 1);// ìˆ˜ì •í•˜ì§€ ëª»í•˜ê²Œ
+
+		table2.getTableHeader().setReorderingAllowed(false);// ì´ë™ë¶ˆê°€
+		table2.getTableHeader().setResizingAllowed(false);// í¬ê¸°ì¡°ì • ë¶ˆê°€
+
+		scrollPane2 = new JScrollPane(table2);// í…Œì´ë¸”ì€ ìŠ¤í¬ë¡¤íŒ¬
+		desktopPane.add(scrollPane2);
+		scrollPane2.setBounds(130, 52, 510, 300);
+
+		return 1;
+	}
+
+	public void labelSetting(String year, String month) {// ì‚¬ìš©ìê°€ í•´ë‹¹ ë‹¬ ë°ì´í„°ë¥¼ ì¶”ê°€í•˜ë©´ ì‹¤ì‹œê°„ìœ¼ë¡œ ì¶”ê°€ê°€ ë˜ì–´ì•¼í•¨
+		currentPay.setText(member.getSalperhour() + "");
+
+		String[] str;
+		try {
+			str = dao.calTotalNow(member.getId(), year, month);
+			totalWorkHour.setText(str[0]);
+			currentEarned.setText(str[1]);
+
+			int count = dao.calCountworkDay(member.getId(), year, month);
+			totalWorkDay.setText(count + "");
+
+			// dao.db_close();
+
+		} catch (SQLException e) {
+			System.out.println("ë¼ë²¨ì„¸íŒ…í•˜ëŠ”ë° ì˜¤ë¥˜" + e.getMessage());
+		}
+	}
+
+	public void changeSearchDate(String month) {
+		lbMonth1.setText(month + "ì›”");
+		lbMonth2.setText(month + "ì›”");
+		lbMonth3.setText(month + "ì›”");
+	}
+
+	public void repaint(Member member) throws SQLException {
+		this.setVisible(false);
+		new ManagerFrame(member, "Pay manager");
+	}
+
+	public void settingCombo(boolean flag) {
+		yearCombo.setEnabled(flag);
+		monthCombo.setEnabled(flag);
+		dateCombo.setEnabled(flag);
+		startHCombo.setEnabled(flag);
+		startMCombo.setEnabled(flag);
+		endHCombo.setEnabled(flag);
+		endMCombo.setEnabled(flag);
+		searchYear.setEnabled(flag);
+		searchMonth.setEnabled(flag);
+	}
+
+	public void settingCombofield(String colname, String year, String month, String date, String starth, String startm,
+			String endh, String endm, String worktime) {// ì‚¬ìš©ìê°€ ì„ íƒí•œ í–‰ì˜ ê°’ìœ¼ë¡œ ì½¤ë³´ë°•ìŠ¤ í•„ë“œë¥¼ ë°”ê¾¸ê¸° ìœ„í•œ ë©”ì†Œë“œ
+		if (colname.equals("ë…„")) {
+			yearCombo.setSelectedItem(year);
+			monthCombo.setSelectedItem(month);
+			dateCombo.setSelectedItem(date);
+			startHCombo.setSelectedItem(starth);
+			startMCombo.setSelectedItem(startm);
+			endHCombo.setSelectedItem(endh);
+			endMCombo.setSelectedItem(endm);
+			todayWorkHourTxt.setText(worktime);
+
+		} else if (colname.equals("ì›”")) {
+			yearCombo.setSelectedItem(year);
+			monthCombo.setSelectedItem(month);
+			dateCombo.setSelectedItem(date);
+			startHCombo.setSelectedItem(starth);
+			startMCombo.setSelectedItem(startm);
+			endHCombo.setSelectedItem(endh);
+			endMCombo.setSelectedItem(endm);
+			todayWorkHourTxt.setText(worktime);
+
+		} else if (colname.equals("ì¼")) {
+			yearCombo.setSelectedItem(year);
+			monthCombo.setSelectedItem(month);
+			dateCombo.setSelectedItem(date);
+			startHCombo.setSelectedItem(starth);
+			startMCombo.setSelectedItem(startm);
+			endHCombo.setSelectedItem(endh);
+			endMCombo.setSelectedItem(endm);
+			todayWorkHourTxt.setText(worktime);
+
+		} else if (colname.equals("ì¶œê·¼ì‹œê°„")) {
+			yearCombo.setSelectedItem(year);
+			monthCombo.setSelectedItem(month);
+			dateCombo.setSelectedItem(date);
+			startHCombo.setSelectedItem(starth);
+			startMCombo.setSelectedItem(startm);
+			endHCombo.setSelectedItem(endh);
+			endMCombo.setSelectedItem(endm);
+			todayWorkHourTxt.setText(worktime);
+
+		} else if (colname.equals("í‡´ê·¼ì‹œê°„")) {
+			yearCombo.setSelectedItem(year);
+			monthCombo.setSelectedItem(month);
+			dateCombo.setSelectedItem(date);
+			startHCombo.setSelectedItem(starth);
+			startMCombo.setSelectedItem(startm);
+			endHCombo.setSelectedItem(endh);
+			endMCombo.setSelectedItem(endm);
+			todayWorkHourTxt.setText(worktime);
+		}
+	}
+
+	public void setComboEnable(String colname) {// ì‚¬ìš©ìê°€ ì„ íƒí•œ ì—´ê°’ì— í•´ë‹¹í•˜ëŠ” ì½¤ë³´ë°•ìŠ¤ë¥¼ trueë¥¼ ë§Œë“¤ê¸° ìœ„í•œ ë©”ì†Œë“œ
+		if (colname.equals("ë…„")) {
+			yearCombo.setEnabled(true);
+		} else if (colname.equals("ì›”")) {
+			monthCombo.setEnabled(true);
+		} else if (colname.equals("ì¼")) {
+			dateCombo.setEnabled(true);
+		} else if (colname.equals("ì¶œê·¼ì‹œê°„")) {
+			startHCombo.setEnabled(true);
+			startMCombo.setEnabled(true);
+		} else if (colname.equals("í‡´ê·¼ì‹œê°„")) {
+			endHCombo.setEnabled(true);
+			endMCombo.setEnabled(true);
+		}
 	}
 
 	private void init() {
 		getContentPane().setLayout(null);
 
-		// ÇöÀç ³¯Â¥ ¹Ş¾Æ¿Í¼­ »Ñ¸®±â
-		SimpleDateFormat pattern = new SimpleDateFormat("MM¿ù ddÀÏ");
-		String time = pattern.format(new Date());
-		SimpleDateFormat pattern_m = new SimpleDateFormat("MM¿ù");
-		String mm = pattern_m.format(new Date());
+		// í˜„ì¬ ë‚ ì§œ ë°›ì•„ì™€ì„œ ë¿Œë¦¬ê¸°
+//      SimpleDateFormat pattern = new SimpleDateFormat("MMì›” ddì¼");
+//      String time = pattern.format(new Date());
+
+		SimpleDateFormat pattern_m = new SimpleDateFormat("MMì›”");
+		mm = pattern_m.format(new Date());
+		SimpleDateFormat pattern_y = new SimpleDateFormat("YYYY");
+		yy = pattern_y.format(new Date());
 
 		desktopPane = new JDesktopPane();
 		desktopPane.setBackground(Color.DARK_GRAY);
@@ -190,8 +340,8 @@ public class ManagerFrame extends JFrame implements ActionListener {
 
 		panel_1.add(monthCombo);
 
-		JLabel lblNewLabel_1 = new JLabel("¿ù");
-		lblNewLabel_1.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 20));
+		JLabel lblNewLabel_1 = new JLabel("ì›”");
+		lblNewLabel_1.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 20));
 		panel_1.add(lblNewLabel_1);
 
 		JPanel panel_2 = new JPanel();
@@ -201,14 +351,14 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		panel_2.add(dateCombo);
 
 		JLabel label = new JLabel("\uC77C");
-		label.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 20));
+		label.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 20));
 		panel_2.add(label);
 
 		JPanel panel_3 = new JPanel();
 		input.add(panel_3);
 
 		lblNewLabel_2 = new JLabel("\uCD9C\uADFC \uC2DC\uAC04");
-		lblNewLabel_2.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		lblNewLabel_2.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_3.add(lblNewLabel_2);
 
 		startHCombo = new JComboBox();
@@ -217,7 +367,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		panel_3.add(startHCombo);
 
 		JLabel lblNewLabel_3 = new JLabel("\uC2DC");
-		lblNewLabel_3.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		lblNewLabel_3.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_3.add(lblNewLabel_3);
 
 		startMCombo = new JComboBox();
@@ -229,14 +379,14 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		panel_3.add(startMCombo);
 
 		JLabel lblNewLabel_4 = new JLabel("\uBD84");
-		lblNewLabel_4.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		lblNewLabel_4.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_3.add(lblNewLabel_4);
 
 		JPanel panel_4 = new JPanel();
 		input.add(panel_4);
 
 		JLabel label_1 = new JLabel("\uD1F4\uADFC \uC2DC\uAC04");
-		label_1.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		label_1.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_4.add(label_1);
 
 		endHCombo = new JComboBox();
@@ -245,7 +395,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		panel_4.add(endHCombo);
 
 		JLabel label_2 = new JLabel("\uC2DC");
-		label_2.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		label_2.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_4.add(label_2);
 
 		endMCombo = new JComboBox();
@@ -257,14 +407,14 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		panel_4.add(endMCombo);
 
 		JLabel label_3 = new JLabel("\uBD84");
-		label_3.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		label_3.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_4.add(label_3);
 
 		JPanel panel_5 = new JPanel();
 		input.add(panel_5);
 
 		JLabel lblNewLabel_5 = new JLabel("\uC624\uB298 \uADFC\uBB34 \uC2DC\uAC04");
-		lblNewLabel_5.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		lblNewLabel_5.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_5.add(lblNewLabel_5);
 
 		todayWorkHourTxt = new JTextField();
@@ -273,23 +423,31 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		todayWorkHourTxt.setColumns(10);
 
 		JLabel lblNewLabel_6 = new JLabel("\uC2DC\uAC04!");
-		lblNewLabel_6.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		lblNewLabel_6.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_5.add(lblNewLabel_6);
 
 		JPanel panel_8 = new JPanel();
 		input.add(panel_8);
 
-		saveBtn = new JButton("\uC800\uC7A5");
-		saveBtn.setFont(new Font("Dialog", Font.BOLD, 15));
-		panel_8.add(saveBtn);
+		JLabel lblNewLabel_12 = new JLabel("ë³€ê²½ëª¨ë“œë¥¼ ì‹¤í–‰í•œ í›„, ì €ì¥í•˜ê¸°ë¥¼ ëˆŒëŸ¬ì£¼ì„¸ìš”");
+		lblNewLabel_12.setForeground(Color.RED);
+		panel_8.add(lblNewLabel_12);
 
-		selectedUpdateBtn = new JButton("\uC9C0\uC815\uC77C \uBCC0\uACBD");
-		selectedUpdateBtn.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.BOLD, 15));
+		selectedUpdateBtn = new JButton("\uC9C0\uC815\uAC12 \uBCC0\uACBD");
+		selectedUpdateBtn.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.BOLD, 12));
 		panel_8.add(selectedUpdateBtn);
 
-		selectedDelete = new JButton("ÁöÁ¤ÀÏ »èÁ¦");
-		selectedDelete.setFont(new Font("Dialog", Font.BOLD, 15));
+		cancelBtn = new JButton("ë³€ê²½ì·¨ì†Œ");
+		cancelBtn.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.PLAIN, 12));
+		panel_8.add(cancelBtn);
+
+		selectedDelete = new JButton("ì§€ì •ì¼ ì‚­ì œ");
+		selectedDelete.setFont(new Font("Dialog", Font.BOLD, 12));
 		panel_8.add(selectedDelete);
+
+		saveBtn = new JButton("\uC800\uC7A5");
+		saveBtn.setFont(new Font("Dialog", Font.BOLD, 12));
+		panel_8.add(saveBtn);
 
 		JPanel panel_9 = new JPanel();
 		panel_9.setBorder(new LineBorder(new Color(255, 175, 175), 2));
@@ -301,7 +459,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 
 		JLabel lblNewLabel_7 = new JLabel("\uD604\uC7AC \uB0A0\uC9DC\uB294");
 		lblNewLabel_7.setForeground(Color.WHITE);
-		lblNewLabel_7.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 17));
+		lblNewLabel_7.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.PLAIN, 17));
 		panel_9.add(lblNewLabel_7);
 
 		JDesktopPane desktopPane_1 = new JDesktopPane();
@@ -309,68 +467,73 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		desktopPane_1.setBounds(10, 131, 113, 50);
 		desktopPane.add(desktopPane_1);
 
-		JLabel label_6 = new JLabel("±Ù¹«½Ã°£");
+		JLabel label_6 = new JLabel("ê·¼ë¬´ì‹œê°„");
 		label_6.setHorizontalAlignment(SwingConstants.CENTER);
 		label_6.setFont(new Font("Dialog", Font.PLAIN, 14));
 		label_6.setBounds(42, 0, 59, 23);
 		desktopPane_1.add(label_6);
 
 		totalWorkHour = new JTextField("365");
+		totalWorkHour.setHorizontalAlignment(SwingConstants.CENTER);
 		totalWorkHour.setEditable(false);
 		totalWorkHour.setBounds(12, 25, 59, 21);
 		desktopPane_1.add(totalWorkHour);
 
-		JLabel label_7 = new JLabel("½Ã°£");
-		label_7.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 12));
+		JLabel label_7 = new JLabel("ì‹œê°„");
+		label_7.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 12));
 		label_7.setBounds(83, 28, 30, 16);
 		desktopPane_1.add(label_7);
 
-		JLabel lblNewLabel_10 = new JLabel(mm);
-		lblNewLabel_10.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.BOLD, 15));
-		lblNewLabel_10.setBounds(12, 4, 34, 15);
-		desktopPane_1.add(lblNewLabel_10);
+		lbMonth1 = new JLabel(mm);
+		lbMonth1.setHorizontalAlignment(SwingConstants.CENTER);
+		lbMonth1.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.BOLD, 15));
+		lbMonth1.setBounds(12, 4, 34, 15);
+		desktopPane_1.add(lbMonth1);
 
 		JDesktopPane desktopPane_2 = new JDesktopPane();
 		desktopPane_2.setBackground(new Color(255, 250, 250));
 		desktopPane_2.setBounds(10, 188, 113, 50);
 		desktopPane.add(desktopPane_2);
 
-		JLabel label_8 = new JLabel("±Ù¹« ÀÏ");
+		JLabel label_8 = new JLabel("\uADFC\uBB34 \uD69F\uC218");
 		label_8.setHorizontalAlignment(SwingConstants.CENTER);
 		label_8.setFont(new Font("Dialog", Font.PLAIN, 13));
 		label_8.setBounds(40, 0, 65, 23);
 		desktopPane_2.add(label_8);
 
 		totalWorkDay = new JTextField("25");
+		totalWorkDay.setHorizontalAlignment(SwingConstants.CENTER);
 		totalWorkDay.setEditable(false);
 		totalWorkDay.setBounds(12, 25, 59, 21);
 		desktopPane_2.add(totalWorkDay);
 
-		JLabel lblNewLabel = new JLabel("ÀÏ");
+		JLabel lblNewLabel = new JLabel("ì¼");
 		lblNewLabel.setBounds(88, 28, 20, 15);
 		desktopPane_2.add(lblNewLabel);
 
-		JLabel label_4 = new JLabel(mm);
-		label_4.setFont(new Font("±¼¸²", Font.BOLD, 13));
-		label_4.setBounds(12, 4, 31, 15);
-		desktopPane_2.add(label_4);
+		lbMonth2 = new JLabel(mm);
+		lbMonth2.setHorizontalAlignment(SwingConstants.CENTER);
+		lbMonth2.setFont(new Font("êµ´ë¦¼", Font.BOLD, 13));
+		lbMonth2.setBounds(12, 4, 31, 15);
+		desktopPane_2.add(lbMonth2);
 
 		JDesktopPane desktopPane_3 = new JDesktopPane();
 		desktopPane_3.setBackground(new Color(255, 250, 250));
 		desktopPane_3.setBounds(10, 243, 113, 50);
 		desktopPane.add(desktopPane_3);
 
-		JLabel label_9 = new JLabel("³ªÀÇ ½Ã±Ş");
+		JLabel label_9 = new JLabel("ë‚˜ì˜ ì‹œê¸‰");
 		label_9.setFont(new Font("Dialog", Font.PLAIN, 13));
 		label_9.setBounds(30, 0, 72, 16);
 		desktopPane_3.add(label_9);
 
-		currentPay = new JTextField("7500");
+		currentPay = new JTextField("");
+		currentPay.setHorizontalAlignment(SwingConstants.CENTER);
 		currentPay.setEditable(false);
 		currentPay.setBounds(10, 24, 60, 21);
 		desktopPane_3.add(currentPay);
 
-		JLabel lblNewLabel_8 = new JLabel("¿ø");
+		JLabel lblNewLabel_8 = new JLabel("ì›");
 		lblNewLabel_8.setBounds(82, 27, 20, 15);
 		desktopPane_3.add(lblNewLabel_8);
 
@@ -379,47 +542,67 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		desktopPane_4.setBounds(10, 300, 113, 51);
 		desktopPane.add(desktopPane_4);
 
-		JLabel label_10 = new JLabel("¿¡ ¹øµ·");
-		label_10.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 15));
-		label_10.setBounds(56, 4, 59, 16);
+		JLabel label_10 = new JLabel("\uC5D0 \uBC88(\uBC8C)\uB3C8");
+		label_10.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 15));
+		label_10.setBounds(40, 3, 73, 16);
 		desktopPane_4.add(label_10);
 
 		currentEarned = new JTextField("1200000");
+		currentEarned.setHorizontalAlignment(SwingConstants.CENTER);
 		currentEarned.setEditable(false);
 		currentEarned.setBounds(5, 25, 80, 21);
 		desktopPane_4.add(currentEarned);
 
-		JLabel label_11 = new JLabel("¿ø");
+		JLabel label_11 = new JLabel("ì›");
 		label_11.setBounds(90, 28, 20, 15);
 		desktopPane_4.add(label_11);
 
-		JLabel label_5 = new JLabel(mm);
-		label_5.setFont(new Font("±¼¸²", Font.BOLD, 13));
-		label_5.setBounds(15, 4, 32, 15);
-		desktopPane_4.add(label_5);
+		lbMonth3 = new JLabel(mm);
+		lbMonth3.setHorizontalAlignment(SwingConstants.CENTER);
+		lbMonth3.setFont(new Font("êµ´ë¦¼", Font.BOLD, 13));
+		lbMonth3.setBounds(5, 4, 32, 15);
+		desktopPane_4.add(lbMonth3);
 
 		JDesktopPane desktopPane_5 = new JDesktopPane();
 		desktopPane_5.setBackground(new Color(255, 250, 250));
 		desktopPane_5.setBounds(10, 502, 630, 50);
 		desktopPane.add(desktopPane_5);
 
-		searchMonthBtn = new JButton("¿ùº° °Ë»ö");
-		searchMonthBtn.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
-		searchMonthBtn.setBounds(311, 6, 120, 33);
-		desktopPane_5.add(searchMonthBtn);
+		searchBtn = new JButton("ì›”ë³„ ê²€ìƒ‰");
+		searchBtn.setFont(new Font("Dialog", Font.BOLD, 15));
+		searchBtn.setBounds(302, 10, 120, 33);
+		desktopPane_5.add(searchBtn);
 
 		JPanel panel_11 = new JPanel();
-		panel_11.setBounds(208, 6, 68, 37);
+		panel_11.setBounds(222, 10, 68, 33);
 		desktopPane_5.add(panel_11);
 
-		JComboBox comboBox_2 = new JComboBox();
-		comboBox_2.setModel(new DefaultComboBoxModel(
+		searchMonth = new JComboBox();
+		searchMonth.setModel(new DefaultComboBoxModel(
 				new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" }));
-		panel_11.add(comboBox_2);
+		panel_11.add(searchMonth);
 
 		JLabel label_16 = new JLabel("\uC6D4");
-		label_16.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 20));
+		label_16.setFont(new Font("Dialog", Font.BOLD, 15));
 		panel_11.add(label_16);
+
+		JPanel panel_10 = new JPanel();
+		panel_10.setBounds(118, 10, 92, 33);
+		desktopPane_5.add(panel_10);
+
+		searchYear = new JComboBox();
+		searchYear.setModel(new DefaultComboBoxModel(
+				new String[] { "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025", "2026" }));
+		panel_10.add(searchYear);
+
+		JLabel label_14 = new JLabel("\uB144");
+		label_14.setFont(new Font("êµ´ë¦¼", Font.BOLD, 15));
+		panel_10.add(label_14);
+
+		undoBtn = new JButton("ì „ì²´ ë°ì´í„° ë³´ê¸°");
+		undoBtn.setFont(new Font("êµ´ë¦¼", Font.BOLD, 12));
+		undoBtn.setBounds(438, 10, 152, 33);
+		desktopPane_5.add(undoBtn);
 
 		JPanel panel_7 = new JPanel();
 		panel_7.setBorder(new LineBorder(Color.PINK, 2));
@@ -427,9 +610,14 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		panel_7.setBounds(10, 54, 113, 70);
 		desktopPane.add(panel_7);
 
-		label_12 = new JLabel(time);
+		JLabel lblNewLabel_10 = new JLabel(new SimpleDateFormat("YYYYë…„").format(new Date()));
+		lblNewLabel_10.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.BOLD, 15));
+		lblNewLabel_10.setForeground(Color.WHITE);
+		panel_7.add(lblNewLabel_10);
+
+		label_12 = new JLabel(new SimpleDateFormat("MMì›” ddì¼").format(new Date()));
 		label_12.setForeground(new Color(248, 248, 255));
-		label_12.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 24));
+		label_12.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.PLAIN, 20));
 		panel_7.add(label_12);
 
 		panel = new JPanel();
@@ -438,19 +626,19 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		desktopPane.add(panel);
 
 		lb_username = new JLabel("\uC774\uC8FC\uC601");
-		lb_username.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.BOLD, 15));
+		lb_username.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.BOLD, 15));
 		panel.add(lb_username);
 
-		label_13 = new JLabel(" ´Ô ¾È³çÇÏ¼¼¿ä! ÇöÀç ±Ù¹«Áö´Â  ");
-		label_13.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 14));
+		label_13 = new JLabel(" ë‹˜ ì•ˆë…•í•˜ì„¸ìš”! í˜„ì¬ ê·¼ë¬´ì§€ëŠ”  ");
+		label_13.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 14));
 		panel.add(label_13);
 
 		lb_workspace = new JLabel("\uD22C\uC378\uD50C\uB808\uC774\uC2A4");
-		lb_workspace.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.BOLD, 15));
+		lb_workspace.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.BOLD, 15));
 		panel.add(lb_workspace);
 
 		JLabel lblNewLabel_9 = new JLabel("\uC785\uB2C8\uB2E4.");
-		lblNewLabel_9.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.BOLD, 13));
+		lblNewLabel_9.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.BOLD, 13));
 		panel.add(lblNewLabel_9);
 
 		menuBar = new JMenuBar();
@@ -463,50 +651,63 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		mnNewMenu = new JMenu("\u2261");
 		menuBar.add(mnNewMenu);
 
-		initItem = new JMenuItem("ÃÊ±âÈ­");
+		initItem = new JMenuItem("ì´ˆê¸°í™”");
 		mnNewMenu.add(initItem);
 
 		JSeparator separator = new JSeparator();
 		mnNewMenu.add(separator);
 
-		changeInfo = new JMenuItem("Á¤º¸ º¯°æÇÏ±â");
+		changeInfo = new JMenuItem("ì •ë³´ ë³€ê²½í•˜ê¸°");
 		mnNewMenu.add(changeInfo);
 	}
 
-	// ÀÌº¥Æ® Å¬·¡½º
+	// ì´ë²¤íŠ¸ í´ë˜ìŠ¤
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object src = e.getSource();
 
 		if (src == initItem) {
-			// ÇØ´ç¾ÆÀÌµğ¿¡ ÀúÀåµÇ¾î ÀÖ´Â ³»¿ë db¿¡ ÀÖ´Â°Å ´Ù »èÁ¦
-			tableModel.setNumRows(0);
+			// í•´ë‹¹ì•„ì´ë””ì— ì €ì¥ë˜ì–´ ìˆëŠ” ë‚´ìš© dbì— ìˆëŠ”ê±° ë‹¤ ì‚­ì œ
+			// tableModel.setNumRows(0);
+			int choice = JOptionPane.showConfirmDialog(this, "ëª¨ë‘ ì‚­ì œë˜ëŠ”ë°, ì •ë§ ì´ˆê¸°í™” í•˜ì‹œê² ìŠµë‹ˆê¹Œ?", "ê²½ê³ ",
+					JOptionPane.OK_CANCEL_OPTION);
+
+			if (choice == JOptionPane.OK_OPTION) {
+				try {
+					dao.setinit(member.getId());
+					JOptionPane.showMessageDialog(this, "ì´ˆê¸°í™”ë˜ì—ˆìŠµë‹ˆë‹¤!");
+					this.repaint(member);// ìƒˆë¡œê³ ì¹¨ -> tablecontrollerë¥¼ ì´ìš©í•´ì„œ ìƒˆë¡œê³ ì¹¨í•  ìˆ˜ë„ ìˆì„ê±°ê°™ìŒ
+
+				} catch (SQLException e1) {
+					System.out.println("ì´ˆê¸°í™”í•˜ëŠ” ê³¼ì •ì—ì„œì˜ ì˜¤ë¥˜");
+					e1.printStackTrace();
+				}
+			}
 
 		} else if (src == changeInfo) {
-			ModifyInfoFrame mf = new ModifyInfoFrame(member ,"È¸¿øÁ¤º¸ ¼öÁ¤", this);
-			
+			ModifyInfoFrame mf = new ModifyInfoFrame(member, "íšŒì›ì •ë³´ ìˆ˜ì •", this);
 
 		} else if (src == yearCombo) {
-			if (yearCombo.getSelectedIndex() != -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
+			if (yearCombo.getSelectedIndex() != -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
 				selectedYear = (String) yearCombo.getSelectedItem();
 				str = str + selectedYear;
 
 				System.out.println(selectedYear);
 
 			} else {
-				JOptionPane.showMessageDialog(this, "³âµµ¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä!");
+				JOptionPane.showMessageDialog(this, "ë…„ë„ë¥¼ ì„ íƒí•´ì£¼ì„¸ìš”!");
 			}
 
 		} else if (src == monthCombo) {
-			if (yearCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, "³âµµ¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä!");
-			} else if (monthCombo.getSelectedIndex() != -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
+			if (yearCombo.getSelectedIndex() == -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
+				JOptionPane.showMessageDialog(this, "ë…„ë„ë¥¼ ì„ íƒí•´ì£¼ì„¸ìš”!");
+			} else if (monthCombo.getSelectedIndex() != -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
 				selectedMonth = (String) monthCombo.getSelectedItem();
 
-//				if ((Integer.parseInt(selectedMonth) < 10))
-//					str = str + "0" + selectedMonth;
-//				else
-//					str = str + selectedMonth;
+//            if ((Integer.parseInt(selectedMonth) < 10))
+//               str = str + "0" + selectedMonth;
+//            else
+//               str = str + selectedMonth;
 
 				Calendar cal = new GregorianCalendar(Integer.parseInt(selectedYear),
 						Integer.parseInt(selectedMonth) - 1, 1);
@@ -514,176 +715,318 @@ public class ManagerFrame extends JFrame implements ActionListener {
 				System.out.println(daysOfMonth);
 
 				for (int i = 1; i <= daysOfMonth; i++) {
-//					if (i < 10)
-//						dateCombo.addItem("0" + i);
-//					else
-						dateCombo.addItem(i + "");
+//               if (i < 10)
+//                  dateCombo.addItem("0" + i);
+//               else
+					dateCombo.addItem(i + "");
 				}
 			} else {
-				JOptionPane.showMessageDialog(this, "êÅÀ» ¼±ÅÃÇØÁÖ¼¼¿ä!");
+				JOptionPane.showMessageDialog(this, "æœˆì„ ì„ íƒí•´ì£¼ì„¸ìš”!");
 			}
 
 		} else if (src == dateCombo) {
-			if (monthCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, " êÅÀ» ¼±ÅÃÇØÁÖ¼¼¿ä!");
-			} else if (dateCombo.getSelectedIndex() != -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
+			if (monthCombo.getSelectedIndex() == -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
+				JOptionPane.showMessageDialog(this, " æœˆì„ ì„ íƒí•´ì£¼ì„¸ìš”!");
+			} else if (dateCombo.getSelectedIndex() != -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
 
 				selectedDate = (String) dateCombo.getSelectedItem();
 
 				System.out.println(selectedDate);
 			} else {
-				JOptionPane.showMessageDialog(this, "ìí¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä!");
+				JOptionPane.showMessageDialog(this, "æ—¥ë¥¼ ì„ íƒí•´ì£¼ì„¸ìš”!");
 			}
 
-		} else if (src == startHCombo) {// »ç¿ëÀÚ°¡ Ãâ±Ù ½Ã°£À» °í¸¦¶§
-			if (dateCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, " ìí¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä!");
-			} else if (startHCombo.getSelectedIndex() != -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
+		} else if (src == startHCombo) {// ì‚¬ìš©ìê°€ ì¶œê·¼ ì‹œê°„ì„ ê³ ë¥¼ë•Œ
+//         if (dateCombo.getSelectedIndex() == -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
+//            JOptionPane.showMessageDialog(this, " æ—¥ë¥¼ ì„ íƒí•´ì£¼ì„¸ìš”!");
+//         } 
+			if (startHCombo.getSelectedIndex() != -1) {
 
 				selectedStartH = (String) startHCombo.getSelectedItem();
+
 			} else {
-				JOptionPane.showMessageDialog(this, " Ãâ±Ù½Ã°£(½Ã°£)À» ¼±ÅÃÇØÁÖ¼¼¿ä!");
+				JOptionPane.showMessageDialog(this, " ì¶œê·¼ì‹œê°„(ì‹œê°„)ì„ ì„ íƒí•´ì£¼ì„¸ìš”!");
 			}
 
 		} else if (src == startMCombo) {
-			if (startHCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, " Ãâ±Ù½Ã°£(½Ã°£)À» ¼±ÅÃÇØÁÖ¼¼¿ä!");
-			} else if (startMCombo.getSelectedIndex() != -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
+			if (startHCombo.getSelectedIndex() == -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
+				JOptionPane.showMessageDialog(this, " ì¶œê·¼ì‹œê°„(ì‹œê°„)ì„ ì„ íƒí•´ì£¼ì„¸ìš”!");
+			}
+
+			if (startMCombo.getSelectedIndex() != -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
 				selectedStartM = (String) startMCombo.getSelectedItem();
 			} else {
-				JOptionPane.showMessageDialog(this, " Ãâ±Ù½Ã°£(ºĞ)À» ¼±ÅÃÇØÁÖ¼¼¿ä!");
+				JOptionPane.showMessageDialog(this, " ì¶œê·¼ì‹œê°„(ë¶„)ì„ ì„ íƒí•´ì£¼ì„¸ìš”!");
 			}
 
 		} else if (src == endHCombo) {
-			if (startMCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, "Ãâ±Ù½Ã°£(ºĞ)À» ¼±ÅÃÇØÁÖ¼¼¿ä!");
-			} else if (endHCombo.getSelectedIndex() != -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
+			if (startMCombo.getSelectedIndex() == -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
+				JOptionPane.showMessageDialog(this, "ì¶œê·¼ì‹œê°„(ë¶„)ì„ ì„ íƒí•´ì£¼ì„¸ìš”!");
+			}
+
+			if (endHCombo.getSelectedIndex() != -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
 				selectedEndtH = (String) endHCombo.getSelectedItem();
 			} else {
 
-				JOptionPane.showMessageDialog(this, "Åğ±Ù½Ã°£(½Ã°£)À» ¼±ÅÃÇØ ÁÖ¼¼¿ä!");
+				JOptionPane.showMessageDialog(this, "í‡´ê·¼ì‹œê°„(ì‹œê°„)ì„ ì„ íƒí•´ ì£¼ì„¸ìš”!");
 			}
 
 		} else if (src == endMCombo) {
-			if (endHCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, " Åğ±Ù½Ã°£(½Ã°£)À» ¼±ÅÃÇØ ÁÖ¼¼¿ä!");
-			} else if (endMCombo.getSelectedIndex() != -1) { // ¼±ÅÃÇß´Ù¸é
+			if (endHCombo.getSelectedIndex() == -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
+				JOptionPane.showMessageDialog(this, " í‡´ê·¼ì‹œê°„(ì‹œê°„)ì„ ì„ íƒí•´ ì£¼ì„¸ìš”!");
+			}
+
+			if (endMCombo.getSelectedIndex() != -1) { // ì„ íƒí–ˆë‹¤ë©´
 				selectedEndtM = (String) endMCombo.getSelectedItem();
-				
+
 				SimpleDateFormat format = new SimpleDateFormat("HH:mm");
 				long hour = 0;
 				long minute = 0;
-				
+
 				try {
 					Date st = format.parse(selectedStartH + ":" + selectedStartM);
 					Date et = format.parse(selectedEndtH + ":" + selectedEndtM);
 					long dif = et.getTime() - st.getTime();
-					//System.out.println(et.getTime()+","+st.getTime() +","+ dif);					
-					hour = dif/(1000*60*60);
-					minute = (dif/(1000*60)) -  (hour*60);
-					
-					worktime_double = ((int)((double)dif/(1000*60*60)*10))/10.0;
-					
-					if(dif < 0) {
+
+					hour = dif / (1000 * 60 * 60);
+					minute = (dif / (1000 * 60)) - (hour * 60);
+
+					worktime_double = ((int) ((double) dif / (1000 * 60 * 60) * 10)) / 10.0;
+
+					if (dif < 0) {
 						hour = 24 + hour;
 						minute = 60 + minute;
-						if(minute == 60)
+						if (minute == 60)
 							minute = 0;
 					}
-					
+
 				} catch (ParseException e2) {
-					System.out.println("³¯Â¥ º¯È¯ Áß¿¡ ¾Ë¼ö¾ø´Â ¿À·ù");
+					System.out.println("ë‚ ì§œ ë³€í™˜ ì¤‘ì— ì•Œìˆ˜ì—†ëŠ” ì˜¤ë¥˜");
 					e2.printStackTrace();
 				}
-				
-				if(minute < 10)
+
+				if (minute < 10)
 					worktime = hour + ":0" + minute;
 				else
-					worktime = hour + ":" + minute;	
-								
-				System.out.println(worktime);
+					worktime = hour + ":" + minute;
+
 				todayWorkHourTxt.setText(worktime);
 				todayWorkHourTxt.setEditable(false);
-				
+
 			} else {
-				JOptionPane.showMessageDialog(this, "Åğ±Ù½Ã°£(ºĞ)À» ¼±ÅÃÇØ ÁÖ¼¼¿ä!");
+				JOptionPane.showMessageDialog(this, "í‡´ê·¼ì‹œê°„(ë¶„)ì„ ì„ íƒí•´ ì£¼ì„¸ìš”!");
 			}
 
 		} else if (src == saveBtn) {
-			if (yearCombo.getSelectedIndex() == 0) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, "³âµµ¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä!");
-			} else if (monthCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, "´ŞÀ» ¼±ÅÃÇØÁÖ¼¼¿ä!");
-			} else if (dateCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, "ÀÏ¼ö¸¦ °ñ¶óÁÖ¼¼¿ä!");
-			} else if (startHCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, "Ãâ±Ù½Ã°£À» °ñ¶óÁÖ¼¼¿ä!");
-			} else if (startHCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, "Ãâ±Ù ºĞÀ» °ñ¶óÁÖ¼¼¿ä!");
-			} else if (startHCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, "Åğ±Ù ½Ã°£À» °ñ¶óÁÖ¼¼¿ä!");
-			} else if (endMCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, "Åğ±Ù ºĞÀ» °ñ¶óÁÖ¼¼¿ä!");
+			if (yearCombo.getSelectedIndex() == -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
+				JOptionPane.showMessageDialog(this, "ë…„ë„ë¥¼ ì„ íƒí•´ì£¼ì„¸ìš”!");
+			}
+			if (monthCombo.getSelectedIndex() == -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
+				JOptionPane.showMessageDialog(this, "ë‹¬ì„ ì„ íƒí•´ì£¼ì„¸ìš”!");
+			}
+			if (dateCombo.getSelectedIndex() == -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
+				JOptionPane.showMessageDialog(this, "ì¼ìˆ˜ë¥¼ ê³¨ë¼ì£¼ì„¸ìš”!");
+			}
+			if (startHCombo.getSelectedIndex() == -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
+				JOptionPane.showMessageDialog(this, "ì¶œê·¼ì‹œê°„ì„ ê³¨ë¼ì£¼ì„¸ìš”!");
+			}
+			if (startHCombo.getSelectedIndex() == -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
+				JOptionPane.showMessageDialog(this, "ì¶œê·¼ ë¶„ì„ ê³¨ë¼ì£¼ì„¸ìš”!");
+			}
+			if (startHCombo.getSelectedIndex() == -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
+				JOptionPane.showMessageDialog(this, "í‡´ê·¼ ì‹œê°„ì„ ê³¨ë¼ì£¼ì„¸ìš”!");
+			}
+			if (endMCombo.getSelectedIndex() == -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
+				JOptionPane.showMessageDialog(this, "í‡´ê·¼ ë¶„ì„ ê³¨ë¼ì£¼ì„¸ìš”!");
 			}
 
 			else {
-				String str_workdate =  selectedYear + "/" + selectedMonth + "/" + selectedDate;
+				String str_workdate = selectedYear + "/" + selectedMonth + "/" + selectedDate;
 				String str_starttime = selectedStartH + ":" + selectedStartM;
 				String str_endtime = selectedEndtH + ":" + selectedEndtM;
-				
-//				tableModel.addRow(new String[] { selectedYear + "/" + selectedMonth + "/" + selectedDate,¤Ë
-//						selectedStartH + " : " + selectedStartM, selectedEndtH + " : " + selectedEndtM, worktime,
-//						member.getSalperhour() }); // »ç¿ëÀÚ°¡ º¯°æÇÑ °ªÀ¸·Î ÀúÀåµÇ´Â ºÎºĞ!!!!!!!!!!
-				
+
+//            tableModel.addRow(new String[] { selectedYear + "/" + selectedMonth + "/" + selectedDate,ã…›
+//                  selectedStartH + " : " + selectedStartM, selectedEndtH + " : " + selectedEndtM, worktime,
+//                  member.getSalperhour() }); // ì‚¬ìš©ìê°€ ë³€ê²½í•œ ê°’ìœ¼ë¡œ ì €ì¥ë˜ëŠ” ë¶€ë¶„!!!!!!!!!!
+
 				try {
-					
-					if(!dao.checkWorkDate(member.getId(), str_workdate)) {
-						JOptionPane.showMessageDialog(this, "°°Àº³¯ ÇÑ±Ù¹«Áö¿¡¼­ ¿©·¯°¡Áö ÀÏÀ» ÇÒ ¼ö ¾ø½À´Ï´Ù.");
+
+					if (!dao.checkWorkDate(member.getId(), str_workdate)) {
+						JOptionPane.showMessageDialog(this, "ê°™ì€ë‚  í•œê·¼ë¬´ì§€ì—ì„œ ì—¬ëŸ¬ê°€ì§€ ì¼ì„ í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
+						// dao.db_close();
 					}
-					
+
 				} catch (HeadlessException | SQLException e2) {
-					System.out.println("workdateÀ¯È¿¼º°Ë»ç¸¦ ÇÏ´Â °úÁ¤¿¡¼­ÀÇ ¿À·ù");
+					System.out.println("workdateìœ íš¨ì„±ê²€ì‚¬ë¥¼ í•˜ëŠ” ê³¼ì •ì—ì„œì˜ ì˜¤ë¥˜");
 					e2.printStackTrace();
 				}
-				double money = worktime_double * Long.parseLong(member.getSalperhour());
-				payInfo = new MemberPayInfo(member.getId(), str_workdate ,selectedYear , selectedMonth, selectedDate, str_starttime, str_endtime, worktime, money+"" );
-				
-				//db¿¡ insertµÇµµ·Ï
+				int money = (int) (worktime_double * (Integer.parseInt(member.getSalperhour())));
+				payInfo = new MemberPayInfo(member.getId(), str_workdate, selectedYear, selectedMonth, selectedDate,
+						str_starttime, str_endtime, worktime, money);
+
 				try {
-					dao.insertPayData(payInfo);					
-					JOptionPane.showMessageDialog(this, "¼º°øÀûÀ¸·Î ÀúÀåµÇ¾ú½À´Ï´Ù!");
-					tc.addMemberPayInfo(payInfo);//Å×ÀÌºíÄÁÆ®·Ñ·¯¿¡µµ Ãß°¡ÇØ¼­ Å×ÀÌºí¿¡ »Ñ¸±¼ö ÀÖµµ·Ï ÇÑ´Ù.
+					dao.insertPayData(payInfo);
+					JOptionPane.showMessageDialog(this, "ì„±ê³µì ìœ¼ë¡œ ì €ì¥ë˜ì—ˆìŠµë‹ˆë‹¤!");
+					tc.addMemberPayInfo(payInfo);// í…Œì´ë¸”ì»¨íŠ¸ë¡¤ëŸ¬ì—ë„ ì¶”ê°€í•´ì„œ í…Œì´ë¸”ì— ë¿Œë¦´ìˆ˜ ìˆë„ë¡ í•œë‹¤.
+					if (selectedYear.equals(yy) && selectedMonth.equals(mm.substring(1, 2)))
+						labelSetting(yy, mm.substring(1, 2));// ë‹¤ì‹œ ìƒˆë¡œê³ ì¹¨
+					// dao.db_close();
+
 				} catch (SQLException e1) {
-					System.out.println("insertÁß µ¥ÀÌÅÍº£ÀÌ½º ¿À·ù");
+					System.out.println("insertì¤‘ ë°ì´í„°ë² ì´ìŠ¤ ì˜¤ë¥˜");
 					e1.printStackTrace();
-				}				
+				}
 			}
 
 		} else if (src == selectedDelete) {
-			int one = table.getSelectedRow(); // »ç¿ëÀÚ°¡ ¼±ÅÃÇÑ Çà°ªÀ» ¹Ş¾Æ¿ÂµÚ
+			int one = table.getSelectedRow(); // ì‚¬ìš©ìê°€ ì„ íƒí•œ í–‰ê°’ì„ ë°›ì•„ì˜¨ë’¤
 
 			if (one == -1) {
-				JOptionPane.showMessageDialog(this, "¼±ÅÃµÈ ÇàÀÌ ¾ø½À´Ï´Ù.", "°æ°í", JOptionPane.OK_OPTION);
+				JOptionPane.showMessageDialog(this, "ì„ íƒëœ í–‰ì´ ì—†ìŠµë‹ˆë‹¤.", "ê²½ê³ ", JOptionPane.OK_OPTION);
 			} else {
-				int choice = JOptionPane.showConfirmDialog(this, "Á¤¸» »èÁ¦ÇÏ½Ã°Ú½À´Ï±î?", "°æ°í", JOptionPane.OK_CANCEL_OPTION);
+				int choice = JOptionPane.showConfirmDialog(this, "ì •ë§ ì‚­ì œí•˜ì‹œê² ìŠµë‹ˆê¹Œ?", "ê²½ê³ ", JOptionPane.OK_CANCEL_OPTION);
 				if (choice == JOptionPane.OK_OPTION) {
-					//1)Å×ÀÌºí ÄÁÆ®·Ñ·¯¿¡¼­ »èÁ¦
-					tc.delMemberPayInfo(one);
-					
-					//2)DB¿¡¼­ »èÁ¦
-					String selectDate = (String)tc.getValueAt(one, 0) + "/" +(String)tc.getValueAt(one, 1) + "/" + (String)tc.getValueAt(one, 2);
+
+					String selectDate = (String) tc.getValueAt(one, 0) + "/" + (String) tc.getValueAt(one, 1) + "/"
+							+ (String) tc.getValueAt(one, 2);
+					System.out.println(selectDate);
+
 					try {
 						dao.deleteOnePayData(member.getId(), selectDate);
 						System.out.println(selectDate);
-						JOptionPane.showMessageDialog(this, "¼º°øÀûÀ¸·Î »èÁ¦µÇ¾ú½À´Ï´Ù!");
+						JOptionPane.showMessageDialog(this, "ì„±ê³µì ìœ¼ë¡œ ì‚­ì œë˜ì—ˆìŠµë‹ˆë‹¤!");
+
+						if (((String) tc.getValueAt(one, 0)).equals(yy)
+								&& ((String) tc.getValueAt(one, 1)).equals(mm.substring(1, 2)))
+							labelSetting(yy, mm.substring(1, 2));// ë‹¤ì‹œ ìƒˆë¡œê³ ì¹¨
+
+						tc.delMemberPayInfo(one);
+
+						// this.repaint();
+						// dao.db_close();
+
 					} catch (SQLException e1) {
-						System.out.println("Å×ÀÌºí µ¥ÀÌÅÍ¸¦ »èÁ¦ÇÏ´Â °úÁ¤¿¡¼­ÀÇ ¿À·ù");
+						System.out.println("í…Œì´ë¸” ë°ì´í„°ë¥¼ ì‚­ì œí•˜ëŠ” ê³¼ì •ì—ì„œì˜ ì˜¤ë¥˜");
 						e1.printStackTrace();
 					}
 				}
 			}
-		}else if(src == selectedUpdateBtn) {//ÁöÁ¤ÀÏ º¯°æ
-			
+
+		} else if (src == selectedUpdateBtn) {// ì§€ì •ì¼ ë³€ê²½ëª¨ë“œ
+
+			int one = table.getSelectedRow(); // ì‚¬ìš©ìê°€ ì„ íƒí•œ í–‰ê°’ì„ ë°›ì•„ì˜¨ë‹¤
+			int col = table.getSelectedColumn();// ì‚¬ìš©ìê°€ ì„ íƒí•œ ì—´ê°’ì„ ë°›ì•„ì˜¨ë‹¤
+
+			if (one == -1) {
+				JOptionPane.showMessageDialog(this, "ì„ íƒëœ í–‰ì´ ì—†ìŠµë‹ˆë‹¤.", "ê²½ê³ ", JOptionPane.OK_OPTION);
+			} else if (col == 5 || col == 6) {
+				JOptionPane.showMessageDialog(this, "ê·¼ë¬´ì¼ê³¼ ì¼ê¸‰ì€ ë³€ê²½í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.!");
+				return;
+			} else {
+				String colname = tc.getColumnName(col);// ë°”ê¾¸ê³  ì‹¶ì€ ì—´ì˜ ì´ë¦„ì„ ë°›ì•„ì˜¨ë‹¤.
+
+				int choice = JOptionPane
+						.showConfirmDialog(this,
+								tc.getValueAt(one, 0) + "ë…„ " + tc.getValueAt(one, 1) + "ì›” " + tc.getValueAt(one, 2)
+										+ "ì¼ " + " ê°’ì˜ " + "\"" + colname + "\"" + " ì„ ë³€ê²½í•˜ì‹œê² ìŠµë‹ˆê¹Œ?",
+								"ê²½ê³ ", JOptionPane.OK_CANCEL_OPTION);
+
+				if (choice == JOptionPane.OK_OPTION) {
+					tc.getValueAt(one, col);// ì‚¬ìš©ìê°€ ì„ íƒí•œ ê°’ì„ ì–»ì–´ì˜¨ë‹¤.
+					settingCombo(false);// ì¼ë‹¨ ë‹¤ falseë¡œ ë§Œë“¤ì–´ ì¤€ë’¤
+
+					// ê·¸ í•´ë‹¹ ì—´ì—ëŒ€í•œ ì½¤ë³´ë°•ìŠ¤ë§Œ ì‚¬ìš©ê°€ëŠ¥í•˜ê²Œ ì—´ì–´ë‘”ë‹¤.
+					setComboEnable(colname);
+
+					// ì„ íƒí•œ í–‰ì˜ ì—´ ë°ì´í„°ë¥¼ ë°°ì—´ì— ë‹´ì•„ì˜¨ë‹¤
+					String s1 = null, s2 = null, s3 = null, s4 = null;
+					String[] tmp = new String[tc.getColumnCount() - 1];
+					for (int i = 0; i < tmp.length; i++) {
+						tmp[i] = (String) tc.getValueAt(one, i);
+						if (i == 3) {
+							if (tmp[i].length() == 5) {// 19:00ê³¼ ê°™ì´ 10ì˜ìë¦¬ ì‹œ
+								s1 = tmp[3].substring(0, 2);
+								s2 = tmp[3].substring(3);
+							} else {
+								s1 = tmp[3].substring(0, 1);
+								s2 = tmp[3].substring(2);
+							}
+
+						} else if (i == 4) {
+							if (tmp[i].length() == 5) {
+								s3 = tmp[4].substring(0, 2);
+								s4 = tmp[4].substring(3);
+							} else {
+								s3 = tmp[4].substring(0, 1);
+								s4 = tmp[3].substring(2);
+							}
+						}
+
+					}
+					// ê·¸ë¦¬ê³  ë‚˜ë¨¸ì§€ ì½¤ë³´ë°•ìŠ¤ì—ëŠ” ì‚¬ìš©ìê°€ ì„ íƒí•œ ì—´ê°’ìœ¼ë¡œ ì…‹íŒ…ë˜ë„ë¡ í•œë‹¤.
+					settingCombofield(colname, tmp[0], tmp[1], tmp[2], s1, s2, s3, s4, tmp[5]);
+					
+					//ì´ì „ì˜ ê°’ê³¼ ë™ì¼í•˜ë©´ ë™ì¼í•˜ë‹¤ê³  ë©”ì„¸ì§€ ë„ìš°ê³ 
+					//ë‹¤ë¥´ë‹¤ë©´ daoë¶ˆëŸ¬ì„œ dbì— ì €ì¥ì‹œí‚¤ë©´ë¨
+
+				}
+			}
+
+		} else if (src == searchYear) {
+			selectedSearchYear = (String) searchYear.getSelectedItem();// ì‚¬ìš©ìê°€ ì„ íƒí•œ ë…„ê°’ì„ ë°˜í™˜ë°›ëŠ”ë‹¤.
+			System.out.println(selectedSearchYear);
+
+		} else if (src == searchMonth) {
+			selectedSearchMonth = (String) searchMonth.getSelectedItem();// ì‚¬ìš©ìê°€ ì„ íƒí•œ ê°’ì„ ë°˜í™˜ë°›ëŠ”ë‹¤
+			System.out.println(selectedSearchMonth);
+
+		} else if (src == searchBtn) {// ì›”ë³„ ê²€ìƒ‰
+
+			if (searchYear.getSelectedIndex() == -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
+				JOptionPane.showMessageDialog(this, "ê²€ìƒ‰í•  ë…„ë„ë¥¼ ì„ íƒí•´ì£¼ì„¸ìš”!");
+			}
+			if (searchMonth.getSelectedIndex() == -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
+				// selectedEndtH = (String) endHCombo.getSelectedItem();
+				JOptionPane.showMessageDialog(this, "ê²€ìƒ‰í•  ë‹¬ì„ ì„ íƒí•´ì£¼ì„¸ìš”!");
+			} else {
+
+				try {
+					// dbì— ì—†ëŠ” ë‹¬ì„ ê²€ìƒ‰í•˜ë©´ ê²€ìƒ‰ ê²°ê³¼ ì—†ë‹¤ê³  ëœ¨ê²Œ í•˜ê¸°
+					if (selectedSearchYear != null && selectedSearchMonth != null) {
+						dao.userSelectMonth(selectedSearchYear, selectedSearchMonth, member.getId());
+
+						if (tableSetting2() == 0) {
+							JOptionPane.showMessageDialog(this, "ê²€ìƒ‰ê²°ê³¼ê°€ ì—†ìŠµë‹ˆë‹¤!");
+						} else {
+							scrollPane.setVisible(false);
+							isPushSearchBtn = true;// í•œë²ˆ ëˆŒë €ìŒì„ í‘œì‹œ
+							JOptionPane.showMessageDialog(this, "ì„±ê³µì ìœ¼ë¡œ ê²€ìƒ‰ë˜ì—ˆìŠµë‹ˆë‹¤!");
+							labelSetting(selectedSearchYear, selectedSearchMonth);// ê²€ìƒ‰í•œ ë‹¬ë¡œ ë°”ê¾¸ê¸°
+							changeSearchDate(selectedSearchMonth);// ë¼ë²¨ ê²°ê³¼ê°’ ë°”ê¾¸ë ¤ê³  ìˆëŠ” ì½”ë“œ
+							// dao.db_close();
+						}
+
+					} else {
+						JOptionPane.showMessageDialog(this, "ê²€ìƒ‰í•  ë‚ ì§œë¥¼ ê³¨ë¼ì£¼ì„¸ìš”!");
+					}
+
+				} catch (SQLException e1) {
+					System.out.println("í•´ë‹¹ë‚ ì§œë¥¼ ê²€ìƒ‰í•˜ëŠ”ë° ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤.");
+					e1.printStackTrace();
+				}
+			}
+
+		} else if (src == undoBtn) {// searchë²„íŠ¼ì„ ëˆ„ë¥¸ì ì—†ëŠ”ë° ì´ê±° ëˆ„ë¥´ë©´ ì˜¤ë¥˜ë‚˜ë‹ˆê¹Œ ì˜ˆì™¸ì²˜ë¦¬í•˜ì
+			if (isPushSearchBtn) {// ì§€ì •ì¼ê²€ìƒ‰ì„ í•œë²ˆ ëˆŒë €ì„ë•Œ ì´ ë²„íŠ¼ì´ ì›€ì§ì¼ ìˆ˜ ìˆë„ë¡
+				scrollPane.setVisible(true);
+				scrollPane2.setVisible(false);
+				labelSetting(selectedSearchYear, mm.substring(1, 2));// ë‹¤ì‹œ ìƒˆë¡œê³ ì¹¨
+				changeSearchDate(mm.substring(1, 2));
+			} else
+				JOptionPane.showMessageDialog(this, "ì´ë¯¸ ì „ì²´ ë°ì´í„°ë¥¼ ë³´ê³ ê³„ì„¸ìš”!");
+
+		} else if (src == cancelBtn) {// ë³€ê²½ëª¨ë“œ ì·¨ì†Œí–ˆì„ë•Œ
+			settingCombo(true);// ëª¨ë“ ê²ƒì„ ì‚¬ìš©í•  ìˆ˜ ìˆë„ë¡
 		}
 	}
 }
