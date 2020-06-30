@@ -10,6 +10,28 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
+import java.awt.Font;
+import javax.swing.JSplitPane;
+import javax.swing.JTextField;
+
+import javax.swing.JDesktopPane;
+import javax.swing.JButton;
+import javax.swing.JPasswordField;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.sql.SQLException;
 
 import javax.swing.JLabel;
@@ -24,198 +46,200 @@ import javax.swing.JButton;
 import javax.swing.JPasswordField;
 
 public class SignUpFrame extends JFrame implements ActionListener {
-	
-	private usermemberDAO dao = new usermemberDAO();		
-	private Member member;
-	private JPasswordField passwordField;
-	private JTextField nameTxt;
-	private JTextField myworkplace;
-	private JTextField myPay;
-	private JTextField idTxt;
-	private boolean checkedId = false;
-	private JButton cancelBtn;
-	private JButton joinBtn;
-	private JButton checkIdBtn;
-	
+   
+   private usermemberDAO dao = new usermemberDAO();      
+   private Member member;
+   private JPasswordField passwordField;
+   private JTextField nameTxt;
+   private JTextField myworkplace;
+   private JTextField myPay;
+   private JTextField idTxt;
+   private boolean checkedId = false;
+   private JButton cancelBtn;
+   private JButton joinBtn;
+   private JButton checkIdBtn;
+   
 
-	// »ı¼ºÀÚ
-	public SignUpFrame(String title) {
-		super(title);
-		init();
-		
-		//setDefaultCloseOperation(EXIT_ON_CLOSE);
-		this.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				setVisible(false);;
-			}
-		});
-		
-		setBounds(0, 0, 403, 486);
-		setVisible(true);
+   // ìƒì„±ì
+   public SignUpFrame(String title) {
+      super(title);
+      init();
+      
+      //setDefaultCloseOperation(EXIT_ON_CLOSE);
+      this.addWindowListener(new WindowAdapter() {
+         @Override
+         public void windowClosing(WindowEvent e) {
+            setVisible(false);;
+         }
+      });
+      
+      setBounds(0, 0, 403, 486);
+      setVisible(true);
 
-		
-		//ÀÌº¥Æ® µî·Ï
-		cancelBtn.addActionListener(this);
-		joinBtn.addActionListener(this);
-		checkIdBtn.addActionListener(this);
-	
-	}
+      
+      //ì´ë²¤íŠ¸ ë“±ë¡
+      cancelBtn.addActionListener(this);
+      joinBtn.addActionListener(this);
+      checkIdBtn.addActionListener(this);
+   
+   }
 
-	// µğÀÚÀÎ ¸¸µå´Â ¸Ş¼Òµå
-	public void init() {
-		getContentPane().setBackground(SystemColor.activeCaption);
+   // ë””ìì¸ ë§Œë“œëŠ” ë©”ì†Œë“œ
+   public void init() {
+      getContentPane().setBackground(SystemColor.activeCaption);
 
-		JPanel panel = new JPanel();
-		panel.setForeground(SystemColor.controlLtHighlight);
-		panel.setBackground(new Color(255, 192, 203));
-		getContentPane().add(panel, BorderLayout.NORTH);
+      JPanel panel = new JPanel();
+      panel.setForeground(SystemColor.controlLtHighlight);
+      panel.setBackground(new Color(255, 192, 203));
+      getContentPane().add(panel, BorderLayout.NORTH);
 
-		JLabel lblNewLabel = new JLabel("[\uD68C\uC6D0\uAC00\uC785]");
-		lblNewLabel.setForeground(new Color(0, 0, 0));
-		lblNewLabel.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 25));
-		panel.add(lblNewLabel);
+      JLabel lblNewLabel = new JLabel("[\uD68C\uC6D0\uAC00\uC785]");
+      lblNewLabel.setForeground(new Color(0, 0, 0));
+      lblNewLabel.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 25));
+      panel.add(lblNewLabel);
 
-		JDesktopPane desktopPane = new JDesktopPane();
-		desktopPane.setBackground(new Color(255, 250, 250));
-		getContentPane().add(desktopPane, BorderLayout.CENTER);
+      JDesktopPane desktopPane = new JDesktopPane();
+      desktopPane.setBackground(new Color(255, 250, 250));
+      getContentPane().add(desktopPane, BorderLayout.CENTER);
 
-		checkIdBtn = new JButton("\uC911\uBCF5\uD655\uC778");
-		checkIdBtn.setBackground(new Color(255, 182, 193));
-		checkIdBtn.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 15));
-		checkIdBtn.setBounds(253, 39, 84, 37);
-		desktopPane.add(checkIdBtn);
+      checkIdBtn = new JButton("\uC911\uBCF5\uD655\uC778");
+      checkIdBtn.setBackground(new Color(255, 182, 193));
+      checkIdBtn.setFont(new Font("Dialog", Font.PLAIN, 10));
+      checkIdBtn.setBounds(253, 39, 84, 37);
+      desktopPane.add(checkIdBtn);
 
-		JDesktopPane desktopPane_1 = new JDesktopPane();
-		desktopPane_1.setBackground(new Color(255, 250, 250));
-		desktopPane_1.setBounds(153, 336, 224, 60);
-		desktopPane.add(desktopPane_1);
+      JDesktopPane desktopPane_1 = new JDesktopPane();
+      desktopPane_1.setBackground(new Color(255, 250, 250));
+      desktopPane_1.setBounds(153, 336, 224, 60);
+      desktopPane.add(desktopPane_1);
 
-		cancelBtn = new JButton("\uCDE8\uC18C");
-		cancelBtn.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 15));
-		cancelBtn.setBounds(128, 10, 84, 37);
-		desktopPane_1.add(cancelBtn);
+      cancelBtn = new JButton("\uCDE8\uC18C");
+      cancelBtn.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 15));
+      cancelBtn.setBounds(128, 10, 84, 37);
+      desktopPane_1.add(cancelBtn);
 
-		joinBtn = new JButton("\uAC00\uC785\uD558\uAE30");
-		joinBtn.setBackground(new Color(255, 182, 193));
-		joinBtn.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 15));
-		joinBtn.setBounds(28, 10, 84, 37);
-		desktopPane_1.add(joinBtn);
+      joinBtn = new JButton("\uAC00\uC785\uD558\uAE30");
+      joinBtn.setBackground(new Color(255, 182, 193));
+      joinBtn.setFont(new Font("Dialog", Font.PLAIN, 11));
+      joinBtn.setBounds(28, 10, 84, 37);
+      desktopPane_1.add(joinBtn);
 
-		passwordField = new JPasswordField();
-		passwordField.setBounds(143, 99, 204, 35);
-		desktopPane.add(passwordField);
+      passwordField = new JPasswordField();
+      passwordField.setBounds(143, 99, 204, 35);
+      desktopPane.add(passwordField);
 
-		idTxt = new JTextField();
-		idTxt.setBounds(145, 40, 96, 35);
-		desktopPane.add(idTxt);
-		idTxt.setColumns(10);
+      idTxt = new JTextField();
+      idTxt.setBounds(145, 40, 96, 35);
+      desktopPane.add(idTxt);
+      idTxt.setColumns(10);
 
-		JLabel label = new JLabel(" \uBE44\uBC00\uBC88\uD638 ");
-		label.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 20));
-		label.setBounds(42, 100, 72, 27);
-		desktopPane.add(label);
+      JLabel label = new JLabel(" \uBE44\uBC00\uBC88\uD638 ");
+      label.setFont(new Font("Dialog", Font.PLAIN, 13));
+      label.setBounds(42, 100, 72, 27);
+      desktopPane.add(label);
 
-		JLabel label_1 = new JLabel(" \uC544\uC774\uB514 ");
-		label_1.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 20));
-		label_1.setBounds(44, 45, 58, 27);
-		desktopPane.add(label_1);
+      JLabel label_1 = new JLabel(" \uC544\uC774\uB514 ");
+      label_1.setFont(new Font("Dialog", Font.PLAIN, 13));
+      label_1.setBounds(44, 45, 58, 27);
+      desktopPane.add(label_1);
 
-		nameTxt = new JTextField();
-		nameTxt.setBounds(143, 163, 155, 35);
-		desktopPane.add(nameTxt);
-		nameTxt.setColumns(10);
+      nameTxt = new JTextField();
+      nameTxt.setBounds(143, 163, 155, 35);
+      desktopPane.add(nameTxt);
+      nameTxt.setColumns(10);
 
-		JLabel label_2 = new JLabel("  \uC774\uB984  ");
-		label_2.setBounds(52, 161, 53, 35);
-		desktopPane.add(label_2);
-		label_2.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 20));
+      JLabel label_2 = new JLabel("  \uC774\uB984  ");
+      label_2.setBounds(52, 161, 53, 35);
+      desktopPane.add(label_2);
+      label_2.setFont(new Font("Dialog", Font.PLAIN, 13));
 
-		JLabel label_3 = new JLabel(" \uD604\uC7AC \uB098\uC758 \uADFC\uBB34\uC9C0 ");
-		label_3.setBounds(12, 219, 130, 35);
-		desktopPane.add(label_3);
-		label_3.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 20));
+      JLabel label_3 = new JLabel(" \uD604\uC7AC \uB098\uC758 \uADFC\uBB34\uC9C0 ");
+      label_3.setBounds(12, 219, 130, 35);
+      desktopPane.add(label_3);
+      label_3.setFont(new Font("Dialog", Font.PLAIN, 13));
 
-		myworkplace = new JTextField();
-		myworkplace.setBounds(143, 221, 233, 35);
-		desktopPane.add(myworkplace);
-		myworkplace.setColumns(10);
+      myworkplace = new JTextField();
+      myworkplace.setBounds(143, 221, 233, 35);
+      desktopPane.add(myworkplace);
+      myworkplace.setColumns(10);
 
-		JLabel label_4 = new JLabel(" \uB098\uC758 \uD604\uC7AC \uC2DC\uAE09 ");
-		label_4.setBounds(12, 281, 115, 35);
-		desktopPane.add(label_4);
-		label_4.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 20));
+      JLabel label_4 = new JLabel(" \uB098\uC758 \uD604\uC7AC \uC2DC\uAE09 ");
+      label_4.setBounds(12, 281, 115, 35);
+      desktopPane.add(label_4);
+      label_4.setFont(new Font("Dialog", Font.PLAIN, 13));
 
-		myPay = new JTextField();
-		myPay.setBounds(143, 283, 233, 35);
-		desktopPane.add(myPay);
-		myPay.setColumns(10);
-	}
+      myPay = new JTextField();
+      myPay.setBounds(143, 283, 233, 35);
+      desktopPane.add(myPay);
+      myPay.setColumns(10);
+   }
 
-	// ÀÌº¥Æ® ÇÚµé·¯
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		Object src = e.getSource();
-		String pwd = String.valueOf(passwordField.getPassword());
-		/**
-		 * ÇØ¾ßÇÏ´Â À¯È¿¼º °Ë»ç 1) ºóÄ­À¸·Î Áßº¹°Ë»ç¸¦ ´­·¶À»¶¼ 2) Áßº¹°Ë»ç 3) ºñ¹Ğ¹øÈ£ À¯È¿¼º°Ë»ç 4) ½Ã±Ş - ¼ıÀÚÇüÀÌ ¾Æ´Ò¶§ ¶Ç´Â
-		 * ¼Ò¼öÁ¡À¸·ÎÂï¾úÀ»¶§ - °æ°í´ÙÀÌ¾ó·Î±× ¶ß°Ô ÇÑ´Ù.
-		 * 
-		 * --ÀÏ´ÜÀº ±×³É push ÇØº¸±â·Î ÇÏÀå
-		 */
-		if (src == cancelBtn) {
-			setVisible(false);
-			//this.dispose();
-		} else if(src == checkIdBtn) {
-			if(idTxt.getText().length() == 0 || idTxt.getText().length() < 4) {
-				JOptionPane.showMessageDialog(this, "¾ÆÀÌµğ´Â 4±ÛÀÚ ÀÌ»óÀ¸·Î Àû¾îÁÖ¼¼¿ä!");
-			} else {
-				try {
-					
-					if(dao.checkId(idTxt.getText())) {
-						JOptionPane.showMessageDialog(this, "»ç¿ë°¡´ÉÇÑ ¾ÆÀÌµğÀÔ´Ï´Ù.");
-					}else {
-						JOptionPane.showMessageDialog(this, "ÀÌ¹Ì »ç¿ëÁßÀÎ ¾ÆÀÌµğ ÀÔ´Ï´Ù!");
-					}		
-					
-				} catch (SQLException e1) {
-					JOptionPane.showMessageDialog(this, "¾Ë¼ö¾ø´Â ¿À·ù°¡ ¹ß»ıÇß½À´Ï´Ù.");
-				}
-			}
-			
-		} else if (src == joinBtn) {			
-			if(!checkedId) {
-				JOptionPane.showMessageDialog(this, "¾ÆÀÌµğ Áßº¹È®ÀÎÀ» ÇØÁÖ¼¼¿ä!");
-				idTxt.requestFocus();//¾ÆÀÌµğÄ­¿¡ ´Ù½Ã Æ÷Ä¿½º¸¦ ¸ÂÃçÁØ´Ù.
-			} else if (pwd.length() < 4 || pwd.length() > 10) {
-				JOptionPane.showMessageDialog(this, "ºñ¹Ğ¹øÈ£´Â 4ÀÚ¸® ÀÌ»ó 10ÀÚ¸® ÀÌÇÏ·Î ¼³Á¤ÇØÁÖ¼¼¿ä!");
-			} else if (nameTxt.getText().length() == 0) {
-				JOptionPane.showMessageDialog(this, "ÀÌ¸§À» ¹İµå½Ã ÀÔ·ÂÇØÁÖ¼¼¿ä!");
-			} else if (myworkplace.getText().length() == 0) {
-				JOptionPane.showMessageDialog(this, "±Ù¹«Áö¸¦ ¹İµå½Ã ÀÔ·ÂÇØÁÖ¼¼¿ä!");
-			}else if(myPay.getText().length() == 0) {
-				JOptionPane.showMessageDialog(this, "½Ã±ŞÀ» ¹İµå½Ã ÀÔ·ÂÇØÁÖ¼¼¿ä!");
-			}else if(myPay.getText().equals("0")) {
-				JOptionPane.showMessageDialog(this, "½Ã±ŞÀ» Á¤È®ÇÑ ¼ıÀÚ·Î ÀÔ·ÂÇØÁÖ¼¼¿ä!");
-			}else {				
-				member = new Member(idTxt.getText(), String.valueOf(passwordField.getPassword()),
-						 nameTxt.getText(), myworkplace.getText() , myPay.getText());
-				
-				try {
-					if(dao.join(member)) {
-						JOptionPane.showMessageDialog(this, "°¡ÀÔÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù!");			
-						//setVisible(false);
-						this.dispose();
-					}else {
-						JOptionPane.showMessageDialog(this, "°¡ÀÔ¿¡ ½ÇÆĞÇÏ¿´½À´Ï´Ù!!¤Ğ¤Ğ");		
-					}
-					
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-				}
-			}
-		}
+   // ì´ë²¤íŠ¸ í•¸ë“¤ëŸ¬
+   @Override
+   public void actionPerformed(ActionEvent e) {
+      Object src = e.getSource();
+      String pwd = String.valueOf(passwordField.getPassword());
+      /**
+       * í•´ì•¼í•˜ëŠ” ìœ íš¨ì„± ê²€ì‚¬ 1) ë¹ˆì¹¸ìœ¼ë¡œ ì¤‘ë³µê²€ì‚¬ë¥¼ ëˆŒë €ì„ë–¼ 2) ì¤‘ë³µê²€ì‚¬ 3) ë¹„ë°€ë²ˆí˜¸ ìœ íš¨ì„±ê²€ì‚¬ 4) ì‹œê¸‰ - ìˆ«ìí˜•ì´ ì•„ë‹ë•Œ ë˜ëŠ”
+       * ì†Œìˆ˜ì ìœ¼ë¡œì°ì—ˆì„ë•Œ - ê²½ê³ ë‹¤ì´ì–¼ë¡œê·¸ ëœ¨ê²Œ í•œë‹¤.
+       * 
+       * --ì¼ë‹¨ì€ ê·¸ëƒ¥ push í•´ë³´ê¸°ë¡œ í•˜ì¥
+       */
+      if (src == cancelBtn) {
+         setVisible(false);
+         //this.dispose();
+      } else if(src == checkIdBtn) {
+         if(idTxt.getText().length() == 0 || idTxt.getText().length() < 4) {
+            JOptionPane.showMessageDialog(this, "ì•„ì´ë””ëŠ” 4ê¸€ì ì´ìƒìœ¼ë¡œ ì ì–´ì£¼ì„¸ìš”!");
+         } else {
+            try {
+               
+               if(dao.checkId(idTxt.getText())) {
+                  JOptionPane.showMessageDialog(this, "ì‚¬ìš©ê°€ëŠ¥í•œ ì•„ì´ë””ì…ë‹ˆë‹¤.");
+                  checkedId = true;
+               }else {
+                  JOptionPane.showMessageDialog(this, "ì´ë¯¸ ì‚¬ìš©ì¤‘ì¸ ì•„ì´ë”” ì…ë‹ˆë‹¤!");
+               }      
+               
+            } catch (SQLException e1) {
+               JOptionPane.showMessageDialog(this, "ì•Œìˆ˜ì—†ëŠ” ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤.");
+            }
+         }
+         
+      } else if (src == joinBtn) {         
+         if(!checkedId) {
+            JOptionPane.showMessageDialog(this, "ì•„ì´ë”” ì¤‘ë³µí™•ì¸ì„ í•´ì£¼ì„¸ìš”!");
+            idTxt.requestFocus();//ì•„ì´ë””ì¹¸ì— ë‹¤ì‹œ í¬ì»¤ìŠ¤ë¥¼ ë§ì¶°ì¤€ë‹¤.
+         } else if (pwd.length() < 4 || pwd.length() > 10) {
+            JOptionPane.showMessageDialog(this, "ë¹„ë°€ë²ˆí˜¸ëŠ” 4ìë¦¬ ì´ìƒ 10ìë¦¬ ì´í•˜ë¡œ ì„¤ì •í•´ì£¼ì„¸ìš”!");
+         } else if (nameTxt.getText().length() == 0) {
+            JOptionPane.showMessageDialog(this, "ì´ë¦„ì„ ë°˜ë“œì‹œ ì…ë ¥í•´ì£¼ì„¸ìš”!");
+         } else if (myworkplace.getText().length() == 0) {
+            JOptionPane.showMessageDialog(this, "ê·¼ë¬´ì§€ë¥¼ ë°˜ë“œì‹œ ì…ë ¥í•´ì£¼ì„¸ìš”!");
+         }else if(myPay.getText().length() == 0) {
+            JOptionPane.showMessageDialog(this, "ì‹œê¸‰ì„ ë°˜ë“œì‹œ ì…ë ¥í•´ì£¼ì„¸ìš”!");
+         }else if(myPay.getText().equals("0")) {
+            JOptionPane.showMessageDialog(this, "ì‹œê¸‰ì„ ì •í™•í•œ ìˆ«ìë¡œ ì…ë ¥í•´ì£¼ì„¸ìš”!");
+         }else {            
+            member = new Member(idTxt.getText(), String.valueOf(passwordField.getPassword()),
+                   nameTxt.getText(), myworkplace.getText() , myPay.getText());
+            
+            try {
+               if(dao.join(member)) {
+                  JOptionPane.showMessageDialog(this, "ê°€ì…ì´ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤!");         
+                  //setVisible(false);
+                  
+                  this.dispose();
+               }else {
+                  JOptionPane.showMessageDialog(this, "ê°€ì…ì— ì‹¤íŒ¨í•˜ì˜€ìŠµë‹ˆë‹¤!!ã… ã… ");      
+               }
+               
+            } catch (SQLException e1) {
+               e1.printStackTrace();
+            }
+         }
+      }
 
-	}
+   }
 
 }
