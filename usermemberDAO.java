@@ -12,209 +12,284 @@ import java.util.Vector;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-//DB¿Í °ü·ÃµÈ µî·Ï, °Ë»ö, ¼öÁ¤, »èÁ¦ ÀÛ¾÷À» ÇÏ´Â Å¬·¡½º
-//DAOÅ¬·¡½º´Â Å×ÀÌºí´ç 1°³°¡ ÇÊ¿äÇÏ´Ù.
-//È¸¿øÁ¤º¸¸¦ °ü¸®ÇÏ±â À§ÇÑ DAOÅ¬·¡½ºÀÌ´Ù.
+//DBì™€ ê´€ë ¨ëœ ë“±ë¡, ê²€ìƒ‰, ìˆ˜ì •, ì‚­ì œ ì‘ì—…ì„ í•˜ëŠ” í´ë˜ìŠ¤
+//DAOí´ë˜ìŠ¤ëŠ” í…Œì´ë¸”ë‹¹ 1ê°œê°€ í•„ìš”í•˜ë‹¤.
+//íšŒì›ì •ë³´ë¥¼ ê´€ë¦¬í•˜ê¸° ìœ„í•œ DAOí´ë˜ìŠ¤ì´ë‹¤.
 public class usermemberDAO {
-	private static usermemberDAO instance;
-	private Connection conn;
-	private PreparedStatement pstmt;
-	private ResultSet rs;
-//	private DefaultTableModel model;
+   private static usermemberDAO instance;
+   private Connection conn;
+   private PreparedStatement pstmt;
+   private ResultSet rs;
+//   private DefaultTableModel model;
 
-	public usermemberDAO() {
-		try {
-			String ubURL = "jdbc:oracle:thin:@localhost:1521:xe";
-			String dbID = "SCOTT";
-			String dbPassword = "TIGER";
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection(ubURL, dbID, dbPassword);
+   public usermemberDAO() {
+      try {
+         String ubURL = "jdbc:oracle:thin:@localhost:1521:xe";
+         String dbID = "SCOTT";
+         String dbPassword = "TIGER";
+         Class.forName("oracle.jdbc.driver.OracleDriver");
+         conn = DriverManager.getConnection(ubURL, dbID, dbPassword);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
 
-	//È¸¿øÁ¤º¸ ºÒ·¯¿À±â
-	public Member getMember(String id) throws SQLException {
-		Member member = null;
+   // íšŒì›ì •ë³´ ë¶ˆëŸ¬ì˜¤ê¸°
+   public Member getMember(String id) throws SQLException {
+      Member member = null;
 
-		String getmember = "select * from usermember where id = ?";
-		pstmt = conn.prepareStatement(getmember);// sqlÀ» ÇØ¼®ÇØÁÖ¶ó
-		pstmt.setString(1, id);
+      String getmember = "select * from usermember where id = ?";
+      pstmt = conn.prepareStatement(getmember);// sqlì„ í•´ì„í•´ì£¼ë¼
+      pstmt.setString(1, id);
 
-		ResultSet rs = pstmt.executeQuery();
+      rs = pstmt.executeQuery();
 
-		if (rs.next())
-			member = new Member(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
-		return member;
-	}
+      if (rs.next())
+         member = new Member(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
+      return member;
+   }
 
-	// È¸¿ø°¡ÀÔ
-	public boolean join(Member user) throws SQLException {
-		String SQL = "INSERT INTO USERMEMBER VALUES(? ,? ,? ,?, ?)";
-		try {
-			pstmt = conn.prepareStatement(SQL);// sqlÀ» ÇØ¼®ÇØÁÖ¶ó
+   // íšŒì›ê°€ì…
+   public boolean join(Member user) throws SQLException {
+      String SQL = "INSERT INTO USERMEMBER VALUES(? ,? ,? ,?, ?)";
+      try {
+         pstmt = conn.prepareStatement(SQL);// sqlì„ í•´ì„í•´ì£¼ë¼
 
-			pstmt.setString(1, user.getId());
-			pstmt.setString(2, user.getPwd());
-			pstmt.setString(3, user.getName());
-			pstmt.setString(4, user.getWorkpalce());
-			pstmt.setString(5, user.getSalperhour());
-			// return pstmt.executeUpdate();
-			return this.pstmt.executeUpdate() != 0;
+         pstmt.setString(1, user.getId());
+         pstmt.setString(2, user.getPwd());
+         pstmt.setString(3, user.getName());
+         pstmt.setString(4, user.getWorkpalce());
+         pstmt.setString(5, user.getSalperhour());
+         // return pstmt.executeUpdate();
+         return this.pstmt.executeUpdate() != 0;
+         
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+      pstmt.close();
+      conn.close();
+      return this.pstmt.executeUpdate() != 0;
+   }
 
-		pstmt.close();
-		conn.close();
-		return this.pstmt.executeUpdate() != 0;
-	}
-	
-	public int checkUser(String id, String pwd) throws SQLException {//·Î±×ÀÎÇÒ¶§ ÇØ´ç ¾ÆÀÌµğ°¡ ¸Â´ÂÁö Ã¼Å©ÇÏ±â À§ÇØ
-		int result = -1;
-		String sql = "SELECT * FROM USERMEMBER WHERE ID = ?";
-		pstmt = conn.prepareStatement(sql);// sqlÀ» ÇØ¼®ÇØÁÖ¶ó
-		pstmt.setString(1, id);
+   public int checkUser(String id, String pwd) throws SQLException {// ë¡œê·¸ì¸í• ë•Œ í•´ë‹¹ ì•„ì´ë””ê°€ ë§ëŠ”ì§€ ì²´í¬í•˜ê¸° ìœ„í•´
+      int result = -1;
+      String sql = "SELECT * FROM USERMEMBER WHERE ID = ?";
+      pstmt = conn.prepareStatement(sql);// sqlì„ í•´ì„í•´ì£¼ë¼
+      pstmt.setString(1, id);
 
-		ResultSet rs = pstmt.executeQuery();
+      rs = pstmt.executeQuery();
 
-		if (rs.next()) {
-			if(rs.getString(2).equals(pwd)) {//¸Â´Â°æ¿ì
-				result = 1; 
-			}else {
-				result = 2;//ÀÏÄ¡ÇÏÁö ¾Ê´Â°æ¿ì
-			}
-		}else if(rs.next() == false) {
-			result = 0; //ÇØ´ç¾ÆÀÌµğ°¡ ¾ø´Â°æ¿ì
-		}
-		return result;
-	}
-
-	// È¸¿øÁ¤º¸ ¼öÁ¤
-	public boolean update(Member user) throws SQLException {
-		String SQL = "UPDATE USERMEMBER SET PWD = ?, NAME = ?, WORKPLACE = ?, SALPERHOUR = ? WHERE ID = ?";
-		try {
-			pstmt = conn.prepareStatement(SQL);
-			pstmt.setString(1, user.getPwd());
-			pstmt.setString(2, user.getName());
-			pstmt.setString(3, user.getWorkpalce());
-			pstmt.setString(4, user.getSalperhour());
-			pstmt.setString(5, user.getId());
-			
-
-			return this.pstmt.executeUpdate() != 0; // true¸é ¼öÁ¤ ¼º°ø
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		pstmt.close();
-		conn.close();
-		return this.pstmt.executeUpdate() != 0;
-	}
-
-	public boolean checkId(String id) throws SQLException {
-		String checkId = "SELECT ID FROM USERMEMBER WHERE ID = ?";
-		pstmt = conn.prepareStatement(checkId);
-
-		pstmt.setString(1, id);
-		return !pstmt.executeQuery().next();
-	}
-
-	//------------È¸¿ø´ç paymanager°ü¸®ÇÏ´Â DAO---------------
-	//ÃÊ±âÈ­truncate!!
-//	public boolean setinit(String id) {
-//		String getmember = "DELETE TABLE PAYMANAGER WHERE ID = ?";
-//		pstmt = conn.prepareStatement(getmember);// sqlÀ» ÇØ¼®ÇØÁÖ¶ó
-//		pstmt.setString(1, id);
-//
-//	}
-	
-	public boolean insertPayData(MemberPayInfo info) throws SQLException {
-		String SQL = "INSERT INTO PAYMANAGER VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		try {
-			pstmt = conn.prepareStatement(SQL);// sqlÀ» ÇØ¼®ÇØÁÖ¶ó
-
-			pstmt.setString(1, info.getId());
-			pstmt.setString(2, info.getWorkdate());
-			pstmt.setString(3, info.getWorkdateY());
-			pstmt.setString(4, info.getWorkdateM());
-			pstmt.setString(5, info.getWorkdateD());
-			pstmt.setString(6, info.getStarttime());
-			pstmt.setString(7, info.getEndtime());
-			pstmt.setString(8, info.getWorktime());
-			pstmt.setString(9, info.getDaysal());
-			
-			return this.pstmt.executeUpdate() != 0;
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		//db_close();
-		return this.pstmt.executeUpdate() != 0;
-	}
-	
-	public boolean deleteOnePayData(String id, String workdate) throws SQLException {
-		String SQL = "DELETE FROM PAYMANAGER WHERE USERID = ? AND WORKDATE = ?";//Á¶ÀÎ¾ÈÇØµµ µÇ³ª..?
-		
-		pstmt = conn.prepareStatement(SQL);// sqlÀ» ÇØ¼®ÇØÁÖ¶ó
-		pstmt.setString(1, id);//·Î±×ÀÎÇÑ »ç¿ëÀÚÀÇ id¸¦ ¸Å°³º¯¼ö·Î ¹Ş¾Æ ±× ¾ÆÀÌµğ¿¡ ÇØ´çÇÏ´Â Á¤º¸¸¦ ¸ğµÎ ºÒ·¯¿À°Ô²û ÇÑ´Ù.
-		pstmt.setString(2, workdate);
-		
-		return this.pstmt.executeUpdate() != 0;
-	}
-	
-	public boolean updateOnePayData() {
-		String SQL = "UPDATE PAYMANAGER SET  WHERE USERID = ?";
-		return this.pstmt.executeUpdate() != 0;
-	}
-	
-	public boolean checkWorkDate(String id, String workdate) throws SQLException {//°°Àº³¯¿¡ ¿©·¯°³ ÀÏÀ» ¸øÇÏµµ·Ï ¸·´Â´Ù.
-		String sql = "SELECT WORKDATE FROM PAYMANAGER WHERE USERID= ? AND WORKDATE = ?";
-		pstmt = conn.prepareStatement(sql);
-
-		pstmt.setString(1, id);
-		pstmt.setString(2, workdate);
-
-		return !pstmt.executeQuery().next();
-	}
-	
-	public Vector<Object[]> selectAllData(String id) throws SQLException {
-		String SQL = "SELECT  WORKDATEY, WORKDATEM, WORKDATED, STARTTIME, ENDTIME, WORKTIME, DAYSAL FROM PAYMANAGER JOIN USERMEMBER ON PAYMANAGER.USERID = USERMEMBER.ID WHERE PAYMANAGER.USERID = ? ORDER BY WORKDATEY,WORKDATEM,WORKDATED";
-		
-		pstmt = conn.prepareStatement(SQL);// sqlÀ» ÇØ¼®ÇØÁÖ¶ó
-		pstmt.setString(1, id);//·Î±×ÀÎÇÑ »ç¿ëÀÚÀÇ id¸¦ ¸Å°³º¯¼ö·Î ¹Ş¾Æ ±× ¾ÆÀÌµğ¿¡ ÇØ´çÇÏ´Â Á¤º¸¸¦ ¸ğµÎ ºÒ·¯¿À°Ô²û ÇÑ´Ù.
-		
-		ResultSet rs = pstmt.executeQuery();
-		
-		Vector<Object[]> obj = new Vector<Object[]>();
-		
-		 while(rs.next()) {// °¢°¢ °ªÀ» °¡Á®¿Í¼­ Å×ÀÌºí°ªµéÀ» Ãß°¡
-           obj.add(new Object[] {rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),rs.getString(6),rs.getString(7)});
+      if (rs.next()) {
+         if (rs.getString(2).equals(pwd)) {// ë§ëŠ”ê²½ìš°
+            result = 1;
+         } else {
+            result = 2;// ì¼ì¹˜í•˜ì§€ ì•ŠëŠ”ê²½ìš°
          }
-		
-		 //db_close();//Ä¿¹Ô¾ÈÇØ¼­ °è¼Ó ¾È¶ß´Â°Å¿´¾î ^^...ÀÌÅ¬¸³½º¿¡¼­´Â auto commitÀÎµ¥ sql¿¡¼­´Â Ä¿¹ÔÇØÁÖ¾î¾ßÇÔ!!!!!
-		 return obj;
-	}
-	
-	public void db_close() {
+      } else if (rs.next() == false) {
+         result = 0; // í•´ë‹¹ì•„ì´ë””ê°€ ì—†ëŠ”ê²½ìš°
+      }
+      return result;
+   }
 
-		try {
+   // íšŒì›ì •ë³´ ìˆ˜ì •
+   public boolean update(Member user) throws SQLException {
+      String SQL = "UPDATE USERMEMBER SET PWD = ?, NAME = ?, WORKPLACE = ?, SALPERHOUR = ? WHERE ID = ?";
+      try {
+         pstmt = conn.prepareStatement(SQL);
+         pstmt.setString(1, user.getPwd());
+         pstmt.setString(2, user.getName());
+         pstmt.setString(3, user.getWorkpalce());
+         pstmt.setString(4, user.getSalperhour());
+         pstmt.setString(5, user.getId());
 
-			if (pstmt != null)
-				pstmt.close();
-			if (rs != null)
-				rs.close();
-			if (conn != null)
-				conn.close();
+         return this.pstmt.executeUpdate() != 0; // trueë©´ ìˆ˜ì • ì„±ê³µ
 
-		} catch (SQLException e) {
-			System.out.println(e + "=> ´İ±â ¿À·ù");
-		}
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+      pstmt.close();
+      conn.close();
+      return this.pstmt.executeUpdate() != 0;
+   }
 
-	}
+   public boolean checkId(String id) throws SQLException {
+      String checkId = "SELECT ID FROM USERMEMBER WHERE ID = ?";
+      pstmt = conn.prepareStatement(checkId);
+
+      pstmt.setString(1, id);
+      return !pstmt.executeQuery().next();
+   }
+
+   // ------------íšŒì›ë‹¹ paymanagerê´€ë¦¬í•˜ëŠ” DAO---------------
+   // ì´ˆê¸°í™”truncate!!
+   public boolean setinit(String id) throws SQLException {
+      String sql = "DELETE PAYMANAGER WHERE USERID = ?";
+      pstmt = conn.prepareStatement(sql);// sqlì„ í•´ì„í•´ì£¼ë¼
+      pstmt.setString(1, id);
+
+      return this.pstmt.executeUpdate() != 0;
+   }
+
+   public boolean insertPayData(MemberPayInfo info) throws SQLException {
+      String SQL = "INSERT INTO PAYMANAGER VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      try {
+         pstmt = conn.prepareStatement(SQL);// sqlì„ í•´ì„í•´ì£¼ë¼
+
+         pstmt.setString(1, info.getId());
+         pstmt.setString(2, info.getWorkdate());
+         pstmt.setString(3, info.getWorkdateY());
+         pstmt.setString(4, info.getWorkdateM());
+         pstmt.setString(5, info.getWorkdateD());
+         pstmt.setString(6, info.getStarttime());
+         pstmt.setString(7, info.getEndtime());
+         pstmt.setString(8, info.getWorktime());
+         pstmt.setInt(9, info.getDaysal());
+
+         return this.pstmt.executeUpdate() != 0;
+
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+
+      // db_close();
+      return this.pstmt.executeUpdate() != 0;
+   }
+
+   public boolean deleteOnePayData(String id, String workdate) throws SQLException {
+      String SQL = "DELETE FROM PAYMANAGER WHERE USERID = ? AND WORKDATE = ?";// ì¡°ì¸ì•ˆí•´ë„ ë˜ë‚˜..?
+
+      pstmt = conn.prepareStatement(SQL);// sqlì„ í•´ì„í•´ì£¼ë¼
+      pstmt.setString(1, id);// ë¡œê·¸ì¸í•œ ì‚¬ìš©ìì˜ idë¥¼ ë§¤ê°œë³€ìˆ˜ë¡œ ë°›ì•„ ê·¸ ì•„ì´ë””ì— í•´ë‹¹í•˜ëŠ” ì •ë³´ë¥¼ ëª¨ë‘ ë¶ˆëŸ¬ì˜¤ê²Œë” í•œë‹¤.
+      pstmt.setString(2, workdate);
+
+      return this.pstmt.executeUpdate() != 0;
+   }
+
+   public boolean updateOnePayData(String id, String colname, String changeValue) throws SQLException {
+      String SQL = "UPDATE PAYMANAGER SET " + colname +" = ? WHERE USERID = ?";
+     
+      pstmt = conn.prepareStatement(SQL);
+      pstmt.setString(1, changeValue);
+      pstmt.setString(2, id);
+      
+      return this.pstmt.executeUpdate() != 0;
+   }
+
+   public boolean checkWorkDate(String id, String workdate) throws SQLException {// ê°™ì€ë‚ ì— ì—¬ëŸ¬ê°œ ì¼ì„ ëª»í•˜ë„ë¡ ë§‰ëŠ”ë‹¤.
+      String sql = "SELECT WORKDATE FROM PAYMANAGER WHERE USERID= ? AND WORKDATE = ?";
+      pstmt = conn.prepareStatement(sql);
+
+      pstmt.setString(1, id);
+      pstmt.setString(2, workdate);
+
+      return !pstmt.executeQuery().next();
+   }
+
+   public Vector<Object[]> selectAllData(String id) throws SQLException {
+      String SQL = "SELECT WORKDATEY, WORKDATEM, WORKDATED, STARTTIME, ENDTIME, WORKTIME, DAYSAL FROM PAYMANAGER JOIN USERMEMBER ON PAYMANAGER.USERID = USERMEMBER.ID WHERE PAYMANAGER.USERID = ? ORDER BY WORKDATEY,WORKDATEM,WORKDATED";
+
+      pstmt = conn.prepareStatement(SQL);// sqlì„ í•´ì„í•´ì£¼ë¼
+      pstmt.setString(1, id);// ë¡œê·¸ì¸í•œ ì‚¬ìš©ìì˜ idë¥¼ ë§¤ê°œë³€ìˆ˜ë¡œ ë°›ì•„ ê·¸ ì•„ì´ë””ì— í•´ë‹¹í•˜ëŠ” ì •ë³´ë¥¼ ëª¨ë‘ ë¶ˆëŸ¬ì˜¤ê²Œë” í•œë‹¤.
+
+      rs = pstmt.executeQuery();
+
+      Vector<Object[]> obj = new Vector<Object[]>();
+
+      while (rs.next()) {// ê°ê° ê°’ì„ ê°€ì ¸ì™€ì„œ í…Œì´ë¸”ê°’ë“¤ì„ ì¶”ê°€
+         obj.add(new Object[] { rs.getString("WORKDATEY"), rs.getString("WORKDATEM"), rs.getString("WORKDATED"),
+               rs.getString("STARTTIME"), rs.getString("ENDTIME"), rs.getString("WORKTIME"),
+               rs.getString("DAYSAL") });
+      }
+
+      // db_close();//ì»¤ë°‹ì•ˆí•´ì„œ ê³„ì† ì•ˆëœ¨ëŠ”ê±°ì˜€ì–´ ^^...ì´í´ë¦½ìŠ¤ì—ì„œëŠ” auto commitì¸ë° sqlì—ì„œëŠ” ì»¤ë°‹í•´ì£¼ì–´ì•¼í•¨!!!!!
+      return obj;
+   }
+
+   public Vector<Object[]> userSelectMonth(String id, String year, String month) throws SQLException {
+      String sql = "SELECT WORKDATEY, WORKDATEM, WORKDATED, STARTTIME, ENDTIME, WORKTIME, DAYSAL FROM PAYMANAGER WHERE USERID = ? AND WORKDATEY = ? AND WORKDATEM = ? order by WORKDATEY, WORKDATEM, WORKDATED, STARTTIME, ENDTIME ";
+      pstmt = conn.prepareStatement(sql);
+      pstmt.setString(1, id);
+      pstmt.setString(2, year);
+      pstmt.setString(3, month);
+
+      rs = pstmt.executeQuery();
+
+      Vector<Object[]> obj = new Vector<Object[]>();
+
+      if (rs.next()) {
+
+         do {// ê°ê° ê°’ì„ ê°€ì ¸ì™€ì„œ í…Œì´ë¸”ê°’ë“¤ì„ ì¶”ê°€
+            obj.add(new Object[] { rs.getString("WORKDATEY"), rs.getString("WORKDATEM"), rs.getString("WORKDATED"),
+                  rs.getString("STARTTIME"), rs.getString("ENDTIME"), rs.getString("WORKTIME"),
+                  rs.getString("DAYSAL") });
+         } while (rs.next());
+      } else {
+    	  
+      }
+
+      return obj;
+   }
+
+   public String[] calTotalNow(String id, String year, String month) throws SQLException {// ì´ê·¼ë¬´ì‹œê°„, ì´ë²ˆëˆ
+      String sql = "SELECT WORKTIME, DAYSAL FROM PAYMANAGER WHERE USERID = ? AND WORKDATEY = ? AND WORKDATEM = ? order by WORKDATEY, WORKDATEM, WORKDATED, STARTTIME, ENDTIME ";
+      pstmt = conn.prepareStatement(sql);
+      pstmt.setString(1, id);
+      pstmt.setString(2, year);
+      pstmt.setString(3, month);
+
+      rs = pstmt.executeQuery();
+
+      int worktimeH = 0, worktimeMM = 0, daySal = 0;
+      String[] str = new String[2];
+
+      while (rs.next()) {
+         worktimeH += Integer.parseInt(rs.getString("WORKTIME").substring(0, 1));
+         System.out.println(rs.getString("WORKTIME").substring(0, 1));
+         worktimeMM += Integer.parseInt(rs.getString("WORKTIME").substring(3, 4));
+         System.out.println(rs.getString("WORKTIME").substring(3, 4));
+         daySal += rs.getInt("DAYSAL");
+      }
+      
+      int tmpH = worktimeMM / 60;
+      worktimeH += tmpH;
+      worktimeMM = worktimeMM - (60 * tmpH);
+      str[0] = worktimeH + " : " + worktimeMM;
+      str[1] = daySal + "";
+
+      return str;
+   }
+
+   public int calCountworkDay(String id, String year, String month) throws SQLException {// í˜„ì¬ ë‹¬ì˜ í–‰ì„ ì¹´ìš´íŠ¸í•˜ë©´ëœë‹¤. ì—†ìœ¼ë©´ 0
+      String sql = "SELECT * FROM PAYMANAGER WHERE USERID = ? AND WORKDATEY = ? AND WORKDATEM = ?";
+      pstmt = conn.prepareStatement(sql);
+      pstmt.setString(1, id);
+      pstmt.setString(2, year);
+      pstmt.setString(3, month);
+      rs = pstmt.executeQuery();
+      int count = 0;
+      while (rs.next()) {
+         count++;
+      }
+      return count;
+   }
+
+   public void db_close() {
+
+      try {
+
+         if (pstmt != null)
+            pstmt.close();
+         if (rs != null)
+            rs.close();
+         if (conn != null)
+            conn.close();
+
+      } catch (SQLException e) {
+         System.out.println(e + "=> ë‹«ê¸° ì˜¤ë¥˜");
+      }
+
+   }
 
 }
