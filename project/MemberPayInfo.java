@@ -7,8 +7,8 @@ public class MemberPayInfo {
 	private String workdateM;
 	private String workdateD;
 	private String starttime;
-	private String endtime;// ê·¼ë¬´ì§€
-	private String worktime; // ì‹œê¸‰
+	private String endtime;// ±Ù¹«Áö
+	private String worktime; // ½Ã±Þ
 	private int daysal; 
 
 	public MemberPayInfo(String id, String workdate,String workdateY, String workdateM, String workdateD, String starttime, String endtime, String worktime, int daysal) {

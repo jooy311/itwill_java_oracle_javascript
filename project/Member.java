@@ -4,8 +4,8 @@ public class Member {
 	private String id;
 	private String pwd;
 	private String name;
-	private String workplace;// ê·¼ë¬´ì§€
-	private String salperhour; // ì‹œê¸‰
+	private String workplace;// ±Ù¹«Áö
+	private String salperhour; // ½Ã±Þ
 
 	public Member(String id, String pwd, String name, String workpalce, String salperhour) {
 		super();

@@ -17,9 +17,9 @@ import javax.swing.table.DefaultTableModel;
 //회원정보를 관리하기 위한 DAO클래스이다.
 public class usermemberDAO {
 	private static usermemberDAO instance;
-	private Connection conn;
-	private PreparedStatement pstmt;
-	private ResultSet rs;
+	private Connection conn = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
 //   private DefaultTableModel model;
 
 	public usermemberDAO() {
@@ -34,6 +34,12 @@ public class usermemberDAO {
 			e.printStackTrace();
 		}
 	}
+	
+	public static usermemberDAO getDAO() {
+		usermemberDAO dao = new usermemberDAO();
+		return dao;
+	}
+	
 
 	// 회원정보 불러오기
 	public Member getMember(String id) throws SQLException {
@@ -47,11 +53,12 @@ public class usermemberDAO {
 
 		if (rs.next())
 			member = new Member(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
+		
 		return member;
 	}
 
 	// 회원가입
-	public boolean join(Member user) throws SQLException {
+	public boolean join(Member user) throws SQLException  {
 		String SQL = "INSERT INTO USERMEMBER VALUES(? ,? ,? ,?, ?)";
 		try {
 			pstmt = conn.prepareStatement(SQL);// sql을 해석해주라
@@ -64,12 +71,15 @@ public class usermemberDAO {
 			// return pstmt.executeUpdate();
 			return this.pstmt.executeUpdate() != 0;
 
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
+			
+		}finally {
+			db_close();
 		}
 
-		pstmt.close();
-		conn.close();
+//		pstmt.close();
+//		conn.close();
 		return this.pstmt.executeUpdate() != 0;
 	}
 

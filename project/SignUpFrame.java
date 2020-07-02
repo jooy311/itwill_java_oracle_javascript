@@ -61,7 +61,7 @@ public class SignUpFrame extends JFrame implements ActionListener {
    private JButton checkIdBtn;
    
 
-   // ìƒì„±ì
+   // »ı¼ºÀÚ
    public SignUpFrame(String title) {
       super(title);
       init();
@@ -78,14 +78,14 @@ public class SignUpFrame extends JFrame implements ActionListener {
       setVisible(true);
 
       
-      //ì´ë²¤íŠ¸ ë“±ë¡
+      //ÀÌº¥Æ® µî·Ï
       cancelBtn.addActionListener(this);
       joinBtn.addActionListener(this);
       checkIdBtn.addActionListener(this);
    
    }
 
-   // ë””ìì¸ ë§Œë“œëŠ” ë©”ì†Œë“œ
+   // µğÀÚÀÎ ¸¸µå´Â ¸Ş¼Òµå
    public void init() {
       getContentPane().setBackground(SystemColor.activeCaption);
 
@@ -96,7 +96,7 @@ public class SignUpFrame extends JFrame implements ActionListener {
 
       JLabel lblNewLabel = new JLabel("[\uD68C\uC6D0\uAC00\uC785]");
       lblNewLabel.setForeground(new Color(0, 0, 0));
-      lblNewLabel.setFont(new Font("ë‚˜ëˆ”ê³ ë”•ì½”ë”©", Font.PLAIN, 25));
+      lblNewLabel.setFont(new Font("³ª´®°íµñÄÚµù", Font.PLAIN, 25));
       panel.add(lblNewLabel);
 
       JDesktopPane desktopPane = new JDesktopPane();
@@ -105,7 +105,7 @@ public class SignUpFrame extends JFrame implements ActionListener {
 
       checkIdBtn = new JButton("\uC911\uBCF5\uD655\uC778");
       checkIdBtn.setBackground(new Color(255, 182, 193));
-      checkIdBtn.setFont(new Font("ë‚˜ëˆ”ê³ ë”•ì½”ë”©", Font.BOLD, 10));
+      checkIdBtn.setFont(new Font("³ª´®°íµñÄÚµù", Font.BOLD, 10));
       checkIdBtn.setBounds(253, 39, 84, 37);
       desktopPane.add(checkIdBtn);
 
@@ -115,13 +115,13 @@ public class SignUpFrame extends JFrame implements ActionListener {
       desktopPane.add(desktopPane_1);
 
       cancelBtn = new JButton("\uCDE8\uC18C");
-      cancelBtn.setFont(new Font("ë‚˜ëˆ”ê³ ë”•ì½”ë”©", Font.BOLD, 11));
+      cancelBtn.setFont(new Font("³ª´®°íµñÄÚµù", Font.BOLD, 11));
       cancelBtn.setBounds(128, 10, 84, 37);
       desktopPane_1.add(cancelBtn);
 
       joinBtn = new JButton("\uAC00\uC785\uD558\uAE30");
       joinBtn.setBackground(new Color(255, 182, 193));
-      joinBtn.setFont(new Font("ë‚˜ëˆ”ê³ ë”•ì½”ë”©", Font.BOLD, 11));
+      joinBtn.setFont(new Font("³ª´®°íµñÄÚµù", Font.BOLD, 11));
       joinBtn.setBounds(28, 10, 84, 37);
       desktopPane_1.add(joinBtn);
 
@@ -175,68 +175,68 @@ public class SignUpFrame extends JFrame implements ActionListener {
       myPay.setColumns(10);
    }
 
-   // ì´ë²¤íŠ¸ í•¸ë“¤ëŸ¬
+   // ÀÌº¥Æ® ÇÚµé·¯
    @Override
    public void actionPerformed(ActionEvent e) {
       Object src = e.getSource();
       String pwd = String.valueOf(passwordField.getPassword());
       /**
-       * í•´ì•¼í•˜ëŠ” ìœ íš¨ì„± ê²€ì‚¬ 1) ë¹ˆì¹¸ìœ¼ë¡œ ì¤‘ë³µê²€ì‚¬ë¥¼ ëˆŒë €ì„ë–¼ 2) ì¤‘ë³µê²€ì‚¬ 3) ë¹„ë°€ë²ˆí˜¸ ìœ íš¨ì„±ê²€ì‚¬ 4) ì‹œê¸‰ - ìˆ«ìí˜•ì´ ì•„ë‹ë•Œ ë˜ëŠ”
-       * ì†Œìˆ˜ì ìœ¼ë¡œì°ì—ˆì„ë•Œ - ê²½ê³ ë‹¤ì´ì–¼ë¡œê·¸ ëœ¨ê²Œ í•œë‹¤.
+       * ÇØ¾ßÇÏ´Â À¯È¿¼º °Ë»ç 1) ºóÄ­À¸·Î Áßº¹°Ë»ç¸¦ ´­·¶À»¶¼ 2) Áßº¹°Ë»ç 3) ºñ¹Ğ¹øÈ£ À¯È¿¼º°Ë»ç 4) ½Ã±Ş - ¼ıÀÚÇüÀÌ ¾Æ´Ò¶§ ¶Ç´Â
+       * ¼Ò¼öÁ¡À¸·ÎÂï¾úÀ»¶§ - °æ°í´ÙÀÌ¾ó·Î±× ¶ß°Ô ÇÑ´Ù.
        * 
-       * --ì¼ë‹¨ì€ ê·¸ëƒ¥ push í•´ë³´ê¸°ë¡œ í•˜ì¥
+       * --ÀÏ´ÜÀº ±×³É push ÇØº¸±â·Î ÇÏÀå
        */
       if (src == cancelBtn) {
          setVisible(false);
          //this.dispose();
       } else if(src == checkIdBtn) {
          if(idTxt.getText().length() == 0 || idTxt.getText().length() < 4 || idTxt.getText().length() > 8) {
-            JOptionPane.showMessageDialog(this, "ì•„ì´ë””ëŠ” 4ê¸€ì ì´ìƒ 8ê¸€ì ì´í•˜ë¡œ ì ì–´ì£¼ì„¸ìš”!");
+            JOptionPane.showMessageDialog(this, "¾ÆÀÌµğ´Â 4±ÛÀÚ ÀÌ»ó 8±ÛÀÚ ÀÌÇÏ·Î Àû¾îÁÖ¼¼¿ä!");
          } else if(Pattern.matches("^[a-zA-Z][a-zA-z0-9]$", idTxt.getText())){
-        	JOptionPane.showMessageDialog(this, "ì•„ì´ë””ëŠ” ì˜ì†Œë¬¸ì, ì˜ëŒ€ë¬¸ì, ìˆ«ì ì¡°í•©ìœ¼ë¡œ ë§Œë“¤ì–´ì£¼ì„¸ìš”!");
+        	JOptionPane.showMessageDialog(this, "¾ÆÀÌµğ´Â ¿µ¼Ò¹®ÀÚ, ¿µ´ë¹®ÀÚ, ¼ıÀÚ Á¶ÇÕÀ¸·Î ¸¸µé¾îÁÖ¼¼¿ä!");
          }
          else {
             try {
                
                if(dao.checkId(idTxt.getText())) {
-                  JOptionPane.showMessageDialog(this, "ì‚¬ìš©ê°€ëŠ¥í•œ ì•„ì´ë””ì…ë‹ˆë‹¤.");
+                  JOptionPane.showMessageDialog(this, "»ç¿ë°¡´ÉÇÑ ¾ÆÀÌµğÀÔ´Ï´Ù.");
                   checkedId = true;
                   
                }else {
-                  JOptionPane.showMessageDialog(this, "ì´ë¯¸ ì‚¬ìš©ì¤‘ì¸ ì•„ì´ë”” ì…ë‹ˆë‹¤!");
+                  JOptionPane.showMessageDialog(this, "ÀÌ¹Ì »ç¿ëÁßÀÎ ¾ÆÀÌµğ ÀÔ´Ï´Ù!");
                }      
                
             } catch (SQLException e1) {
-               JOptionPane.showMessageDialog(this, "ì•Œìˆ˜ì—†ëŠ” ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤.");
+               JOptionPane.showMessageDialog(this, "¾Ë¼ö¾ø´Â ¿À·ù°¡ ¹ß»ıÇß½À´Ï´Ù.");
             }
          }
          
       } else if (src == joinBtn) {         
          if(!checkedId) {
-            JOptionPane.showMessageDialog(this, "ì•„ì´ë”” ì¤‘ë³µí™•ì¸ì„ í•´ì£¼ì„¸ìš”!");
-            idTxt.requestFocus();//ì•„ì´ë””ì¹¸ì— ë‹¤ì‹œ í¬ì»¤ìŠ¤ë¥¼ ë§ì¶°ì¤€ë‹¤.
+            JOptionPane.showMessageDialog(this, "¾ÆÀÌµğ Áßº¹È®ÀÎÀ» ÇØÁÖ¼¼¿ä!");
+            idTxt.requestFocus();//¾ÆÀÌµğÄ­¿¡ ´Ù½Ã Æ÷Ä¿½º¸¦ ¸ÂÃçÁØ´Ù.
          } else if (pwd.length() < 4 || pwd.length() > 10) {
-            JOptionPane.showMessageDialog(this, "ë¹„ë°€ë²ˆí˜¸ëŠ” 4ìë¦¬ ì´ìƒ 10ìë¦¬ ì´í•˜ë¡œ ì„¤ì •í•´ì£¼ì„¸ìš”!");
+            JOptionPane.showMessageDialog(this, "ºñ¹Ğ¹øÈ£´Â 4ÀÚ¸® ÀÌ»ó 10ÀÚ¸® ÀÌÇÏ·Î ¼³Á¤ÇØÁÖ¼¼¿ä!");
          } else if (nameTxt.getText().length() == 0) {
-            JOptionPane.showMessageDialog(this, "ì´ë¦„ì„ ë°˜ë“œì‹œ ì…ë ¥í•´ì£¼ì„¸ìš”!");
+            JOptionPane.showMessageDialog(this, "ÀÌ¸§À» ¹İµå½Ã ÀÔ·ÂÇØÁÖ¼¼¿ä!");
          } else if (myworkplace.getText().length() == 0) {
-            JOptionPane.showMessageDialog(this, "ê·¼ë¬´ì§€ë¥¼ ë°˜ë“œì‹œ ì…ë ¥í•´ì£¼ì„¸ìš”!");
+            JOptionPane.showMessageDialog(this, "±Ù¹«Áö¸¦ ¹İµå½Ã ÀÔ·ÂÇØÁÖ¼¼¿ä!");
          }else if(myPay.getText().length() == 0) {
-            JOptionPane.showMessageDialog(this, "ì‹œê¸‰ì„ ë°˜ë“œì‹œ ì…ë ¥í•´ì£¼ì„¸ìš”!");
+            JOptionPane.showMessageDialog(this, "½Ã±ŞÀ» ¹İµå½Ã ÀÔ·ÂÇØÁÖ¼¼¿ä!");
          }else if(myPay.getText().length() == 0 || Pattern.matches("^", myPay.getText())) {
-            JOptionPane.showMessageDialog(this, "ì‹œê¸‰ì„ ì •í™•í•œ ìˆ«ìë¡œ ì…ë ¥í•´ì£¼ì„¸ìš”!");
+            JOptionPane.showMessageDialog(this, "½Ã±ŞÀ» Á¤È®ÇÑ ¼ıÀÚ·Î ÀÔ·ÂÇØÁÖ¼¼¿ä!");
          }else {            
             member = new Member(idTxt.getText(), String.valueOf(passwordField.getPassword()),
                    nameTxt.getText(), myworkplace.getText() , myPay.getText());
             
             try {
                if(dao.join(member)) {
-                  JOptionPane.showMessageDialog(this, "ê°€ì…ì´ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤!");         
+                  JOptionPane.showMessageDialog(this, "°¡ÀÔÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù!");         
                   //setVisible(false);
                   
                   this.dispose();
                }else {
-                  JOptionPane.showMessageDialog(this, "ê°€ì…ì— ì‹¤íŒ¨í•˜ì˜€ìŠµë‹ˆë‹¤!!ã… ã… ");      
+                  JOptionPane.showMessageDialog(this, "°¡ÀÔ¿¡ ½ÇÆĞÇÏ¿´½À´Ï´Ù!!¤Ğ¤Ğ");      
                }
                
             } catch (SQLException e1) {
