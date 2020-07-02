@@ -44,7 +44,7 @@ public class ModifyInfoFrame extends JFrame implements ActionListener {
 
 	private Member member;
 	private ManagerFrame managerFrame;
-	private usermemberDAO dao = new usermemberDAO();// ÀÌ·¸°Ô ¾ÈÇÏ°í ½Ì±ÛÅæ ÆĞÅÏÀ» ÀÌ¿ëÇÏ¸é Æí¸®ÇÔ ³ªÁß¿¡ ¹Ù²ÙÀÚ
+	private usermemberDAO dao = new usermemberDAO();// ì´ë ‡ê²Œ ì•ˆí•˜ê³  ì‹±ê¸€í†¤ íŒ¨í„´ì„ ì´ìš©í•˜ë©´ í¸ë¦¬í•¨ ë‚˜ì¤‘ì— ë°”ê¾¸ì
 	private JPasswordField passwordField;
 	private JTextField nameTxt;
 	private JTextField myworkplace;
@@ -57,7 +57,7 @@ public class ModifyInfoFrame extends JFrame implements ActionListener {
 	// public boolean flag = false;
 
 	public ModifyInfoFrame(Member member, String title, ManagerFrame managerFrame) {
-		// ¾ÆÀÌµğ ¼öÁ¤ x -> ³ª¸ÓÁö´Â ´Ù Çã¿ë
+		// ì•„ì´ë”” ìˆ˜ì • x -> ë‚˜ë¨¸ì§€ëŠ” ë‹¤ í—ˆìš©
 		super(title);
 		this.member = member;
 		this.managerFrame = managerFrame;
@@ -76,13 +76,13 @@ public class ModifyInfoFrame extends JFrame implements ActionListener {
 		setVisible(true);
 		this.setResizable(false);
 
-		// ÀÌº¥Æ® µî·Ï
+		// ì´ë²¤íŠ¸ ë“±ë¡
 		cancelBtn.addActionListener(this);
 		changeBtn.addActionListener(this);
 	}
 
 	public void start(Member m) {
-		// È¸¿ø¾ÆÀÌµğ¸¦ ¾îµğ¼­ ¾î¶»°Ô ¾ò¾î¿Ã°ÍÀÎ°¡..
+		// íšŒì›ì•„ì´ë””ë¥¼ ì–´ë””ì„œ ì–´ë–»ê²Œ ì–»ì–´ì˜¬ê²ƒì¸ê°€..
 		checkedId = true;
 		checkIdBtn.setEnabled(false);
 
@@ -94,7 +94,7 @@ public class ModifyInfoFrame extends JFrame implements ActionListener {
 
 	}
 
-	// µğÀÚÀÎ ¸¸µå´Â ¸Ş¼Òµå
+	// ë””ìì¸ ë§Œë“œëŠ” ë©”ì†Œë“œ
 	public void init() {
 		getContentPane().setBackground(SystemColor.activeCaption);
 
@@ -105,7 +105,7 @@ public class ModifyInfoFrame extends JFrame implements ActionListener {
 
 		JLabel lblNewLabel = new JLabel("[\uC815\uBCF4 \uC218\uC815]");
 		lblNewLabel.setForeground(new Color(0, 0, 0));
-		lblNewLabel.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 25));
+		lblNewLabel.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 25));
 		panel.add(lblNewLabel);
 
 		JDesktopPane desktopPane = new JDesktopPane();
@@ -115,7 +115,7 @@ public class ModifyInfoFrame extends JFrame implements ActionListener {
 		checkIdBtn = new JButton("\uC911\uBCF5\uD655\uC778");
 		checkIdBtn.setEnabled(false);
 		checkIdBtn.setBackground(new Color(255, 182, 193));
-		checkIdBtn.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 15));
+		checkIdBtn.setFont(new Font("ë‚˜ëˆ”ê³ ë”•ì½”ë”©", Font.BOLD, 11));
 		checkIdBtn.setBounds(253, 39, 84, 37);
 		desktopPane.add(checkIdBtn);
 
@@ -125,13 +125,13 @@ public class ModifyInfoFrame extends JFrame implements ActionListener {
 		desktopPane.add(desktopPane_1);
 
 		cancelBtn = new JButton("\uCDE8\uC18C");
-		cancelBtn.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 15));
+		cancelBtn.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 15));
 		cancelBtn.setBounds(128, 10, 84, 37);
 		desktopPane_1.add(cancelBtn);
 
 		changeBtn = new JButton("\uBCC0\uACBD");
 		changeBtn.setBackground(new Color(255, 182, 193));
-		changeBtn.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 15));
+		changeBtn.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 15));
 		changeBtn.setBounds(28, 10, 84, 37);
 		desktopPane_1.add(changeBtn);
 
@@ -186,7 +186,7 @@ public class ModifyInfoFrame extends JFrame implements ActionListener {
 		myPay.setColumns(10);
 	}
 
-	// ÀÌº¥Æ® ÇÚµé·¯
+	// ì´ë²¤íŠ¸ í•¸ë“¤ëŸ¬
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object src = e.getSource();
@@ -197,24 +197,24 @@ public class ModifyInfoFrame extends JFrame implements ActionListener {
 			this.dispose();
 		} else if (src == changeBtn) {
 			if (pwd.length() < 4 || pwd.length() > 10) {
-				JOptionPane.showMessageDialog(this, "ºñ¹Ğ¹øÈ£´Â 4ÀÚ¸® ÀÌ»ó 10ÀÚ¸® ÀÌÇÏ·Î ¼³Á¤ÇØÁÖ¼¼¿ä!");
+				JOptionPane.showMessageDialog(this, "ë¹„ë°€ë²ˆí˜¸ëŠ” 4ìë¦¬ ì´ìƒ 10ìë¦¬ ì´í•˜ë¡œ ì„¤ì •í•´ì£¼ì„¸ìš”!");
 			} else if (nameTxt.getText().length() == 0) {
-				JOptionPane.showMessageDialog(this, "ÀÌ¸§À» ¹İµå½Ã ÀÔ·ÂÇØÁÖ¼¼¿ä!");
+				JOptionPane.showMessageDialog(this, "ì´ë¦„ì„ ë°˜ë“œì‹œ ì…ë ¥í•´ì£¼ì„¸ìš”!");
 			} else if (myworkplace.getText().length() == 0) {
-				JOptionPane.showMessageDialog(this, "±Ù¹«Áö¸¦ ¹İµå½Ã ÀÔ·ÂÇØÁÖ¼¼¿ä!");
+				JOptionPane.showMessageDialog(this, "ê·¼ë¬´ì§€ë¥¼ ë°˜ë“œì‹œ ì…ë ¥í•´ì£¼ì„¸ìš”!");
 			} else if (myPay.getText().length() == 0) {
-				JOptionPane.showMessageDialog(this, "½Ã±ŞÀ» ¹İµå½Ã ÀÔ·ÂÇØÁÖ¼¼¿ä!");
-			} else if (myPay.getText().equals("0")) {// ÇØ¾ßÇÒ À¯È¿¼º °Ë»ç 1) 0ÀÌ ¸ÕÀúµé¾î°¡¸é¾ÈµÊ, 2) ¹®ÀÚ°¡ µé¾î°¡¸é ¾ÈµÊ
-				JOptionPane.showMessageDialog(this, "½Ã±ŞÀ» Á¤È®ÇÑ ¼ıÀÚ·Î ÀÔ·ÂÇØÁÖ¼¼¿ä!");
+				JOptionPane.showMessageDialog(this, "ì‹œê¸‰ì„ ë°˜ë“œì‹œ ì…ë ¥í•´ì£¼ì„¸ìš”!");
+			} else if (myPay.getText().equals("0")) {// í•´ì•¼í•  ìœ íš¨ì„± ê²€ì‚¬ 1) 0ì´ ë¨¼ì €ë“¤ì–´ê°€ë©´ì•ˆë¨, 2) ë¬¸ìê°€ ë“¤ì–´ê°€ë©´ ì•ˆë¨
+				JOptionPane.showMessageDialog(this, "ì‹œê¸‰ì„ ì •í™•í•œ ìˆ«ìë¡œ ì…ë ¥í•´ì£¼ì„¸ìš”!");
 			} else {
 
 				if (!myworkplace.getText().equals(member.getWorkpalce())) {
-					int choice = JOptionPane.showConfirmDialog(this, "±Ù¹«Áö º¯°æ½Ã, ¿©ÅÂ±îÁö ÀúÀåµÈ ³»¿ëÀÌ ÃÊ±âÈ­µË´Ï´Ù. ±×·¡µµ º¯°æÇÏ½Ã°Ú½À´Ï±î?",
-							"°æ°í", JOptionPane.OK_CANCEL_OPTION);
+					int choice = JOptionPane.showConfirmDialog(this, "ê·¼ë¬´ì§€ ë³€ê²½ì‹œ, ì—¬íƒœê¹Œì§€ ì €ì¥ëœ ë‚´ìš©ì´ ì´ˆê¸°í™”ë©ë‹ˆë‹¤. ê·¸ë˜ë„ ë³€ê²½í•˜ì‹œê² ìŠµë‹ˆê¹Œ?",
+							"ê²½ê³ ", JOptionPane.OK_CANCEL_OPTION);
 					if (choice == JOptionPane.CANCEL_OPTION) {
 						myworkplace.setText(member.getWorkpalce());
 						myworkplace.setEditable(false);
-					} // choice¸¦ ÇÊµåº¯¼ö·Î ¹Ş°í, save¹öÆ°À» ´­·¶À»¶§ tc¿Í db¸ğµÎ resetµÇµµ·Ï ¸¸µéÀÚ ¡Ú¡Ú¡Ú
+					} // choiceë¥¼ í•„ë“œë³€ìˆ˜ë¡œ ë°›ê³ , saveë²„íŠ¼ì„ ëˆŒë €ì„ë•Œ tcì™€ dbëª¨ë‘ resetë˜ë„ë¡ ë§Œë“¤ì â˜…â˜…â˜…
 					else if (choice == JOptionPane.OK_OPTION) {
 
 						member = new Member(idTxt.getText(), String.valueOf(passwordField.getPassword()),
@@ -222,15 +222,15 @@ public class ModifyInfoFrame extends JFrame implements ActionListener {
 
 						try {
 							if (dao.update(member)) {
-								JOptionPane.showMessageDialog(this, "º¯°æÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù!");
+								JOptionPane.showMessageDialog(this, "ë³€ê²½ì´ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤!");
 								
-								//¸ğµçÅ×ÀÌºí »èÁ¦
-								dao.setinit(member.getId());//¿Ö JÅ×ÀÌºíÀº ¸®¼ÂÀÌ ¾ÈµÇ´Ï?
+								//ëª¨ë“ í…Œì´ë¸” ì‚­ì œ
+								dao.setinit(member.getId());//ì™œ Jí…Œì´ë¸”ì€ ë¦¬ì…‹ì´ ì•ˆë˜ë‹ˆ?
 								managerFrame.repaint(member);
 								
 								
 							} else {
-								JOptionPane.showMessageDialog(this, "º¯°æ¿¡ ½ÇÆĞÇÏ¿´½À´Ï´Ù!!¤Ğ¤Ğ");
+								JOptionPane.showMessageDialog(this, "ë³€ê²½ì— ì‹¤íŒ¨í•˜ì˜€ìŠµë‹ˆë‹¤!!ã… ã… ");
 							}
 
 						} catch (SQLException e1) {
@@ -244,4 +244,3 @@ public class ModifyInfoFrame extends JFrame implements ActionListener {
 
 	}
 }
-
