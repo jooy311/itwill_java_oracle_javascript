@@ -30,9 +30,9 @@ public class LoginFrame extends JFrame implements ActionListener {
    private JButton signupBtn;
    //private MainFrame mainframe;
    //private ManagerPanel managerpanel;
-   private usermemberDAO dao = new usermemberDAO();
+   private usermemberDAO dao = usermemberDAO.getDAO();
 
-   // »ı¼ºÀÚ
+   // ìƒì„±ì
    public LoginFrame(String title) {
       super(title);
       getContentPane().setBackground(Color.DARK_GRAY);
@@ -48,7 +48,7 @@ public class LoginFrame extends JFrame implements ActionListener {
       loginBtn.addActionListener(this);
    }
 
-   // È­¸é ¼ÂÆÃ ¸Ş¼Òµå
+   // í™”ë©´ ì…‹íŒ… ë©”ì†Œë“œ
    public void init() {
       getContentPane().setLayout(null);
 
@@ -58,17 +58,17 @@ public class LoginFrame extends JFrame implements ActionListener {
       getContentPane().add(panel);
       panel.setLayout(null);
 
-      JLabel lblNewLabel = new JLabel("payManager ÇÁ·Î±×·¥");
+      JLabel lblNewLabel = new JLabel("payManager í”„ë¡œê·¸ë¨");
       lblNewLabel.setForeground(Color.WHITE);
       lblNewLabel.setBounds(14, 0, 180, 70);
       panel.add(lblNewLabel);
       lblNewLabel.setFont(new Font("Dialog", Font.BOLD, 14));
 
-      signupBtn = new JButton("°¡ÀÔÇÏ±â");
+      signupBtn = new JButton("ê°€ì…í•˜ê¸°");
       signupBtn.setBounds(0, 179, 91, 23);
       panel.add(signupBtn);
 
-      loginBtn = new JButton("·Î±×ÀÎ");
+      loginBtn = new JButton("ë¡œê·¸ì¸");
       loginBtn.setBounds(103, 179, 91, 23);
       panel.add(loginBtn);
 
@@ -83,50 +83,50 @@ public class LoginFrame extends JFrame implements ActionListener {
 
       JLabel lblNewLabel_1 = new JLabel("ID");
       lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
-      lblNewLabel_1.setFont(new Font("±¼¸²", Font.BOLD, 12));
+      lblNewLabel_1.setFont(new Font("êµ´ë¦¼", Font.BOLD, 12));
       lblNewLabel_1.setForeground(Color.WHITE);
       lblNewLabel_1.setBounds(19, 83, 50, 15);
       panel.add(lblNewLabel_1);
 
       JLabel lblNewLabel_2 = new JLabel("PWD");
       lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
-      lblNewLabel_2.setFont(new Font("±¼¸²", Font.BOLD, 12));
+      lblNewLabel_2.setFont(new Font("êµ´ë¦¼", Font.BOLD, 12));
       lblNewLabel_2.setForeground(Color.WHITE);
       lblNewLabel_2.setBounds(8, 114, 61, 15);
       panel.add(lblNewLabel_2);
    }
 
    public static void main(String[] args) {
-      new LoginFrame("·Î±×ÀÎ");
+      new LoginFrame("ë¡œê·¸ì¸");
    }
 
-   // ÀÌº¥Æ® ÇÚµé·¯
+   // ì´ë²¤íŠ¸ í•¸ë“¤ëŸ¬
    @Override
    public void actionPerformed(ActionEvent e) {
       Object src = e.getSource();
       /**
-       * ³ª¿Í¾ßÇÏ´Â À¯È¿¼º°Ë»ç 1) ¾ÆÀÌµğ ÀÔ·Â¾øÀÌ ºñ¹Ğ¹øÈ£¸¦ ÀÔ·ÂÇÒ¶§ -> ¾ÆÀÌµğ¸¦ ¸ÕÀú ÀÔ·ÂÇØ ÁÖ°í ºñ¹Ğ¹øÈ£ ÀÔ·ÂÇØ´Ş¶ó°í ÇÏ±â 2) Áßº¹°Ë»çÇÏÁö
-       * ¾Ê¾ÒÀ¸¸é Áßº¹°Ë»çÇÏ°Ô ´ÙÀÌ¾ó·Î±× ¶ç¿ì±â -> booleanÀÌ¿ëÇØ¼­ Áßº¹Ã¼Å© ¹öÆ° ´­·¯¼­ È®ÀÎÇÏ¸é -> »óÅÂ true·Î ¹Ù²Ù´Â ½ÄÀ¸·Î 3)
-       * ºñ¹Ğ¹øÈ£ À¯È¿¼º °Ë»ç 4) ÀÌ¸§ÀÌ¶û ±Ù¹«Áö´Â ±×³É ºó°ø°£À¸·Î ³²°ÜµÎ¸é ´ÙÀÌ¾ó·Î±× ¶ç¿ì±â 5) ½Ã±ŞÀº ¼ıÀÚ·Î¸¸ Àû°Ô ¸¸µé±â
+       * ë‚˜ì™€ì•¼í•˜ëŠ” ìœ íš¨ì„±ê²€ì‚¬ 1) ì•„ì´ë”” ì…ë ¥ì—†ì´ ë¹„ë°€ë²ˆí˜¸ë¥¼ ì…ë ¥í• ë•Œ -> ì•„ì´ë””ë¥¼ ë¨¼ì € ì…ë ¥í•´ ì£¼ê³  ë¹„ë°€ë²ˆí˜¸ ì…ë ¥í•´ë‹¬ë¼ê³  í•˜ê¸° 2) ì¤‘ë³µê²€ì‚¬í•˜ì§€
+       * ì•Šì•˜ìœ¼ë©´ ì¤‘ë³µê²€ì‚¬í•˜ê²Œ ë‹¤ì´ì–¼ë¡œê·¸ ë„ìš°ê¸° -> booleanì´ìš©í•´ì„œ ì¤‘ë³µì²´í¬ ë²„íŠ¼ ëˆŒëŸ¬ì„œ í™•ì¸í•˜ë©´ -> ìƒíƒœ trueë¡œ ë°”ê¾¸ëŠ” ì‹ìœ¼ë¡œ 3)
+       * ë¹„ë°€ë²ˆí˜¸ ìœ íš¨ì„± ê²€ì‚¬ 4) ì´ë¦„ì´ë‘ ê·¼ë¬´ì§€ëŠ” ê·¸ëƒ¥ ë¹ˆê³µê°„ìœ¼ë¡œ ë‚¨ê²¨ë‘ë©´ ë‹¤ì´ì–¼ë¡œê·¸ ë„ìš°ê¸° 5) ì‹œê¸‰ì€ ìˆ«ìë¡œë§Œ ì ê²Œ ë§Œë“¤ê¸°
        * 
        */
 
-      if (src == signupBtn) {// °¡ÀÔÇÏ±â È­¸éÀ» ¶ç¿î´Ù.
-         new SignUpFrame("È¸¿ø°¡ÀÔ");
+      if (src == signupBtn) {// ê°€ì…í•˜ê¸° í™”ë©´ì„ ë„ìš´ë‹¤.
+         new SignUpFrame("íšŒì›ê°€ì…");
 
       } else if (src == passwordField || src == loginBtn) {
          if (idfield.getText().length() == 0) {
-            JOptionPane.showMessageDialog(this, "¾ÆÀÌµğ¸¦ ÀÔ·ÂÇÏ¼¼¿ä");
+            JOptionPane.showMessageDialog(this, "ì•„ì´ë””ë¥¼ ì…ë ¥í•˜ì„¸ìš”");
          } else if (passwordField.getPassword().length == 0) {
-            JOptionPane.showMessageDialog(this, "¾ÏÈ£¸¦ ÀÔ·ÂÇÏ¼¼¿ä");
+            JOptionPane.showMessageDialog(this, "ì•”í˜¸ë¥¼ ì…ë ¥í•˜ì„¸ìš”");
          } else {
             String userid = idfield.getText();
             String userpwd = String.valueOf(passwordField.getPassword());
-            // ÀÔ·ÂÇÑ ¾ÆÀÌµğ¿Í ºñ¹Ğ¹øÈ£°¡ ÀÏÄ¡ÇÏ´ÂÁö È®ÀÎÇÏ´Â ÄÚµå
+            // ì…ë ¥í•œ ì•„ì´ë””ì™€ ë¹„ë°€ë²ˆí˜¸ê°€ ì¼ì¹˜í•˜ëŠ”ì§€ í™•ì¸í•˜ëŠ” ì½”ë“œ
 
             try {
                if (dao.checkUser(userid, userpwd) == 1) {
-                  // PayManagerÇÁ·¹ÀÓ¿¡ È¸¿øÁ¤º¸¸¦ Àü´ŞÇÏ±â À§ÇÑ ÄÚµå
+                  // PayManagerí”„ë ˆì„ì— íšŒì›ì •ë³´ë¥¼ ì „ë‹¬í•˜ê¸° ìœ„í•œ ì½”ë“œ
                   Member member = null;
 
                   member = dao.getMember(userid);
@@ -138,9 +138,9 @@ public class LoginFrame extends JFrame implements ActionListener {
                   this.dispose();
 
                } else if (dao.checkUser(userid, userpwd) == 0) {
-                  JOptionPane.showMessageDialog(this, "¾ÆÀÌµğ°¡ Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù.");
+                  JOptionPane.showMessageDialog(this, "ì•„ì´ë””ê°€ ì¡´ì¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
                } else if (dao.checkUser(userid, userpwd) == 2) {
-                  JOptionPane.showMessageDialog(this, "¾ÆÀÌµğ¿Í ºñ¹Ğ¹øÈ£°¡ ÀÏÄ¡ÇÏÁö ¾Ê½À´Ï´Ù.");
+                  JOptionPane.showMessageDialog(this, "ì•„ì´ë””ì™€ ë¹„ë°€ë²ˆí˜¸ê°€ ì¼ì¹˜í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
                }
             } catch (HeadlessException | SQLException e1) {
                e1.printStackTrace();
