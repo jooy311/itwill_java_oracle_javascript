@@ -84,17 +84,16 @@ public class ManagerFrame extends JFrame implements ActionListener {
 	private JComboBox yearCombo;
 	private String selectedMonth, selectedYear, selectedDate;
 	private String selectedStartH, selectedStartM, selectedEndtH, selectedEndtM;
-	private String str = "";
+	// private String str = "";
 	private String worktime = "";
 	private double worktime_double;
 
-	// private DefaultTableModel tableModel;
 	private JButton selectedUpdateBtn;
 	private JLabel lb_username;
 	private JLabel lb_workspace;
 
-	private Member member;// ÇöÀç ÇÁ·¹ÀÓ¿¡¼­ (·Î±×ÀÎÇÁ·¹ÀÓ¿¡¼­ Àü´Ş¹ŞÀº ) member°´Ã¼¸¦ °è¼Ó »ç¿ëÇÒ °ÍÀÌ±â ¶§¹®¿¡ ¼±¾ğ!!
-	private usermemberDAO dao = new usermemberDAO();
+	private Member member;// í˜„ì¬ í”„ë ˆì„ì—ì„œ (ë¡œê·¸ì¸í”„ë ˆì„ì—ì„œ ì „ë‹¬ë°›ì€ ) memberê°ì²´ë¥¼ ê³„ì† ì‚¬ìš©í•  ê²ƒì´ê¸° ë•Œë¬¸ì— ì„ ì–¸!!
+	private usermemberDAO dao = usermemberDAO.getDAO();
 	private MemberPayInfo payInfo;
 	private TableController tc;
 	private JComboBox searchYear;
@@ -106,7 +105,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 	private String selectedSearchMonth, selectedSearchYear;
 	private JButton undoBtn;
 	private JTable table2;
-	private String mm;// ÇöÀç month°ª ¹Ş´Â ½ºÆ®¸µ
+	private String mm;// í˜„ì¬ monthê°’ ë°›ëŠ” ìŠ¤íŠ¸ë§
 	private String yy;
 	private JLabel lbMonth2;
 	private JLabel lbMonth1;
@@ -114,7 +113,6 @@ public class ManagerFrame extends JFrame implements ActionListener {
 
 	private boolean isPushSearchBtn = false;
 	private JButton cancelBtn;
-
 	private boolean isUpdateMode = false;
 	// private String colname;
 	private int t1 = -1;
@@ -122,10 +120,11 @@ public class ManagerFrame extends JFrame implements ActionListener {
 	private String t3 = "";
 	private String[] tmp;
 
-	// »ı¼ºÀÚ
-	public ManagerFrame(Member m, String title) throws SQLException {// »ı¼ºÀÚ¿¡¼­ Member°´Ã¼¸¦ Àü´Ş¹Ş´Â´Ù.
+	// ìƒì„±ì
+	public ManagerFrame(Member m, String title) throws SQLException {// ìƒì„±ìì—ì„œ Memberê°ì²´ë¥¼ ì „ë‹¬ë°›ëŠ”ë‹¤.
 		super(title);
-		this.member = m;// Àü´Ş¹ŞÀº ¸Å°³º¯¼ö¸¦ Áö±İ (³ª) ÇÁ·¹ÀÓ¿¡¼­ »ç¿ëÇÒ ¼ö ÀÖµµ·Ï Àû¿ë
+		this.member = m;// ì „ë‹¬ë°›ì€ ë§¤ê°œë³€ìˆ˜ë¥¼ ì§€ê¸ˆ (ë‚˜) í”„ë ˆì„ì—ì„œ ì‚¬ìš©í•  ìˆ˜ ìˆë„ë¡ ì ìš©
+		
 		init();
 		start();
 		tableSetting();
@@ -164,35 +163,35 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		tc = new TableController(member.getId());
 		table = new JTable(tc);
 
-		table.isCellEditable(table.getRowCount(), table.getColumnCount() - 1);// ¼öÁ¤ÇÏÁö ¸øÇÏ°Ô
+		table.isCellEditable(table.getRowCount(), table.getColumnCount() - 1);// ìˆ˜ì •í•˜ì§€ ëª»í•˜ê²Œ
 
-		table.getTableHeader().setReorderingAllowed(false);// ÀÌµ¿ºÒ°¡
-		table.getTableHeader().setResizingAllowed(false);// Å©±âÁ¶Á¤ ºÒ°¡
+		table.getTableHeader().setReorderingAllowed(false);// ì´ë™ë¶ˆê°€
+		table.getTableHeader().setResizingAllowed(false);// í¬ê¸°ì¡°ì • ë¶ˆê°€
 
-		scrollPane = new JScrollPane(table);// Å×ÀÌºíÀº ½ºÅ©·ÑÆÒ
+		scrollPane = new JScrollPane(table);// í…Œì´ë¸”ì€ ìŠ¤í¬ë¡¤íŒ¬
 		desktopPane.add(scrollPane);
 		scrollPane.setBounds(130, 52, 510, 300);
 	}
 
-	public int tableSetting2() throws SQLException {// °Ë»ö°á°ú°¡ ÀÖ´ÂÁö ¾ø´ÂÁö ¾Ë±âÀ§ÇØ¼­ ¹İÈ¯°ªÀ» intÇüÀ¸·Î ÁÖ¾ú´Ù
+	public int tableSetting2() throws SQLException {// ê²€ìƒ‰ê²°ê³¼ê°€ ìˆëŠ”ì§€ ì—†ëŠ”ì§€ ì•Œê¸°ìœ„í•´ì„œ ë°˜í™˜ê°’ì„ intí˜•ìœ¼ë¡œ ì£¼ì—ˆë‹¤
 		TableController tc2 = new TableController(member.getId(), selectedSearchYear, selectedSearchMonth);
 		table2 = new JTable(tc2);
 
 		if (tc2.getRowCount() == 0)
 			return 0;
-		table2.isCellEditable(table2.getRowCount(), table2.getColumnCount() - 1);// ¼öÁ¤ÇÏÁö ¸øÇÏ°Ô
+		table2.isCellEditable(table2.getRowCount(), table2.getColumnCount() - 1);// ìˆ˜ì •í•˜ì§€ ëª»í•˜ê²Œ
 
-		table2.getTableHeader().setReorderingAllowed(false);// ÀÌµ¿ºÒ°¡
-		table2.getTableHeader().setResizingAllowed(false);// Å©±âÁ¶Á¤ ºÒ°¡
+		table2.getTableHeader().setReorderingAllowed(false);// ì´ë™ë¶ˆê°€
+		table2.getTableHeader().setResizingAllowed(false);// í¬ê¸°ì¡°ì • ë¶ˆê°€
 
-		scrollPane2 = new JScrollPane(table2);// Å×ÀÌºíÀº ½ºÅ©·ÑÆÒ
+		scrollPane2 = new JScrollPane(table2);// í…Œì´ë¸”ì€ ìŠ¤í¬ë¡¤íŒ¬
 		desktopPane.add(scrollPane2);
 		scrollPane2.setBounds(130, 52, 510, 300);
 
 		return 1;
 	}
 
-	public void labelSetting(String year, String month) {// »ç¿ëÀÚ°¡ ÇØ´ç ´Ş µ¥ÀÌÅÍ¸¦ Ãß°¡ÇÏ¸é ½Ç½Ã°£À¸·Î Ãß°¡°¡ µÇ¾î¾ßÇÔ
+	public void labelSetting(String year, String month) {// ì‚¬ìš©ìê°€ í•´ë‹¹ ë‹¬ ë°ì´í„°ë¥¼ ì¶”ê°€í•˜ë©´ ì‹¤ì‹œê°„ìœ¼ë¡œ ì¶”ê°€ê°€ ë˜ì–´ì•¼í•¨
 		currentPay.setText(member.getSalperhour() + "");
 
 		String[] str;
@@ -207,20 +206,20 @@ public class ManagerFrame extends JFrame implements ActionListener {
 			// dao.db_close();
 
 		} catch (SQLException e) {
-			System.out.println("¶óº§¼¼ÆÃÇÏ´Âµ¥ ¿À·ù" + e.getMessage());
+			System.out.println("ë¼ë²¨ì„¸íŒ…í•˜ëŠ”ë° ì˜¤ë¥˜" + e.getMessage());
 		}
 	}
 
 	public void changeSearchDate(String month) {
-		lbMonth1.setText(month + "¿ù");
-		lbMonth2.setText(month + "¿ù");
-		lbMonth3.setText(month + "¿ù");
+		lbMonth1.setText(month + "ì›”");
+		lbMonth2.setText(month + "ì›”");
+		lbMonth3.setText(month + "ì›”");
 	}
 
 	public void repaint(Member member) throws SQLException {
-		//this.setVisible(false);
-		this.dispose();
+		// this.setVisible(false);
 		new ManagerFrame(member, "Pay manager");
+		this.dispose();
 	}
 
 	public void settingCombo(boolean flag) {
@@ -257,7 +256,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 			}
 
 		} catch (ParseException e2) {
-			System.out.println("³¯Â¥ º¯È¯ Áß¿¡ ¾Ë¼ö¾ø´Â ¿À·ù");
+			System.out.println("ë‚ ì§œ ë³€í™˜ ì¤‘ì— ì•Œìˆ˜ì—†ëŠ” ì˜¤ë¥˜");
 			e2.printStackTrace();
 		}
 
@@ -270,10 +269,10 @@ public class ManagerFrame extends JFrame implements ActionListener {
 	}
 
 	public void settingCombofield(String colname, String year, String month, String date, String starth, String startm,
-			String endh, String endm, String worktime) {// »ç¿ëÀÚ°¡ ¼±ÅÃÇÑ ÇàÀÇ °ªÀ¸·Î ÄŞº¸¹Ú½º ÇÊµå¸¦ ¹Ù²Ù±â À§ÇÑ ¸Ş¼Òµå
+			String endh, String endm, String worktime) {// ì‚¬ìš©ìê°€ ì„ íƒí•œ í–‰ì˜ ê°’ìœ¼ë¡œ ì½¤ë³´ë°•ìŠ¤ í•„ë“œë¥¼ ë°”ê¾¸ê¸° ìœ„í•œ ë©”ì†Œë“œ
 		String[] tmpStr = new String[8];
 
-//		if (colname.equals("³â")) {
+//		if (colname.equals("ë…„")) {
 //			yearCombo.setSelectedItem(year);
 //			monthCombo.setSelectedItem(month);
 //			dateCombo.setSelectedItem(date);
@@ -283,7 +282,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 //			endMCombo.setSelectedItem(endm);
 //			todayWorkHourTxt.setText(worktime);
 //
-//		} else if (colname.equals("¿ù")) {
+//		} else if (colname.equals("ì›”")) {
 //			yearCombo.setSelectedItem(year);
 //			monthCombo.setSelectedItem(month);
 //			dateCombo.setSelectedItem(date);
@@ -293,7 +292,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 //			endMCombo.setSelectedItem(endm);
 //			todayWorkHourTxt.setText(worktime);
 //
-//		} else if (colname.equals("ÀÏ")) {
+//		} else if (colname.equals("ì¼")) {
 //			yearCombo.setSelectedItem(year);
 //			monthCombo.setSelectedItem(month);
 //			dateCombo.setSelectedItem(date);
@@ -304,7 +303,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 //			todayWorkHourTxt.setText(worktime);
 //
 //		} else 
-		if (colname.equals("Ãâ±Ù½Ã°£")) {
+		if (colname.equals("ì¶œê·¼ì‹œê°„")) {
 			yearCombo.setSelectedItem(year);
 			monthCombo.setSelectedItem(month);
 			dateCombo.setSelectedItem(date);
@@ -314,7 +313,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 			endMCombo.setSelectedItem(endm);
 			todayWorkHourTxt.setText(worktime);
 
-		} else if (colname.equals("Åğ±Ù½Ã°£")) {
+		} else if (colname.equals("í‡´ê·¼ì‹œê°„")) {
 			yearCombo.setSelectedItem(year);
 			monthCombo.setSelectedItem(month);
 			dateCombo.setSelectedItem(date);
@@ -328,23 +327,23 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		// return tmpStr;
 	}
 
-	public int setComboEnable(String colname) {// »ç¿ëÀÚ°¡ ¼±ÅÃÇÑ ¿­°ª¿¡ ÇØ´çÇÏ´Â ÄŞº¸¹Ú½º¸¦ true¸¦ ¸¸µé±â À§ÇÑ ¸Ş¼Òµå
+	public int setComboEnable(String colname) {// ì‚¬ìš©ìê°€ ì„ íƒí•œ ì—´ê°’ì— í•´ë‹¹í•˜ëŠ” ì½¤ë³´ë°•ìŠ¤ë¥¼ trueë¥¼ ë§Œë“¤ê¸° ìœ„í•œ ë©”ì†Œë“œ
 		// JComboBox<Object> box = null;
 
-		if (colname.equals("³â")) {
+		if (colname.equals("ë…„")) {
 			yearCombo.setEnabled(true);
 			return 1;
-		} else if (colname.equals("¿ù")) {
+		} else if (colname.equals("ì›”")) {
 			monthCombo.setEnabled(true);
 			return 2;
-		} else if (colname.equals("ÀÏ")) {
+		} else if (colname.equals("ì¼")) {
 			dateCombo.setEnabled(true);
 			return 3;
-		} else if (colname.equals("Ãâ±Ù½Ã°£")) {
+		} else if (colname.equals("ì¶œê·¼ì‹œê°„")) {
 			startHCombo.setEnabled(true);
 			startMCombo.setEnabled(true);
 			return 4;
-		} else if (colname.equals("Åğ±Ù½Ã°£")) {
+		} else if (colname.equals("í‡´ê·¼ì‹œê°„")) {
 			endHCombo.setEnabled(true);
 			endMCombo.setEnabled(true);
 			return 5;
@@ -352,39 +351,27 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		return 0;
 	}
 
-//	public int returnCombo(int selectedCombo) {
-//		return selectedCombo;
-//	}
-//	
-//	public String returnValue(String selectedValue) {
-//		return selectedValue;
-//	}
-//	
-//	public String returnColname( String colname) {
-//		return colname;
-//	}
-
 	public void updateMode(int selectedCombo, String selectedValue, String colname) {
 		String updateValue = "";
 		String worktimee = "";
-//		if (selectedCombo == 1) {// ³â ÄŞº¸
+//		if (selectedCombo == 1) {// ë…„ ì½¤ë³´
 //			updateValue = (String) yearCombo.getSelectedItem();
-//		} else if (selectedCombo == 2) {// ¿ù ÄŞº¸
+//		} else if (selectedCombo == 2) {// ì›” ì½¤ë³´
 //			updateValue = (String) monthCombo.getSelectedItem();
-//		} else if (selectedCombo == 3) {// ÀÏ ÄŞº¸
+//		} else if (selectedCombo == 3) {// ì¼ ì½¤ë³´
 //			updateValue = (String) dateCombo.getSelectedItem();
 //		} else
-		if (selectedCombo == 4) {// Ãâ±Ù ÄŞº¸
+		if (selectedCombo == 4) {// ì¶œê·¼ ì½¤ë³´
 			updateValue = (String) startHCombo.getSelectedItem();
 			updateValue += ":";
 			updateValue += (String) startMCombo.getSelectedItem();
-		} else if (selectedCombo == 5) {// Åğ±Ù ÄŞº¸
+		} else if (selectedCombo == 5) {// í‡´ê·¼ ì½¤ë³´
 			updateValue = (String) endHCombo.getSelectedItem();
 			updateValue += ":";
 			updateValue += (String) endMCombo.getSelectedItem();
 		}
-		if (selectedValue.equals(updateValue)) {// ¿ø·¡ ÀúÀåµÇ¾îÀÖ´ø °ª vs Áö±İ ³»°¡ ¾´ °ª
-			JOptionPane.showMessageDialog(this, "º¯°æÇÒ °ªÀÌ ÀÌÀüÀÇ °ª°ú °°½À´Ï´Ù!");
+		if (selectedValue.equals(updateValue)) {// ì›ë˜ ì €ì¥ë˜ì–´ìˆë˜ ê°’ vs ì§€ê¸ˆ ë‚´ê°€ ì“´ ê°’
+			JOptionPane.showMessageDialog(this, "ë³€ê²½í•  ê°’ì´ ì´ì „ì˜ ê°’ê³¼ ê°™ìŠµë‹ˆë‹¤!");
 		} else {
 			try {
 				if (selectedCombo == 4) {
@@ -393,14 +380,14 @@ public class ManagerFrame extends JFrame implements ActionListener {
 					worktimee = update_calWorkTime(tmp[3], updateValue);
 				}
 				System.out.println(worktimee);
-				// ³â //¿ù //ÀÏ
+				// ë…„ //ì›” //ì¼
 				dao.updateOnePayData(member.getId(), colname, worktimee, updateValue, tmp[0], tmp[1], tmp[2]);
-				JOptionPane.showMessageDialog(this, "º¯°æÀÌ ¼º°øÀûÀ¸·Î ¿Ï·áµÇ¾ú½À´Ï´Ù!");
+				JOptionPane.showMessageDialog(this, "ë³€ê²½ì´ ì„±ê³µì ìœ¼ë¡œ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤!");
 				this.repaint(member);
-				// ±Ù¹«½Ã°£ º¯°æµÇ°Ô ÇØ¾ßÇÔ
+				// ê·¼ë¬´ì‹œê°„ ë³€ê²½ë˜ê²Œ í•´ì•¼í•¨
 
 			} catch (SQLException e1) {
-				System.out.println("payinfo¾÷´ñ¿À·ù" + e1.getMessage());
+				System.out.println("payinfoì—…ëŒ“ì˜¤ë¥˜" + e1.getMessage());
 			}
 		}
 	}
@@ -408,11 +395,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 	private void init() {
 		getContentPane().setLayout(null);
 
-		// ÇöÀç ³¯Â¥ ¹Ş¾Æ¿Í¼­ »Ñ¸®±â
-//      SimpleDateFormat pattern = new SimpleDateFormat("MM¿ù ddÀÏ");
-//      String time = pattern.format(new Date());
-
-		SimpleDateFormat pattern_m = new SimpleDateFormat("MM¿ù");
+		SimpleDateFormat pattern_m = new SimpleDateFormat("MMì›”");
 		mm = pattern_m.format(new Date());
 		SimpleDateFormat pattern_y = new SimpleDateFormat("YYYY");
 		yy = pattern_y.format(new Date());
@@ -437,6 +420,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		panel_6.add(yearCombo);
 
 		JLabel lblNewLabel_11 = new JLabel("\uB144");
+		lblNewLabel_11.setFont(new Font("ë‚˜ëˆ”ê³ ë”•ì½”ë”©", Font.BOLD, 12));
 		panel_6.add(lblNewLabel_11);
 
 		JPanel panel_1 = new JPanel();
@@ -448,8 +432,8 @@ public class ManagerFrame extends JFrame implements ActionListener {
 
 		panel_1.add(monthCombo);
 
-		JLabel lblNewLabel_1 = new JLabel("¿ù");
-		lblNewLabel_1.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 20));
+		JLabel lblNewLabel_1 = new JLabel("ì›”");
+		lblNewLabel_1.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 20));
 		panel_1.add(lblNewLabel_1);
 
 		JPanel panel_2 = new JPanel();
@@ -459,14 +443,14 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		panel_2.add(dateCombo);
 
 		JLabel label = new JLabel("\uC77C");
-		label.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 20));
+		label.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 20));
 		panel_2.add(label);
 
 		JPanel panel_3 = new JPanel();
 		input.add(panel_3);
 
 		lblNewLabel_2 = new JLabel("\uCD9C\uADFC \uC2DC\uAC04");
-		lblNewLabel_2.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		lblNewLabel_2.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_3.add(lblNewLabel_2);
 
 		startHCombo = new JComboBox();
@@ -475,7 +459,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		panel_3.add(startHCombo);
 
 		JLabel lblNewLabel_3 = new JLabel("\uC2DC");
-		lblNewLabel_3.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		lblNewLabel_3.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_3.add(lblNewLabel_3);
 
 		startMCombo = new JComboBox();
@@ -487,14 +471,14 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		panel_3.add(startMCombo);
 
 		JLabel lblNewLabel_4 = new JLabel("\uBD84");
-		lblNewLabel_4.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		lblNewLabel_4.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_3.add(lblNewLabel_4);
 
 		JPanel panel_4 = new JPanel();
 		input.add(panel_4);
 
 		JLabel label_1 = new JLabel("\uD1F4\uADFC \uC2DC\uAC04");
-		label_1.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		label_1.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_4.add(label_1);
 
 		endHCombo = new JComboBox();
@@ -503,7 +487,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		panel_4.add(endHCombo);
 
 		JLabel label_2 = new JLabel("\uC2DC");
-		label_2.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		label_2.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_4.add(label_2);
 
 		endMCombo = new JComboBox();
@@ -515,14 +499,14 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		panel_4.add(endMCombo);
 
 		JLabel label_3 = new JLabel("\uBD84");
-		label_3.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		label_3.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_4.add(label_3);
 
 		JPanel panel_5 = new JPanel();
 		input.add(panel_5);
 
 		JLabel lblNewLabel_5 = new JLabel("\uC624\uB298 \uADFC\uBB34 \uC2DC\uAC04");
-		lblNewLabel_5.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		lblNewLabel_5.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_5.add(lblNewLabel_5);
 
 		todayWorkHourTxt = new JTextField();
@@ -531,31 +515,35 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		todayWorkHourTxt.setColumns(10);
 
 		JLabel lblNewLabel_6 = new JLabel("\uC2DC\uAC04!");
-		lblNewLabel_6.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 18));
+		lblNewLabel_6.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 18));
 		panel_5.add(lblNewLabel_6);
+
+		saveBtn = new JButton("\uC800\uC7A5");
+		saveBtn.setBackground(Color.PINK);
+		panel_5.add(saveBtn);
+		saveBtn.setFont(new Font("ë‚˜ëˆ”ê³ ë”•ì½”ë”©", Font.BOLD, 12));
 
 		JPanel panel_8 = new JPanel();
 		input.add(panel_8);
 
-		JLabel lblNewLabel_12 = new JLabel("º¯°æ¸ğµå¸¦ ½ÇÇàÇÑ ÈÄ, ÀúÀåÇÏ±â¸¦ ´­·¯ÁÖ¼¼¿ä");
+		JLabel lblNewLabel_12 = new JLabel("ë³€ê²½ëª¨ë“œë¥¼ ì‹¤í–‰í•œ í›„, ì €ì¥í•˜ê¸°ë¥¼ ëˆŒëŸ¬ì£¼ì„¸ìš”");
 		lblNewLabel_12.setForeground(Color.RED);
 		panel_8.add(lblNewLabel_12);
 
 		selectedUpdateBtn = new JButton("\uC9C0\uC815\uAC12 \uBCC0\uACBD");
-		selectedUpdateBtn.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.BOLD, 12));
+		selectedUpdateBtn.setBackground(Color.PINK);
+		selectedUpdateBtn.setFont(new Font("ë‚˜ëˆ”ê³ ë”•ì½”ë”©", Font.BOLD, 12));
 		panel_8.add(selectedUpdateBtn);
 
-		cancelBtn = new JButton("º¯°æÃë¼Ò");
-		cancelBtn.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 12));
+		cancelBtn = new JButton("ë³€ê²½ëª¨ë“œì·¨ì†Œ");
+		cancelBtn.setBackground(Color.PINK);
+		cancelBtn.setFont(new Font("ë‚˜ëˆ”ê³ ë”•ì½”ë”©", Font.BOLD, 12));
 		panel_8.add(cancelBtn);
 
-		selectedDelete = new JButton("ÁöÁ¤ÀÏ »èÁ¦");
-		selectedDelete.setFont(new Font("Dialog", Font.BOLD, 12));
+		selectedDelete = new JButton("ì§€ì •ì¼ ì‚­ì œ");
+		selectedDelete.setBackground(Color.PINK);
+		selectedDelete.setFont(new Font("ë‚˜ëˆ”ê³ ë”•ì½”ë”©", Font.BOLD, 12));
 		panel_8.add(selectedDelete);
-
-		saveBtn = new JButton("\uC800\uC7A5");
-		saveBtn.setFont(new Font("Dialog", Font.BOLD, 12));
-		panel_8.add(saveBtn);
 
 		JPanel panel_9 = new JPanel();
 		panel_9.setBorder(new LineBorder(new Color(255, 175, 175), 2));
@@ -567,7 +555,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 
 		JLabel lblNewLabel_7 = new JLabel("\uD604\uC7AC \uB0A0\uC9DC\uB294");
 		lblNewLabel_7.setForeground(Color.WHITE);
-		lblNewLabel_7.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 17));
+		lblNewLabel_7.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.PLAIN, 17));
 		panel_9.add(lblNewLabel_7);
 
 		JDesktopPane desktopPane_1 = new JDesktopPane();
@@ -575,7 +563,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		desktopPane_1.setBounds(10, 131, 113, 50);
 		desktopPane.add(desktopPane_1);
 
-		JLabel label_6 = new JLabel("±Ù¹«½Ã°£");
+		JLabel label_6 = new JLabel("ê·¼ë¬´ì‹œê°„");
 		label_6.setHorizontalAlignment(SwingConstants.CENTER);
 		label_6.setFont(new Font("Dialog", Font.PLAIN, 14));
 		label_6.setBounds(42, 0, 59, 23);
@@ -587,14 +575,14 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		totalWorkHour.setBounds(12, 25, 59, 21);
 		desktopPane_1.add(totalWorkHour);
 
-		JLabel label_7 = new JLabel("½Ã°£");
-		label_7.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 12));
+		JLabel label_7 = new JLabel("ì‹œê°„");
+		label_7.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 12));
 		label_7.setBounds(83, 28, 30, 16);
 		desktopPane_1.add(label_7);
 
 		lbMonth1 = new JLabel(mm);
 		lbMonth1.setHorizontalAlignment(SwingConstants.CENTER);
-		lbMonth1.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.BOLD, 15));
+		lbMonth1.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.BOLD, 15));
 		lbMonth1.setBounds(12, 4, 34, 15);
 		desktopPane_1.add(lbMonth1);
 
@@ -615,13 +603,13 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		totalWorkDay.setBounds(12, 25, 59, 21);
 		desktopPane_2.add(totalWorkDay);
 
-		JLabel lblNewLabel = new JLabel("ÀÏ");
+		JLabel lblNewLabel = new JLabel("ì¼");
 		lblNewLabel.setBounds(88, 28, 20, 15);
 		desktopPane_2.add(lblNewLabel);
 
 		lbMonth2 = new JLabel(mm);
 		lbMonth2.setHorizontalAlignment(SwingConstants.CENTER);
-		lbMonth2.setFont(new Font("±¼¸²", Font.BOLD, 13));
+		lbMonth2.setFont(new Font("êµ´ë¦¼", Font.BOLD, 13));
 		lbMonth2.setBounds(12, 4, 31, 15);
 		desktopPane_2.add(lbMonth2);
 
@@ -630,7 +618,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		desktopPane_3.setBounds(10, 243, 113, 50);
 		desktopPane.add(desktopPane_3);
 
-		JLabel label_9 = new JLabel("³ªÀÇ ½Ã±Ş");
+		JLabel label_9 = new JLabel("ë‚˜ì˜ ì‹œê¸‰");
 		label_9.setFont(new Font("Dialog", Font.PLAIN, 13));
 		label_9.setBounds(30, 0, 72, 16);
 		desktopPane_3.add(label_9);
@@ -641,7 +629,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		currentPay.setBounds(10, 24, 60, 21);
 		desktopPane_3.add(currentPay);
 
-		JLabel lblNewLabel_8 = new JLabel("¿ø");
+		JLabel lblNewLabel_8 = new JLabel("ì›");
 		lblNewLabel_8.setBounds(82, 27, 20, 15);
 		desktopPane_3.add(lblNewLabel_8);
 
@@ -651,7 +639,7 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		desktopPane.add(desktopPane_4);
 
 		JLabel label_10 = new JLabel("\uC5D0 \uBC88(\uBC8C)\uB3C8");
-		label_10.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 15));
+		label_10.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 15));
 		label_10.setBounds(40, 3, 73, 16);
 		desktopPane_4.add(label_10);
 
@@ -661,13 +649,13 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		currentEarned.setBounds(5, 25, 80, 21);
 		desktopPane_4.add(currentEarned);
 
-		JLabel label_11 = new JLabel("¿ø");
+		JLabel label_11 = new JLabel("ì›");
 		label_11.setBounds(90, 28, 20, 15);
 		desktopPane_4.add(label_11);
 
 		lbMonth3 = new JLabel(mm);
 		lbMonth3.setHorizontalAlignment(SwingConstants.CENTER);
-		lbMonth3.setFont(new Font("±¼¸²", Font.BOLD, 13));
+		lbMonth3.setFont(new Font("êµ´ë¦¼", Font.BOLD, 13));
 		lbMonth3.setBounds(5, 4, 32, 15);
 		desktopPane_4.add(lbMonth3);
 
@@ -676,8 +664,9 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		desktopPane_5.setBounds(10, 502, 630, 50);
 		desktopPane.add(desktopPane_5);
 
-		searchBtn = new JButton("¿ùº° °Ë»ö");
-		searchBtn.setFont(new Font("Dialog", Font.BOLD, 15));
+		searchBtn = new JButton("ì›”ë³„ ê²€ìƒ‰");
+		searchBtn.setBackground(Color.PINK);
+		searchBtn.setFont(new Font("ë‚˜ëˆ”ê³ ë”•ì½”ë”©", Font.BOLD, 12));
 		searchBtn.setBounds(302, 10, 120, 33);
 		desktopPane_5.add(searchBtn);
 
@@ -704,11 +693,12 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		panel_10.add(searchYear);
 
 		JLabel label_14 = new JLabel("\uB144");
-		label_14.setFont(new Font("±¼¸²", Font.BOLD, 15));
+		label_14.setFont(new Font("êµ´ë¦¼", Font.BOLD, 15));
 		panel_10.add(label_14);
 
-		undoBtn = new JButton("ÀüÃ¼ µ¥ÀÌÅÍ º¸±â");
-		undoBtn.setFont(new Font("±¼¸²", Font.BOLD, 12));
+		undoBtn = new JButton("ì „ì²´ ë°ì´í„° ë³´ê¸°");
+		undoBtn.setBackground(Color.PINK);
+		undoBtn.setFont(new Font("ë‚˜ëˆ”ê³ ë”•ì½”ë”©", Font.BOLD, 12));
 		undoBtn.setBounds(438, 10, 152, 33);
 		desktopPane_5.add(undoBtn);
 
@@ -718,14 +708,14 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		panel_7.setBounds(10, 54, 113, 70);
 		desktopPane.add(panel_7);
 
-		JLabel lblNewLabel_10 = new JLabel(new SimpleDateFormat("YYYY³â").format(new Date()));
-		lblNewLabel_10.setFont(new Font("¸¼Àº °íµñ", Font.BOLD, 15));
+		JLabel lblNewLabel_10 = new JLabel(new SimpleDateFormat("YYYYë…„").format(new Date()));
+		lblNewLabel_10.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.BOLD, 15));
 		lblNewLabel_10.setForeground(Color.WHITE);
 		panel_7.add(lblNewLabel_10);
 
-		label_12 = new JLabel(new SimpleDateFormat("MM¿ù ddÀÏ").format(new Date()));
+		label_12 = new JLabel(new SimpleDateFormat("MMì›” ddì¼").format(new Date()));
 		label_12.setForeground(new Color(248, 248, 255));
-		label_12.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 20));
+		label_12.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.PLAIN, 20));
 		panel_7.add(label_12);
 
 		panel = new JPanel();
@@ -734,19 +724,19 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		desktopPane.add(panel);
 
 		lb_username = new JLabel("\uC774\uC8FC\uC601");
-		lb_username.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.BOLD, 15));
+		lb_username.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.BOLD, 15));
 		panel.add(lb_username);
 
-		label_13 = new JLabel(" ´Ô ¾È³çÇÏ¼¼¿ä! ÇöÀç ±Ù¹«Áö´Â  ");
-		label_13.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.PLAIN, 14));
+		label_13 = new JLabel(" ë‹˜ ì•ˆë…•í•˜ì„¸ìš”! í˜„ì¬ ê·¼ë¬´ì§€ëŠ”  ");
+		label_13.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.PLAIN, 14));
 		panel.add(label_13);
 
 		lb_workspace = new JLabel("\uD22C\uC378\uD50C\uB808\uC774\uC2A4");
-		lb_workspace.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.BOLD, 15));
+		lb_workspace.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.BOLD, 15));
 		panel.add(lb_workspace);
 
 		JLabel lblNewLabel_9 = new JLabel("\uC785\uB2C8\uB2E4.");
-		lblNewLabel_9.setFont(new Font("³ª´®¹Ù¸¥Ææ", Font.BOLD, 13));
+		lblNewLabel_9.setFont(new Font("ë‚˜ëˆ”ë°”ë¥¸íœ", Font.BOLD, 13));
 		panel.add(lblNewLabel_9);
 
 		menuBar = new JMenuBar();
@@ -759,132 +749,95 @@ public class ManagerFrame extends JFrame implements ActionListener {
 		mnNewMenu = new JMenu("\u2261");
 		menuBar.add(mnNewMenu);
 
-		initItem = new JMenuItem("ÃÊ±âÈ­");
+		initItem = new JMenuItem("ì´ˆê¸°í™”");
 		mnNewMenu.add(initItem);
 
 		JSeparator separator = new JSeparator();
 		mnNewMenu.add(separator);
 
-		changeInfo = new JMenuItem("Á¤º¸ º¯°æÇÏ±â");
+		changeInfo = new JMenuItem("ì •ë³´ ë³€ê²½í•˜ê¸°");
 		mnNewMenu.add(changeInfo);
 	}
 
-	// ÀÌº¥Æ® Å¬·¡½º
+	// ì´ë²¤íŠ¸ í´ë˜ìŠ¤
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object src = e.getSource();
 
 		if (src == initItem) {
-			// ÇØ´ç¾ÆÀÌµğ¿¡ ÀúÀåµÇ¾î ÀÖ´Â ³»¿ë db¿¡ ÀÖ´Â°Å ´Ù »èÁ¦
-			// tableModel.setNumRows(0);
-			int choice = JOptionPane.showConfirmDialog(this, "¸ğµÎ »èÁ¦µÇ´Âµ¥, Á¤¸» ÃÊ±âÈ­ ÇÏ½Ã°Ú½À´Ï±î?", "°æ°í",
+			int choice = JOptionPane.showConfirmDialog(this, "ëª¨ë‘ ì‚­ì œë˜ëŠ”ë°, ì •ë§ ì´ˆê¸°í™” í•˜ì‹œê² ìŠµë‹ˆê¹Œ?", "ê²½ê³ ",
 					JOptionPane.OK_CANCEL_OPTION);
 
 			if (choice == JOptionPane.OK_OPTION) {
 				try {
 					dao.setinit(member.getId());
-					JOptionPane.showMessageDialog(this, "ÃÊ±âÈ­µÇ¾ú½À´Ï´Ù!");
-					this.repaint(member);// »õ·Î°íÄ§ -> tablecontroller¸¦ ÀÌ¿ëÇØ¼­ »õ·Î°íÄ§ÇÒ ¼öµµ ÀÖÀ»°Å°°À½
+					JOptionPane.showMessageDialog(this, "ì´ˆê¸°í™”ë˜ì—ˆìŠµë‹ˆë‹¤!");
+					this.repaint(member);
 
 				} catch (SQLException e1) {
-					System.out.println("ÃÊ±âÈ­ÇÏ´Â °úÁ¤¿¡¼­ÀÇ ¿À·ù");
-					e1.printStackTrace();
+					System.out.println("ì´ˆê¸°í™”í•˜ëŠ” ê³¼ì •ì—ì„œì˜ ì˜¤ë¥˜" + e1.getMessage());
 				}
 			}
 
 		} else if (src == changeInfo) {
-			ModifyInfoFrame mf = new ModifyInfoFrame(member, "È¸¿øÁ¤º¸ ¼öÁ¤", this);
+			new ModifyInfoFrame(member, "íšŒì›ì •ë³´ ìˆ˜ì •", this);
 
 		} else if (src == yearCombo) {
-			if (yearCombo.getSelectedIndex() != -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				selectedYear = (String) yearCombo.getSelectedItem();
-				str = str + selectedYear;
-
-				System.out.println(selectedYear);
-
-			} else {
-				JOptionPane.showMessageDialog(this, "³âµµ¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä!");
-			}
+			selectedYear = (String) yearCombo.getSelectedItem();
+			// str = selectedYear;
 
 		} else if (src == monthCombo) {
-			if (yearCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, "³âµµ¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä!");
-			} else if (monthCombo.getSelectedIndex() != -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
+			if (selectedYear == null) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
+				JOptionPane.showMessageDialog(this, "ë…„ë„ë¥¼ ì„ íƒí•´ì£¼ì„¸ìš”!");
+				return;
+			} else {
 				selectedMonth = (String) monthCombo.getSelectedItem();
-
-//            if ((Integer.parseInt(selectedMonth) < 10))
-//               str = str + "0" + selectedMonth;
-//            else
-//               str = str + selectedMonth;
 
 				Calendar cal = new GregorianCalendar(Integer.parseInt(selectedYear),
 						Integer.parseInt(selectedMonth) - 1, 1);
-				int daysOfMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-				System.out.println(daysOfMonth);
 
-				for (int i = 1; i <= daysOfMonth; i++) {
-//               if (i < 10)
-//                  dateCombo.addItem("0" + i);
-//               else
+				int daysOfMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+				for (int i = 1; i <= daysOfMonth; i++)
 					dateCombo.addItem(i + "");
-				}
-			} else {
-				JOptionPane.showMessageDialog(this, "êÅÀ» ¼±ÅÃÇØÁÖ¼¼¿ä!");
 			}
 
 		} else if (src == dateCombo) {
-			if (monthCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, " êÅÀ» ¼±ÅÃÇØÁÖ¼¼¿ä!");
-			} else if (dateCombo.getSelectedIndex() != -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-
+			if (selectedMonth == null) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
+				JOptionPane.showMessageDialog(this, " æœˆì„ ì„ íƒí•´ì£¼ì„¸ìš”!");
+				return;
+			} else {
 				selectedDate = (String) dateCombo.getSelectedItem();
-
-				System.out.println(selectedDate);
-			} else {
-				JOptionPane.showMessageDialog(this, "ìí¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä!");
 			}
+		} else if (src == startHCombo) {// ì‚¬ìš©ìê°€ ì¶œê·¼ ì‹œê°„ì„ ê³ ë¥¼ë•Œ
 
-		} else if (src == startHCombo) {// »ç¿ëÀÚ°¡ Ãâ±Ù ½Ã°£À» °í¸¦¶§
-//         if (dateCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-//            JOptionPane.showMessageDialog(this, " ìí¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä!");
-//         } 
-			if (startHCombo.getSelectedIndex() != -1) {
-
+			if (selectedDate == null) {
+				JOptionPane.showMessageDialog(this, "æ—¥ë¥¼ ì„ íƒí•´ì£¼ì„¸ìš”! ì¼ìˆ˜ë¥¼ ì„ íƒí•˜ê¸° ìœ„í•´ì„  æœˆì„ ë¨¼ì € ì„ íƒí•´ì•¼í•©ë‹ˆë‹¤.");
+				return;
+			} else {
 				selectedStartH = (String) startHCombo.getSelectedItem();
-
-			} else {
-				JOptionPane.showMessageDialog(this, " Ãâ±Ù½Ã°£(½Ã°£)À» ¼±ÅÃÇØÁÖ¼¼¿ä!");
 			}
-
 		} else if (src == startMCombo) {
-			if (startHCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, " Ãâ±Ù½Ã°£(½Ã°£)À» ¼±ÅÃÇØÁÖ¼¼¿ä!");
-			}
-
-			if (startMCombo.getSelectedIndex() != -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				selectedStartM = (String) startMCombo.getSelectedItem();
+			if (selectedStartH == null) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
+				JOptionPane.showMessageDialog(this, " ì¶œê·¼ì‹œê°„(ì‹œê°„)ì„ ì„ íƒí•´ì£¼ì„¸ìš”!");
+				return;
 			} else {
-				JOptionPane.showMessageDialog(this, " Ãâ±Ù½Ã°£(ºĞ)À» ¼±ÅÃÇØÁÖ¼¼¿ä!");
+				selectedStartM = (String) startMCombo.getSelectedItem();
 			}
 
 		} else if (src == endHCombo) {
-			if (startMCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, "Ãâ±Ù½Ã°£(ºĞ)À» ¼±ÅÃÇØÁÖ¼¼¿ä!");
-			}
 
-			if (endHCombo.getSelectedIndex() != -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				selectedEndtH = (String) endHCombo.getSelectedItem();
+			if (selectedStartM == null) {
+				JOptionPane.showMessageDialog(this, " ì¶œê·¼ì‹œê°„(ë¶„)ì„ ì„ íƒí•´ì£¼ì„¸ìš”!");
+				return;
 			} else {
-
-				JOptionPane.showMessageDialog(this, "Åğ±Ù½Ã°£(½Ã°£)À» ¼±ÅÃÇØ ÁÖ¼¼¿ä!");
+				selectedEndtH = (String) endHCombo.getSelectedItem();
 			}
-
 		} else if (src == endMCombo) {
-			if (endHCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, " Åğ±Ù½Ã°£(½Ã°£)À» ¼±ÅÃÇØ ÁÖ¼¼¿ä!");
-			}
-
-			if (endMCombo.getSelectedIndex() != -1) { // ¼±ÅÃÇß´Ù¸é
+			if (selectedEndtH == null) {
+				JOptionPane.showMessageDialog(this, " í‡´ê·¼ì‹œê°„(ì‹œê°„)ì„ ì„ íƒí•´ì£¼ì„¸ìš”!");
+				return;
+			} else {
 				selectedEndtM = (String) endMCombo.getSelectedItem();
 
 				SimpleDateFormat format = new SimpleDateFormat("HH:mm");
@@ -904,13 +857,15 @@ public class ManagerFrame extends JFrame implements ActionListener {
 					if (dif < 0) {
 						hour = 24 + hour;
 						minute = 60 + minute;
-						if (minute == 60)
+						if (minute == 60) {
 							minute = 0;
+							worktime_double = hour + minute / 60;
+						} else
+							worktime_double = hour + minute / 60;
 					}
 
 				} catch (ParseException e2) {
-					System.out.println("³¯Â¥ º¯È¯ Áß¿¡ ¾Ë¼ö¾ø´Â ¿À·ù");
-					e2.printStackTrace();
+					System.out.println("ë‚ ì§œ ë³€í™˜ ì¤‘ì— ì•Œìˆ˜ì—†ëŠ” ì˜¤ë¥˜" + e2.getMessage());
 				}
 
 				if (minute < 10)
@@ -921,47 +876,28 @@ public class ManagerFrame extends JFrame implements ActionListener {
 				todayWorkHourTxt.setText(worktime);
 				todayWorkHourTxt.setEditable(false);
 
-			} else {
-				JOptionPane.showMessageDialog(this, "Åğ±Ù½Ã°£(ºĞ)À» ¼±ÅÃÇØ ÁÖ¼¼¿ä!");
 			}
 
 		} else if (src == saveBtn) {
-			if (yearCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, "³âµµ¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä!");
-			} else if (monthCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, "´ŞÀ» ¼±ÅÃÇØÁÖ¼¼¿ä!");
-			} else if (dateCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, "ÀÏ¼ö¸¦ °ñ¶óÁÖ¼¼¿ä!");
-			} else if (startHCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, "Ãâ±Ù½Ã°£À» °ñ¶óÁÖ¼¼¿ä!");
-			} else if (startHCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, "Ãâ±Ù ºĞÀ» °ñ¶óÁÖ¼¼¿ä!");
-			} else if (startHCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, "Åğ±Ù ½Ã°£À» °ñ¶óÁÖ¼¼¿ä!");
-			} else if (endMCombo.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, "Åğ±Ù ºĞÀ» °ñ¶óÁÖ¼¼¿ä!");
-			}
-
-			else {
+			if (selectedEndtM == null) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
+				JOptionPane.showMessageDialog(this, "í‡´ê·¼ì‹œê°„ (ë¶„)ì„ ê³¨ë¼ì£¼ì„¸ìš”!");
+				return;
+			} else {
 				if (!isUpdateMode) {
 					String str_workdate = selectedYear + "/" + selectedMonth + "/" + selectedDate;
 					String str_starttime = selectedStartH + ":" + selectedStartM;
 					String str_endtime = selectedEndtH + ":" + selectedEndtM;
 
-//            tableModel.addRow(new String[] { selectedYear + "/" + selectedMonth + "/" + selectedDate,¤Ë
-//                  selectedStartH + " : " + selectedStartM, selectedEndtH + " : " + selectedEndtM, worktime,
-//                  member.getSalperhour() }); // »ç¿ëÀÚ°¡ º¯°æÇÑ °ªÀ¸·Î ÀúÀåµÇ´Â ºÎºĞ!!!!!!!!!!
-
 					try {
 
 						if (!dao.checkWorkDate(member.getId(), str_workdate)) {
-							JOptionPane.showMessageDialog(this, "°°Àº³¯ ÇÑ±Ù¹«Áö¿¡¼­ ¿©·¯°¡Áö ÀÏÀ» ÇÒ ¼ö ¾ø½À´Ï´Ù.");
+							JOptionPane.showMessageDialog(this, "ê°™ì€ë‚  í•œê·¼ë¬´ì§€ì—ì„œ ì—¬ëŸ¬ê°€ì§€ ì¼ì„ í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
 							// dao.db_close();
 							return;
 						}
 
 					} catch (HeadlessException | SQLException e2) {
-						System.out.println("workdateÀ¯È¿¼º°Ë»ç¸¦ ÇÏ´Â °úÁ¤¿¡¼­ÀÇ ¿À·ù");
+						System.out.println("workdateìœ íš¨ì„±ê²€ì‚¬ë¥¼ í•˜ëŠ” ê³¼ì •ì—ì„œì˜ ì˜¤ë¥˜");
 						e2.printStackTrace();
 					}
 					int money = (int) (worktime_double * (Integer.parseInt(member.getSalperhour())));
@@ -970,32 +906,32 @@ public class ManagerFrame extends JFrame implements ActionListener {
 
 					try {
 						dao.insertPayData(payInfo);
-						JOptionPane.showMessageDialog(this, "¼º°øÀûÀ¸·Î ÀúÀåµÇ¾ú½À´Ï´Ù!");
-						tc.addMemberPayInfo(payInfo);// Å×ÀÌºíÄÁÆ®·Ñ·¯¿¡µµ Ãß°¡ÇØ¼­ Å×ÀÌºí¿¡ »Ñ¸±¼ö ÀÖµµ·Ï ÇÑ´Ù.
+						JOptionPane.showMessageDialog(this, "ì„±ê³µì ìœ¼ë¡œ ì €ì¥ë˜ì—ˆìŠµë‹ˆë‹¤!");
+						tc.addMemberPayInfo(payInfo);// í…Œì´ë¸”ì»¨íŠ¸ë¡¤ëŸ¬ì—ë„ ì¶”ê°€í•´ì„œ í…Œì´ë¸”ì— ë¿Œë¦´ìˆ˜ ìˆë„ë¡ í•œë‹¤.
 						if (selectedYear.equals(yy) && selectedMonth.equals(mm.substring(1, 2)))
-							labelSetting(yy, mm.substring(1, 2));// ´Ù½Ã »õ·Î°íÄ§
+							labelSetting(yy, mm.substring(1, 2));// ë‹¤ì‹œ ìƒˆë¡œê³ ì¹¨
 						// dao.db_close();
 
 					} catch (SQLException e1) {
-						System.out.println("insertÁß µ¥ÀÌÅÍº£ÀÌ½º ¿À·ù");
+						System.out.println("insertì¤‘ ë°ì´í„°ë² ì´ìŠ¤ ì˜¤ë¥˜");
 						e1.printStackTrace();
 					}
 				} else if (isUpdateMode) {
 					updateMode(t1, t2, t3);
 
-					// ¿Ï·áÈÄ
-					settingCombo(true);// ¸ğµç°ÍÀ» »ç¿ëÇÒ ¼ö ÀÖµµ·Ï
+					// ì™„ë£Œí›„
+					settingCombo(true);// ëª¨ë“ ê²ƒì„ ì‚¬ìš©í•  ìˆ˜ ìˆë„ë¡
 					isUpdateMode = false;
 				}
 			}
 
 		} else if (src == selectedDelete) {
-			int one = table.getSelectedRow(); // »ç¿ëÀÚ°¡ ¼±ÅÃÇÑ Çà°ªÀ» ¹Ş¾Æ¿ÂµÚ
+			int one = table.getSelectedRow(); // ì‚¬ìš©ìê°€ ì„ íƒí•œ í–‰ê°’ì„ ë°›ì•„ì˜¨ë’¤
 
 			if (one == -1) {
-				JOptionPane.showMessageDialog(this, "¼±ÅÃµÈ ÇàÀÌ ¾ø½À´Ï´Ù.", "°æ°í", JOptionPane.OK_OPTION);
+				JOptionPane.showMessageDialog(this, "ì„ íƒëœ í–‰ì´ ì—†ìŠµë‹ˆë‹¤.", "ê²½ê³ ", JOptionPane.OK_OPTION);
 			} else {
-				int choice = JOptionPane.showConfirmDialog(this, "Á¤¸» »èÁ¦ÇÏ½Ã°Ú½À´Ï±î?", "°æ°í", JOptionPane.OK_CANCEL_OPTION);
+				int choice = JOptionPane.showConfirmDialog(this, "ì •ë§ ì‚­ì œí•˜ì‹œê² ìŠµë‹ˆê¹Œ?", "ê²½ê³ ", JOptionPane.OK_CANCEL_OPTION);
 				if (choice == JOptionPane.OK_OPTION) {
 
 					String selectDate = (String) tc.getValueAt(one, 0) + "/" + (String) tc.getValueAt(one, 1) + "/"
@@ -1005,11 +941,11 @@ public class ManagerFrame extends JFrame implements ActionListener {
 					try {
 						dao.deleteOnePayData(member.getId(), selectDate);
 						System.out.println(selectDate);
-						JOptionPane.showMessageDialog(this, "¼º°øÀûÀ¸·Î »èÁ¦µÇ¾ú½À´Ï´Ù!");
+						JOptionPane.showMessageDialog(this, "ì„±ê³µì ìœ¼ë¡œ ì‚­ì œë˜ì—ˆìŠµë‹ˆë‹¤!");
 
 						if (((String) tc.getValueAt(one, 0)).equals(yy)
 								&& ((String) tc.getValueAt(one, 1)).equals(mm.substring(1, 2)))
-							labelSetting(yy, mm.substring(1, 2));// ´Ù½Ã »õ·Î°íÄ§
+							labelSetting(yy, mm.substring(1, 2));// ë‹¤ì‹œ ìƒˆë¡œê³ ì¹¨
 
 						tc.delMemberPayInfo(one);
 
@@ -1017,46 +953,46 @@ public class ManagerFrame extends JFrame implements ActionListener {
 						// dao.db_close();
 
 					} catch (SQLException e1) {
-						System.out.println("Å×ÀÌºí µ¥ÀÌÅÍ¸¦ »èÁ¦ÇÏ´Â °úÁ¤¿¡¼­ÀÇ ¿À·ù");
+						System.out.println("í…Œì´ë¸” ë°ì´í„°ë¥¼ ì‚­ì œí•˜ëŠ” ê³¼ì •ì—ì„œì˜ ì˜¤ë¥˜");
 						e1.printStackTrace();
 					}
 				}
 			}
 
-		} else if (src == selectedUpdateBtn) {// ÁöÁ¤ÀÏ º¯°æ¸ğµå
+		} else if (src == selectedUpdateBtn) {// ì§€ì •ì¼ ë³€ê²½ëª¨ë“œ
 
-			int one = table.getSelectedRow(); // »ç¿ëÀÚ°¡ ¼±ÅÃÇÑ Çà°ªÀ» ¹Ş¾Æ¿Â´Ù
-			int col = table.getSelectedColumn();// »ç¿ëÀÚ°¡ ¼±ÅÃÇÑ ¿­°ªÀ» ¹Ş¾Æ¿Â´Ù
+			int one = table.getSelectedRow(); // ì‚¬ìš©ìê°€ ì„ íƒí•œ í–‰ê°’ì„ ë°›ì•„ì˜¨ë‹¤
+			int col = table.getSelectedColumn();// ì‚¬ìš©ìê°€ ì„ íƒí•œ ì—´ê°’ì„ ë°›ì•„ì˜¨ë‹¤
 
 			if (one == -1) {
-				JOptionPane.showMessageDialog(this, "¼±ÅÃµÈ ÇàÀÌ ¾ø½À´Ï´Ù.", "°æ°í", JOptionPane.OK_OPTION);
+				JOptionPane.showMessageDialog(this, "ì„ íƒëœ í–‰ì´ ì—†ìŠµë‹ˆë‹¤.", "ê²½ê³ ", JOptionPane.OK_OPTION);
 			} else if (col == 0 || col == 1 || col == 2 || col == 5 || col == 6) {
-				JOptionPane.showMessageDialog(this, "Ãâ±Ù½Ã°£°ú Åğ±Ù½Ã°£¸¸ º¯°æ °¡´ÉÇÕ´Ï´Ù!!");
+				JOptionPane.showMessageDialog(this, "ì¶œê·¼ì‹œê°„ê³¼ í‡´ê·¼ì‹œê°„ë§Œ ë³€ê²½ ê°€ëŠ¥í•©ë‹ˆë‹¤!!");
 				return;
 			} else {
-				String colname = tc.getColumnName(col);// ¹Ù²Ù°í ½ÍÀº ¿­ÀÇ ÀÌ¸§À» ¹Ş¾Æ¿Â´Ù.
+				String colname = tc.getColumnName(col);// ë°”ê¾¸ê³  ì‹¶ì€ ì—´ì˜ ì´ë¦„ì„ ë°›ì•„ì˜¨ë‹¤.
 
 				int choice = JOptionPane
 						.showConfirmDialog(this,
-								tc.getValueAt(one, 0) + "³â " + tc.getValueAt(one, 1) + "¿ù " + tc.getValueAt(one, 2)
-										+ "ÀÏ " + " °ªÀÇ " + "\"" + colname + "\"" + " À» º¯°æÇÏ½Ã°Ú½À´Ï±î?",
-								"°æ°í", JOptionPane.OK_CANCEL_OPTION);
+								tc.getValueAt(one, 0) + "ë…„ " + tc.getValueAt(one, 1) + "ì›” " + tc.getValueAt(one, 2)
+										+ "ì¼ " + " ê°’ì˜ " + "\"" + colname + "\"" + " ì„ ë³€ê²½í•˜ì‹œê² ìŠµë‹ˆê¹Œ?",
+								"ê²½ê³ ", JOptionPane.OK_CANCEL_OPTION);
 
 				if (choice == JOptionPane.OK_OPTION) {
-					String selectedValue = (String) tc.getValueAt(one, col);// »ç¿ëÀÚ°¡ ¼±ÅÃÇÑ °ªÀ» ¾ò¾î¿Â´Ù.
-					settingCombo(false);// ÀÏ´Ü ´Ù false·Î ¸¸µé¾î ÁØµÚ
-					isUpdateMode = true;// ¾÷µ¥ÀÌÆ® ¸ğµå¸¦ ½ÇÇà
+					String selectedValue = (String) tc.getValueAt(one, col);// ì‚¬ìš©ìê°€ ì„ íƒí•œ ê°’ì„ ì–»ì–´ì˜¨ë‹¤.
+					settingCombo(false);// ì¼ë‹¨ ë‹¤ falseë¡œ ë§Œë“¤ì–´ ì¤€ë’¤
+					isUpdateMode = true;// ì—…ë°ì´íŠ¸ ëª¨ë“œë¥¼ ì‹¤í–‰
 
-					// ±× ÇØ´ç ¿­¿¡´ëÇÑ ÄŞº¸¹Ú½º¸¸ »ç¿ë°¡´ÉÇÏ°Ô ¿­¾îµĞ´Ù.
+					// ê·¸ í•´ë‹¹ ì—´ì—ëŒ€í•œ ì½¤ë³´ë°•ìŠ¤ë§Œ ì‚¬ìš©ê°€ëŠ¥í•˜ê²Œ ì—´ì–´ë‘”ë‹¤.
 					int selectedCombo = setComboEnable(colname);
 
-					// ¼±ÅÃÇÑ ÇàÀÇ ¿­ µ¥ÀÌÅÍ¸¦ ¹è¿­¿¡ ´ã¾Æ¿Â´Ù
+					// ì„ íƒí•œ í–‰ì˜ ì—´ ë°ì´í„°ë¥¼ ë°°ì—´ì— ë‹´ì•„ì˜¨ë‹¤
 					String s1 = null, s2 = null, s3 = null, s4 = null;
 					tmp = new String[tc.getColumnCount() - 1];
 					for (int i = 0; i < tmp.length; i++) {
 						tmp[i] = (String) tc.getValueAt(one, i);
 						if (i == 3) {
-							if (tmp[i].length() == 5) {// 19:00°ú °°ÀÌ 10ÀÇÀÚ¸® ½Ã
+							if (tmp[i].length() == 5) {// 19:00ê³¼ ê°™ì´ 10ì˜ìë¦¬ ì‹œ
 								s1 = tmp[3].substring(0, 2);
 								s2 = tmp[3].substring(3);
 							} else {
@@ -1075,17 +1011,9 @@ public class ManagerFrame extends JFrame implements ActionListener {
 						}
 
 					}
-					// ±×¸®°í ³ª¸ÓÁö ÄŞº¸¹Ú½º¿¡´Â »ç¿ëÀÚ°¡ ¼±ÅÃÇÑ ¿­°ªÀ¸·Î ¼ÂÆÃµÇµµ·Ï ÇÑ´Ù.
+					// ê·¸ë¦¬ê³  ë‚˜ë¨¸ì§€ ì½¤ë³´ë°•ìŠ¤ì—ëŠ” ì‚¬ìš©ìê°€ ì„ íƒí•œ ì—´ê°’ìœ¼ë¡œ ì…‹íŒ…ë˜ë„ë¡ í•œë‹¤.
 					settingCombofield(colname, tmp[0], tmp[1], tmp[2], s1, s2, s3, s4, tmp[5]);
 
-					// ÀÌÀüÀÇ °ª°ú µ¿ÀÏÇÏ¸é µ¿ÀÏÇÏ´Ù°í ¸Ş¼¼Áö ¶ç¿ì°í
-					// true·Î ¶Õ·Á ÀÖ´Â°Í¸¸ ¹Ş¾Æ¼­ ºñ±³ÇÏ¸éµÉ°Å°°Àºµ¥
-
-					// ´Ù¸£´Ù¸é daoºÒ·¯¼­ db¿¡ ¾÷´ñ½ÃÅ°¸éµÊ
-					// updateMode(selectedCombo, selectedValue, colname);
-//					returnCombo(selectedCombo);
-//					returnValue(selectedValue);
-//					returnColname(colname);
 					t1 = selectedCombo;
 					t2 = selectedValue;
 					t3 = colname;
@@ -1094,61 +1022,61 @@ public class ManagerFrame extends JFrame implements ActionListener {
 			}
 
 		} else if (src == searchYear) {
-			selectedSearchYear = (String) searchYear.getSelectedItem();// »ç¿ëÀÚ°¡ ¼±ÅÃÇÑ ³â°ªÀ» ¹İÈ¯¹Ş´Â´Ù.
+			selectedSearchYear = (String) searchYear.getSelectedItem();// ì‚¬ìš©ìê°€ ì„ íƒí•œ ë…„ê°’ì„ ë°˜í™˜ë°›ëŠ”ë‹¤.
 			System.out.println(selectedSearchYear);
 
 		} else if (src == searchMonth) {
-			selectedSearchMonth = (String) searchMonth.getSelectedItem();// »ç¿ëÀÚ°¡ ¼±ÅÃÇÑ °ªÀ» ¹İÈ¯¹Ş´Â´Ù
+			selectedSearchMonth = (String) searchMonth.getSelectedItem();// ì‚¬ìš©ìê°€ ì„ íƒí•œ ê°’ì„ ë°˜í™˜ë°›ëŠ”ë‹¤
 			System.out.println(selectedSearchMonth);
 
-		} else if (src == searchBtn) {// ¿ùº° °Ë»ö
+		} else if (src == searchBtn) {// ì›”ë³„ ê²€ìƒ‰
 
-			if (searchYear.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
-				JOptionPane.showMessageDialog(this, "°Ë»öÇÒ ³âµµ¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä!");
+			if (searchYear.getSelectedIndex() == -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
+				JOptionPane.showMessageDialog(this, "ê²€ìƒ‰í•  ë…„ë„ë¥¼ ì„ íƒí•´ì£¼ì„¸ìš”!");
 			}
-			if (searchMonth.getSelectedIndex() == -1) { // ¼±ÅÃÇÏÁö ¾Ê¾Ò´Ù¸é
+			if (searchMonth.getSelectedIndex() == -1) { // ì„ íƒí•˜ì§€ ì•Šì•˜ë‹¤ë©´
 				// selectedEndtH = (String) endHCombo.getSelectedItem();
-				JOptionPane.showMessageDialog(this, "°Ë»öÇÒ ´ŞÀ» ¼±ÅÃÇØÁÖ¼¼¿ä!");
+				JOptionPane.showMessageDialog(this, "ê²€ìƒ‰í•  ë‹¬ì„ ì„ íƒí•´ì£¼ì„¸ìš”!");
 			} else {
 
 				try {
-					// db¿¡ ¾ø´Â ´ŞÀ» °Ë»öÇÏ¸é °Ë»ö °á°ú ¾ø´Ù°í ¶ß°Ô ÇÏ±â
+					// dbì— ì—†ëŠ” ë‹¬ì„ ê²€ìƒ‰í•˜ë©´ ê²€ìƒ‰ ê²°ê³¼ ì—†ë‹¤ê³  ëœ¨ê²Œ í•˜ê¸°
 					if (selectedSearchYear != null && selectedSearchMonth != null) {
 						dao.userSelectMonth(selectedSearchYear, selectedSearchMonth, member.getId());
 
 						if (tableSetting2() == 0) {
-							JOptionPane.showMessageDialog(this, "°Ë»ö°á°ú°¡ ¾ø½À´Ï´Ù!");
+							JOptionPane.showMessageDialog(this, "ê²€ìƒ‰ê²°ê³¼ê°€ ì—†ìŠµë‹ˆë‹¤!");
 						} else {
 							scrollPane.setVisible(false);
-							isPushSearchBtn = true;// ÇÑ¹ø ´­·¶À½À» Ç¥½Ã
-							JOptionPane.showMessageDialog(this, "¼º°øÀûÀ¸·Î °Ë»öµÇ¾ú½À´Ï´Ù!");
-							labelSetting(selectedSearchYear, selectedSearchMonth);// °Ë»öÇÑ ´Ş·Î ¹Ù²Ù±â
-							changeSearchDate(selectedSearchMonth);// ¶óº§ °á°ú°ª ¹Ù²Ù·Á°í ÀÖ´Â ÄÚµå
+							isPushSearchBtn = true;// í•œë²ˆ ëˆŒë €ìŒì„ í‘œì‹œ
+							JOptionPane.showMessageDialog(this, "ì„±ê³µì ìœ¼ë¡œ ê²€ìƒ‰ë˜ì—ˆìŠµë‹ˆë‹¤!");
+							labelSetting(selectedSearchYear, selectedSearchMonth);// ê²€ìƒ‰í•œ ë‹¬ë¡œ ë°”ê¾¸ê¸°
+							changeSearchDate(selectedSearchMonth);// ë¼ë²¨ ê²°ê³¼ê°’ ë°”ê¾¸ë ¤ê³  ìˆëŠ” ì½”ë“œ
 							// dao.db_close();
 						}
 
 					} else {
-						JOptionPane.showMessageDialog(this, "°Ë»öÇÒ ³¯Â¥¸¦ °ñ¶óÁÖ¼¼¿ä!");
+						JOptionPane.showMessageDialog(this, "ê²€ìƒ‰í•  ë‚ ì§œë¥¼ ê³¨ë¼ì£¼ì„¸ìš”!");
 					}
 
 				} catch (SQLException e1) {
-					System.out.println("ÇØ´ç³¯Â¥¸¦ °Ë»öÇÏ´Âµ¥ ¿À·ù°¡ ¹ß»ıÇß½À´Ï´Ù.");
+					System.out.println("í•´ë‹¹ë‚ ì§œë¥¼ ê²€ìƒ‰í•˜ëŠ”ë° ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤.");
 					e1.printStackTrace();
 				}
 			}
 
-		} else if (src == undoBtn) {// search¹öÆ°À» ´©¸¥Àû¾ø´Âµ¥ ÀÌ°Å ´©¸£¸é ¿À·ù³ª´Ï±î ¿¹¿ÜÃ³¸®ÇÏÀÚ
-			if (isPushSearchBtn) {// ÁöÁ¤ÀÏ°Ë»öÀ» ÇÑ¹ø ´­·¶À»¶§ ÀÌ ¹öÆ°ÀÌ ¿òÁ÷ÀÏ ¼ö ÀÖµµ·Ï
+		} else if (src == undoBtn) {// searchë²„íŠ¼ì„ ëˆ„ë¥¸ì ì—†ëŠ”ë° ì´ê±° ëˆ„ë¥´ë©´ ì˜¤ë¥˜ë‚˜ë‹ˆê¹Œ ì˜ˆì™¸ì²˜ë¦¬í•˜ì
+			if (isPushSearchBtn) {// ì§€ì •ì¼ê²€ìƒ‰ì„ í•œë²ˆ ëˆŒë €ì„ë•Œ ì´ ë²„íŠ¼ì´ ì›€ì§ì¼ ìˆ˜ ìˆë„ë¡
 				scrollPane.setVisible(true);
 				scrollPane2.setVisible(false);
-				labelSetting(selectedSearchYear, mm.substring(1, 2));// ´Ù½Ã »õ·Î°íÄ§
+				labelSetting(selectedSearchYear, mm.substring(1, 2));// ë‹¤ì‹œ ìƒˆë¡œê³ ì¹¨
 				changeSearchDate(mm.substring(1, 2));
 			} else
-				JOptionPane.showMessageDialog(this, "ÀÌ¹Ì ÀüÃ¼ µ¥ÀÌÅÍ¸¦ º¸°í°è¼¼¿ä!");
+				JOptionPane.showMessageDialog(this, "ì´ë¯¸ ì „ì²´ ë°ì´í„°ë¥¼ ë³´ê³ ê³„ì„¸ìš”!");
 
-		} else if (src == cancelBtn) {// º¯°æ¸ğµå Ãë¼ÒÇßÀ»¶§
-			settingCombo(true);// ¸ğµç°ÍÀ» »ç¿ëÇÒ ¼ö ÀÖµµ·Ï
-			isUpdateMode = false;// ¾÷µ¥ÀÌÆ® ¸ğµå°¡ ¾Æ´ÔÀ» ¾Ë·ÁÁÖ±â À§ÇØ
+		} else if (src == cancelBtn) {// ë³€ê²½ëª¨ë“œ ì·¨ì†Œí–ˆì„ë•Œ
+			settingCombo(true);// ëª¨ë“ ê²ƒì„ ì‚¬ìš©í•  ìˆ˜ ìˆë„ë¡
+			isUpdateMode = false;// ì—…ë°ì´íŠ¸ ëª¨ë“œê°€ ì•„ë‹˜ì„ ì•Œë ¤ì£¼ê¸° ìœ„í•´
 		}
 	}
 }
